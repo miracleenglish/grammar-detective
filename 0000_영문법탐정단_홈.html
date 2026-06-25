@@ -115,6 +115,38 @@
   .divider{max-width:720px;margin:4px auto 0;padding:0 16px;}
   .divider hr{border:none;border-top:1.5px dashed var(--border);}
 
+
+  /* ── 탭 메뉴 ── */
+  .tab-wrap{max-width:720px;margin:20px auto 0;padding:0 16px;position:relative;}
+  .tab-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .tab-bar::-webkit-scrollbar{display:none;}
+  /* 오른쪽 그라데이션 — 더 있다는 힌트 */
+  .tab-wrap::after{content:'';position:absolute;right:0;top:0;bottom:6px;width:40px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;border-radius:0 16px 16px 0;}
+  .tab-btn{
+    background:white;border:2px solid var(--border);border-radius:14px;
+    padding:10px 16px;cursor:pointer;
+    transition:all .2s;font-family:'Noto Sans KR',sans-serif;
+    text-align:center;flex-shrink:0;min-width:110px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+  }
+  .tab-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.1);}
+  .tab-btn .tb-icon{font-size:18px;margin-bottom:3px;}
+  .tab-btn .tb-name{font-size:12px;font-weight:800;color:var(--text);display:block;margin-bottom:2px;white-space:nowrap;}
+  .tab-btn .tb-range{font-size:10px;font-weight:700;color:var(--muted);display:block;white-space:nowrap;}
+  /* 전체 탭 */
+  .tab-btn.t-all{border-color:var(--navy);}
+  .tab-btn.t-all:hover,.tab-btn.t-all.active{background:var(--navy);border-color:var(--navy);}
+  .tab-btn.t-all.active .tb-name,.tab-btn.t-all.active .tb-range,.tab-btn.t-all:hover .tb-name,.tab-btn.t-all:hover .tb-range{color:white;}
+  /* GV 탭 */
+  .tab-btn.t-gv{border-color:var(--sky-dark);}
+  .tab-btn.t-gv:hover,.tab-btn.t-gv.active{background:var(--sky-dark);border-color:var(--sky-dark);}
+  .tab-btn.t-gv.active .tb-name,.tab-btn.t-gv.active .tb-range,.tab-btn.t-gv:hover .tb-name,.tab-btn.t-gv:hover .tb-range{color:white;}
+  /* GQ 탭 */
+  .tab-btn.t-gq{border-color:var(--teal-dark);}
+  .tab-btn.t-gq:hover,.tab-btn.t-gq.active{background:var(--teal-dark);border-color:var(--teal-dark);}
+  .tab-btn.t-gq.active .tb-name,.tab-btn.t-gq.active .tb-range,.tab-btn.t-gq:hover .tb-name,.tab-btn.t-gq:hover .tb-range{color:white;}
+  .tab-section{display:none;}
+  .tab-section.show{display:block;}
   /* ── 푸터 ── */
   footer{text-align:center;padding:28px 16px 40px;font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;line-height:1.8;}
 </style>
@@ -139,10 +171,29 @@
   </div>
 </div>
 
+<div class="tab-wrap">
+  <div class="tab-bar">
+    <button class="tab-btn t-all active" onclick="showTab('all', this)">
+      <div class="tb-icon">🔍</div>
+      <span class="tb-name">전체</span>
+      <span class="tb-range">0001 ~ 0033</span>
+    </button>
+    <button class="tab-btn t-gv" onclick="showTab('gv', this)">
+      <div class="tb-icon">🔵</div>
+      <span class="tb-name">동사편 GV</span>
+      <span class="tb-range">0001 ~ 0017</span>
+    </button>
+    <button class="tab-btn t-gq" onclick="showTab('gq', this)">
+      <div class="tb-icon">🟢</div>
+      <span class="tb-name">의문문·부정문 GQ</span>
+      <span class="tb-range">0018 ~ 0033</span>
+    </button>
+  </div>
+</div>
 
-<!-- ══════════════════════════════════════
-     GV 영역 — 동사편
-════════════════════════════════════════ -->
+
+<!-- GV -->
+<div class="tab-section show" id="tab-gv">
 <div class="section" style="margin-top:24px;">
   <div class="section-header">
     <div class="section-icon" style="background:linear-gradient(135deg,var(--sky-dark),#1A5F8A);">🔡</div>
@@ -263,13 +314,13 @@
     </a>
   </div>
 </div>
+</div><!-- /tab-gv -->
 
-<div class="divider" style="margin-top:20px;"><hr></div>
+<div class="divider tab-section show" id="div-gv" style="margin-top:20px;"><hr></div>
 
 
-<!-- ══════════════════════════════════════
-     GQ 영역 — 의문문·부정문편
-════════════════════════════════════════ -->
+<!-- GQ -->
+<div class="tab-section show" id="tab-gq">
 <div class="section" style="margin-top:20px;">
   <div class="section-header">
     <div class="section-icon" style="background:linear-gradient(135deg,var(--teal),var(--teal-dark));">❓</div>
@@ -387,10 +438,30 @@
     </a>
   </div>
 </div>
+</div><!-- /tab-gq -->
 
 <footer>
   미라클 영어 스터디 · 영문법 탐정단
 </footer>
 
+
+<script>
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const sections = {
+    gv: ['tab-gv', 'div-gv'],
+    gq: ['tab-gq'],
+    all: ['tab-gv', 'div-gv', 'tab-gq']
+  };
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('show'));
+  const toShow = sections[tab] || sections['all'];
+  toShow.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.add('show');
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
 </body>
 </html>
