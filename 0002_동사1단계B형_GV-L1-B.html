@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GV-L1-B | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --sky: #4BA3E3;
+    --sky-light: #E8F4FD;
+    --sky-dark: #2980C4;
+    --mint: #3DBFA0;
+    --mint-light: #E6F7F4;
+    --sun: #F5A623;
+    --sun-light: #FEF6E7;
+    --coral: #F0614A;
+    --coral-light: #FEF0EE;
+    --purple: #7C5CBF;
+    --purple-light: #F0ECF9;
+    --bg: #F7FBFF;
+    --card: #FFFFFF;
+    --text: #1A2A3A;
+    --muted: #7A8FA0;
+    --border: #D6E8F5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── HEADER ── */
+  header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-dark) 100%);
+    color: white;
+    padding: 18px 24px 14px;
+    text-align: center;
+  }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; opacity: 0.8; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; }
+  header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; font-family: 'Noto Sans KR', sans-serif; }
+  header .code-tag { font-size: 10px; opacity: 0.55; margin-top: 4px; letter-spacing: 1px; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { width: 100%; max-width: 640px; padding: 16px 20px 0; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; }
+  .progress-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--sky), var(--mint)); border-radius: 99px; transition: width 0.4s ease; }
+
+  /* ── MAIN ── */
+  main { width: 100%; max-width: 640px; padding: 16px 20px 32px; flex: 1; }
+
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    padding: 28px 24px 24px;
+    box-shadow: 0 4px 20px rgba(75,163,227,0.08);
+  }
+
+  /* ── QUESTION PROMPT ── */
+  .question-prompt {
+    background: var(--sky-light);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--sky-dark);
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .question-prompt .prompt-type {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── CHOICES ── */
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+  .choice-btn {
+    width: 100%;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--sky);
+    background: var(--sky-light);
+    transform: translateX(4px);
+  }
+  .choice-btn:disabled { cursor: not-allowed; }
+
+  .choice-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .choice-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  /* 선택 상태 */
+  .choice-btn.selected {
+    border-color: var(--sun);
+    background: var(--sun-light);
+  }
+  .choice-btn.selected .choice-num { background: var(--sun); color: white; }
+
+  /* 정답 */
+  .choice-btn.correct {
+    border-color: var(--mint);
+    background: var(--mint-light);
+    animation: pop 0.3s ease;
+  }
+  .choice-btn.correct .choice-num { background: var(--mint); color: white; }
+  .choice-btn.correct .choice-text { color: #1A7A6A; }
+
+  /* 오답 */
+  .choice-btn.wrong {
+    border-color: var(--coral);
+    background: var(--coral-light);
+    animation: shake 0.3s ease;
+  }
+  .choice-btn.wrong .choice-num { background: var(--coral); color: white; }
+  .choice-btn.wrong .choice-text { color: var(--coral); }
+
+  /* 정답 표시 (선택 안 한 정답) */
+  .choice-btn.show-correct {
+    border-color: var(--mint);
+    background: var(--mint-light);
+  }
+  .choice-btn.show-correct .choice-num { background: var(--mint); color: white; }
+  .choice-btn.show-correct .choice-text { color: #1A7A6A; }
+
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.02)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.7;
+  }
+  .feedback.show { display: block; animation: fadeIn 0.25s ease; }
+  .feedback.correct-fb { background: var(--mint-light); border: 1.5px solid var(--mint); }
+  .feedback.wrong-fb { background: var(--coral-light); border: 1.5px solid var(--coral); }
+  .feedback .fb-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .feedback .fb-body { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .feedback .fb-body b { font-weight: 700; }
+
+  /* ── VERB TAG ── */
+  .verb-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .verb-tag.be { background: var(--sky-light); color: var(--sky-dark); border: 1px solid var(--sky); }
+  .verb-tag.general { background: var(--mint-light); color: #1A7A6A; border: 1px solid var(--mint); }
+
+  /* ── NEXT BTN ── */
+  .btn-next {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+    font-family: 'Nunito', sans-serif;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(75,163,227,0.35);
+  }
+  .btn-next.show { display: block; animation: fadeIn 0.25s ease; }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(75,163,227,0.4); }
+
+  /* ── START SCREEN ── */
+  #start-screen { width: 100%; max-width: 640px; padding: 20px; }
+  .start-card {
+    background: white;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(75,163,227,0.1);
+  }
+  .set-badge {
+    display: inline-block;
+    background: var(--sky);
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 16px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .start-title { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+  .start-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.7; }
+  .how-to { text-align: left; background: var(--sky-light); border-radius: 14px; padding: 16px 18px; margin-bottom: 28px; }
+  .how-to h3 { font-size: 13px; font-weight: 700; color: var(--sky-dark); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .how-to ol { padding-left: 18px; }
+  .how-to li { font-size: 13px; color: var(--text); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.5; }
+  .how-to li b { color: var(--sky-dark); }
+  .btn-start {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: transform 0.15s;
+    box-shadow: 0 4px 16px rgba(75,163,227,0.4);
+  }
+  .btn-start:hover { transform: translateY(-2px); }
+
+  /* ── RESULT ── */
+  #result-screen { display: none; padding: 20px; max-width: 640px; width: 100%; }
+  .result-card {
+    background: white;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(75,163,227,0.1);
+  }
+  .stars { font-size: 40px; margin-bottom: 12px; letter-spacing: 4px; }
+  .result-score { font-size: 52px; font-weight: 900; color: var(--sky); line-height: 1; margin-bottom: 4px; }
+  .result-total { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-family: 'Noto Sans KR', sans-serif; }
+  .result-msg { font-size: 16px; font-weight: 700; margin-bottom: 24px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+
+  .wrong-review { text-align: left; background: var(--coral-light); border-radius: 14px; padding: 16px 18px; margin-bottom: 24px; }
+  .wrong-review h3 { font-size: 13px; font-weight: 700; color: var(--coral); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .wrong-item { font-size: 13px; margin-bottom: 10px; line-height: 1.6; font-family: 'Noto Sans KR', sans-serif; padding-bottom: 10px; border-bottom: 1px dashed #f5c0b8; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wrong-item .prompt-text { font-weight: 700; color: var(--coral); margin-bottom: 2px; }
+  .wrong-item .correct-text { color: #1A7A6A; font-weight: 600; }
+
+  .retry-buttons { display: flex; flex-direction: column; gap: 10px; }
+  .btn-retry {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+    color: white; border: none; border-radius: 14px; padding: 16px;
+    font-size: 16px; font-weight: 800; cursor: pointer;
+    font-family: 'Nunito', sans-serif; transition: transform 0.15s;
+    box-shadow: 0 4px 12px rgba(75,163,227,0.35);
+  }
+  .btn-retry:hover { transform: translateY(-2px); }
+  .btn-retry-wrong {
+    width: 100%; background: white; color: var(--coral);
+    border: 2px solid var(--coral); border-radius: 14px; padding: 14px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    font-family: 'Nunito', sans-serif; transition: all 0.15s;
+  }
+  .btn-retry-wrong:hover { background: var(--coral-light); transform: translateY(-2px); }
+  .btn-retry-wrong .ko { font-size: 12px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; display: block; margin-top: 2px; opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>동사편 · 1단계 · B형</h1>
+  <div class="subtitle">문장을 골라라! · be동사 vs 일반동사 · 현재 시제</div>
+  <div class="code-tag">GV-L1-B</div>
+</header>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <div class="start-card">
+    <div class="set-badge">동사편 · 1단계 · B형</div>
+    <div class="start-title">문장을 골라라! 🕵️</div>
+    <div class="start-sub">
+      4개의 문장 중에서<br>조건에 맞는 문장을 골라요.<br>
+      <span style="font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;">현재 시제 · 10문제 &nbsp;|&nbsp; GV-L1-B</span>
+    </div>
+    <div class="how-to">
+      <h3>📋 이렇게 해요</h3>
+      <ol>
+        <li>문제를 잘 읽어요. <b>"be동사가 쓰인 문장은?"</b> 처럼 조건이 달라질 수 있어요!</li>
+        <li>4개 문장 중 <b>조건에 맞는 문장 하나</b>를 골라요.</li>
+        <li>정답과 함께 <b>왜 그런지 설명</b>을 확인해요.</li>
+      </ol>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">시작하기 🚀</button>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen" style="display:none; width:100%; max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div class="card">
+      <div class="question-prompt" id="question-prompt">
+        <span class="prompt-type">다음 중</span>
+        <span id="prompt-text"></span>
+      </div>
+
+      <div class="choices" id="choices-area"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </main>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">
+        ❌ 틀린 문제만 다시 풀기
+        <span class="ko">오답만 골라서 다시 도전해요!</span>
+      </button>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 문제 데이터 ──
+// prompt: 문제 발문  targetType: 정답 조건  correctIndex: 정답 번호(0~3)
+// choices: [{text, verbType, verb}]  explanation: 해설
+const allQuestions = [
+  {
+    prompt: "be동사가 쓰인 문장은?",
+    targetType: "be",
+    correctIndex: 2,
+    choices: [
+      { text: "I like apples very much.", verbType: "general", verb: "like" },
+      { text: "She plays the piano every day.", verbType: "general", verb: "plays" },
+      { text: "He is a very kind boy.", verbType: "be", verb: "is" },
+      { text: "We eat lunch at school.", verbType: "general", verb: "eat" }
+    ],
+    explanation: "<b>is</b>는 be동사예요. 주어가 He(3인칭 단수)이기 때문에 is를 써요. 나머지 like, plays, eat은 모두 일반동사예요."
+  },
+  {
+    prompt: "일반동사가 쓰인 문장은?",
+    targetType: "general",
+    correctIndex: 1,
+    choices: [
+      { text: "They are good friends.", verbType: "be", verb: "are" },
+      { text: "My cat sleeps on the sofa.", verbType: "general", verb: "sleeps" },
+      { text: "You are so tall!", verbType: "be", verb: "are" },
+      { text: "I am happy today.", verbType: "be", verb: "am" }
+    ],
+    explanation: "<b>sleeps</b>는 일반동사예요. sleep(자다)의 3인칭 단수 현재형이에요. are, am은 모두 be동사예요."
+  },
+  {
+    prompt: "be동사가 쓰이지 않은 문장은?",
+    targetType: "general",
+    correctIndex: 3,
+    choices: [
+      { text: "She is my best friend.", verbType: "be", verb: "is" },
+      { text: "We are in the same class.", verbType: "be", verb: "are" },
+      { text: "The dog is very cute.", verbType: "be", verb: "is" },
+      { text: "Tom has a new pencil.", verbType: "general", verb: "has" }
+    ],
+    explanation: "<b>has</b>는 일반동사예요. have(가지다)의 3인칭 단수 현재형이에요. 나머지 is, are는 모두 be동사예요."
+  },
+  {
+    prompt: "일반동사가 쓰이지 않은 문장은?",
+    targetType: "be",
+    correctIndex: 0,
+    choices: [
+      { text: "You are my hero!", verbType: "be", verb: "are" },
+      { text: "She likes chocolate cake.", verbType: "general", verb: "likes" },
+      { text: "He runs very fast.", verbType: "general", verb: "runs" },
+      { text: "They drink milk every morning.", verbType: "general", verb: "drink" }
+    ],
+    explanation: "<b>are</b>는 be동사예요. '일반동사가 쓰이지 않은 문장'이니까 be동사만 있는 문장을 골라야 해요. likes, runs, drink는 모두 일반동사예요."
+  },
+  {
+    prompt: "be동사 is가 쓰인 문장은?",
+    targetType: "be",
+    correctIndex: 2,
+    choices: [
+      { text: "I am a student.", verbType: "be", verb: "am" },
+      { text: "They are my brothers.", verbType: "be", verb: "are" },
+      { text: "The sky is very blue.", verbType: "be", verb: "is" },
+      { text: "We play soccer together.", verbType: "general", verb: "play" }
+    ],
+    explanation: "<b>is</b>는 be동사의 3인칭 단수형이에요. The sky(하늘)은 3인칭 단수이기 때문에 is를 써요. am은 I, are는 You/We/They에 써요."
+  },
+  {
+    prompt: "일반동사가 쓰인 문장은?",
+    targetType: "general",
+    correctIndex: 3,
+    choices: [
+      { text: "I am really tired.", verbType: "be", verb: "am" },
+      { text: "She is a great teacher.", verbType: "be", verb: "is" },
+      { text: "You are so funny!", verbType: "be", verb: "are" },
+      { text: "He studies English every night.", verbType: "general", verb: "studies" }
+    ],
+    explanation: "<b>studies</b>는 일반동사예요. study(공부하다)의 3인칭 단수 현재형이에요. y를 i로 바꾸고 -es를 붙여요."
+  },
+  {
+    prompt: "be동사 are가 쓰인 문장은?",
+    targetType: "be",
+    correctIndex: 1,
+    choices: [
+      { text: "She is very smart.", verbType: "be", verb: "is" },
+      { text: "We are on the same team.", verbType: "be", verb: "are" },
+      { text: "I love my family.", verbType: "general", verb: "love" },
+      { text: "The bird sings every morning.", verbType: "general", verb: "sings" }
+    ],
+    explanation: "<b>are</b>는 be동사예요. 주어가 We(복수)이기 때문에 are를 써요. is는 3인칭 단수(He/She/It)에, am은 I에 써요."
+  },
+  {
+    prompt: "일반동사가 쓰이지 않은 문장은?",
+    targetType: "be",
+    correctIndex: 2,
+    choices: [
+      { text: "My brother watches TV after dinner.", verbType: "general", verb: "watches" },
+      { text: "I go to school by bus.", verbType: "general", verb: "go" },
+      { text: "The flowers are beautiful.", verbType: "be", verb: "are" },
+      { text: "She reads books every day.", verbType: "general", verb: "reads" }
+    ],
+    explanation: "<b>are</b>는 be동사예요. '일반동사가 쓰이지 않은 문장'이니까 be동사만 있는 문장을 골라야 해요. watches, go, reads는 모두 일반동사예요."
+  },
+  {
+    prompt: "be동사가 쓰인 문장은?",
+    targetType: "be",
+    correctIndex: 0,
+    choices: [
+      { text: "I am in the library now.", verbType: "be", verb: "am" },
+      { text: "She teaches math at school.", verbType: "general", verb: "teaches" },
+      { text: "They swim in the pool.", verbType: "general", verb: "swim" },
+      { text: "He walks to school every day.", verbType: "general", verb: "walks" }
+    ],
+    explanation: "<b>am</b>은 be동사예요. 주어가 I일 때는 반드시 am을 써요. teaches, swim, walks는 모두 일반동사예요."
+  },
+  {
+    prompt: "일반동사 have / has가 쓰인 문장은?",
+    targetType: "general",
+    correctIndex: 3,
+    choices: [
+      { text: "She is a kind person.", verbType: "be", verb: "is" },
+      { text: "They are good at soccer.", verbType: "be", verb: "are" },
+      { text: "You are very creative.", verbType: "be", verb: "are" },
+      { text: "He has two younger sisters.", verbType: "general", verb: "has" }
+    ],
+    explanation: "<b>has</b>는 일반동사예요. have(가지다)의 3인칭 단수 현재형이에요. be동사처럼 보일 수 있지만 have/has는 일반동사랍니다! is, are는 be동사예요."
+  }
+];
+
+let questions = [...allQuestions];
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let wrongItems = [];
+
+function startQuiz() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+
+  document.getElementById('q-num').textContent = `문제 ${currentQ + 1} / ${questions.length}`;
+  document.getElementById('q-score').textContent = `맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width = `${(currentQ / questions.length) * 100}%`;
+  document.getElementById('prompt-text').textContent = q.prompt;
+
+  // 선택지 렌더링
+  const area = document.getElementById('choices-area');
+  area.innerHTML = '';
+  const labels = ['①', '②', '③', '④'];
+  q.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `
+      <span class="choice-num">${labels[i]}</span>
+      <span class="choice-text">${choice.text}</span>
+    `;
+    btn.addEventListener('click', () => selectAnswer(i));
+    area.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('btn-next').className = 'btn-next';
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentQ];
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const isCorrect = (index === q.correctIndex);
+  const fb = document.getElementById('feedback');
+
+  if (isCorrect) {
+    score++;
+    btns[index].classList.add('correct');
+    const verb = q.choices[index].verb;
+    const type = q.choices[index].verbType;
+    fb.className = 'feedback correct-fb show';
+    fb.innerHTML = `<div class="fb-title">✅ 정답!</div><div class="fb-body">${q.explanation}</div>`;
+  } else {
+    btns[index].classList.add('wrong');
+    btns[q.correctIndex].classList.add('show-correct');
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `<div class="fb-title">❌ 아쉬워요!</div><div class="fb-body">정답은 <b>④번</b>이 아니에요. ${q.explanation}</div>`;
+    // 정확한 번호로 수정
+    const labels = ['①', '②', '③', '④'];
+    fb.querySelector('.fb-body').innerHTML = `정답은 <b>${labels[q.correctIndex]}번</b>이에요.<br><br>${q.explanation}`;
+    wrongItems.push({ q, userIndex: index });
+  }
+
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) showResult();
+  else loadQuestion();
+}
+
+function showResult() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const pct = score / questions.length;
+  let stars, msg;
+  if (pct === 1) {
+    stars = '⭐⭐⭐';
+    msg = '완벽해요! 👏👏👏<br>be동사와 일반동사가 있는 문장을 완벽하게 구분했어요!';
+  } else if (pct >= 0.7) {
+    stars = '⭐⭐';
+    msg = '잘했어요! 😊<br>조금만 더 연습하면 완벽해질 거예요!';
+  } else {
+    stars = '⭐';
+    msg = '괜찮아요! 💪<br>틀린 문제를 다시 보고 한 번 더 도전해봐요!';
+  }
+
+  document.getElementById('stars-display').textContent = stars;
+  document.getElementById('result-score').textContent = `${score}점`;
+  document.getElementById('result-total').textContent = `${questions.length}문제 중 ${score}문제 정답`;
+  document.getElementById('result-msg').innerHTML = msg;
+
+  if (wrongItems.length > 0) {
+    document.getElementById('wrong-review').style.display = 'block';
+    document.getElementById('btn-retry-wrong').style.display = 'block';
+    const labels = ['①', '②', '③', '④'];
+    document.getElementById('wrong-list').innerHTML = wrongItems.map(item => {
+      const correctSentence = item.q.choices[item.q.correctIndex].text;
+      const correctVerb = item.q.choices[item.q.correctIndex].verb;
+      const correctType = item.q.choices[item.q.correctIndex].verbType === 'be' ? 'be동사' : '일반동사';
+      return `<div class="wrong-item">
+        <div class="prompt-text">Q. ${item.q.prompt}</div>
+        <div class="correct-text">✅ 정답: ${labels[item.q.correctIndex]} "${correctSentence}"</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">→ <b>${correctVerb}</b> (${correctType})</div>
+      </div>`;
+    }).join('');
+  } else {
+    document.getElementById('btn-retry-wrong').style.display = 'none';
+  }
+}
+
+function retryWrong() {
+  const wrongQuestions = wrongItems.map(item => item.q);
+  questions = wrongQuestions;
+  currentQ = 0; score = 0; answered = false; wrongItems = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+
+function resetQuiz() {
+  questions = [...allQuestions];
+  currentQ = 0; score = 0; answered = false; wrongItems = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+</script>
+</body>
+</html>

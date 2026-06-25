@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GQ-L3-A | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  :root {
+    --sky:#4BA3E3;--sky-light:#E8F4FD;--sky-dark:#2980C4;
+    --mint:#3DBFA0;--mint-light:#E6F7F4;
+    --coral:#F0614A;--coral-light:#FEF0EE;
+    --green:#2E9E5B;--green-light:#E8F7EF;--green-dark:#1E7A44;
+    --bg:#F7FBFF;--card:#FFFFFF;--text:#1A2A3A;--muted:#7A8FA0;--border:#D6E8F5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  header{width:100%;background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);color:white;padding:18px 24px 14px;text-align:center;}
+  header .brand{font-size:11px;letter-spacing:1.5px;opacity:.8;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;}
+  header h1{font-size:22px;font-weight:900;}
+  header .subtitle{font-size:13px;opacity:.85;margin-top:3px;font-family:'Noto Sans KR',sans-serif;}
+  header .code-tag{font-size:10px;opacity:.55;margin-top:4px;letter-spacing:1px;}
+  .progress-wrap{width:100%;max-width:640px;padding:16px 20px 0;}
+  .progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+  .progress-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--mint));border-radius:99px;transition:width .4s ease;}
+  main{width:100%;max-width:640px;padding:16px 20px 32px;flex:1;}
+  .card{background:var(--card);border-radius:20px;border:1.5px solid var(--border);padding:28px 24px 24px;box-shadow:0 4px 20px rgba(46,158,91,.08);}
+  .q-type{background:var(--green-light);border:1.5px solid var(--green);border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:13px;font-weight:700;color:var(--green-dark);font-family:'Noto Sans KR',sans-serif;text-align:center;}
+  .transform-box{background:var(--green-light);border-radius:14px;padding:16px 18px;margin-bottom:20px;}
+  .transform-label{font-size:11px;font-weight:700;color:var(--green-dark);letter-spacing:.5px;margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;}
+  .transform-sentence{font-size:20px;font-weight:800;color:var(--text);margin-bottom:10px;line-height:1.5;}
+  .transform-arrow{font-size:13px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;font-weight:600;}
+  .transform-result{font-size:20px;font-weight:800;color:var(--green-dark);line-height:1.6;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .blank-word{display:inline-block;min-width:70px;height:32px;border:none;border-bottom:3px solid var(--green);text-align:center;font-size:18px;font-weight:800;color:var(--green);font-family:'Nunito',sans-serif;vertical-align:bottom;}
+  .choices-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .choices-4{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .choice-btn{background:white;border:2px solid var(--border);border-radius:14px;padding:14px 18px;text-align:center;cursor:pointer;transition:all .15s;font-size:17px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--text);}
+  .choice-btn:hover:not(:disabled){border-color:var(--green);background:var(--green-light);transform:translateY(-2px);}
+  .choice-btn:disabled{cursor:not-allowed;}
+  .choices-4 .choice-btn{text-align:left;display:flex;align-items:center;gap:12px;font-size:15px;}
+  .choice-num{width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.correct .choice-num{background:var(--mint);color:white;}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-light);}
+  .choice-btn.wrong .choice-num{background:var(--coral);color:white;}
+  .choice-btn.show-correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.show-correct .choice-num{background:var(--mint);color:white;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .feedback{border-radius:14px;padding:14px 18px;margin-bottom:16px;display:none;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+  .feedback.show{display:block;animation:fadeIn .25s ease;}
+  .feedback.correct-fb{background:var(--mint-light);border:1.5px solid var(--mint);}
+  .feedback.wrong-fb{background:var(--coral-light);border:1.5px solid var(--coral);}
+  .feedback .fb-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .feedback .fb-body{font-size:13px;color:var(--text);line-height:1.7;}
+  .feedback .fb-body b{font-weight:700;}
+  .rule-tag{display:inline-block;background:var(--green-light);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--green-dark);margin:4px 0;font-family:'Noto Sans KR',sans-serif;}
+  .btn-next{width:100%;background:linear-gradient(135deg,var(--green),var(--green-dark));color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 12px rgba(46,158,91,.35);}
+  .btn-next.show{display:block;animation:fadeIn .25s ease;}
+  .btn-next:hover{transform:translateY(-2px);}
+  #start-screen{width:100%;max-width:640px;padding:20px;}
+  .start-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(46,158,91,.1);}
+  .set-badge{display:inline-block;background:var(--green);color:white;font-size:13px;font-weight:800;padding:4px 16px;border-radius:99px;margin-bottom:16px;font-family:'Noto Sans KR',sans-serif;}
+  .start-title{font-size:26px;font-weight:900;margin-bottom:8px;}
+  .start-sub{font-size:14px;color:var(--muted);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+  .rule-box{background:var(--green-light);border:1.5px solid var(--green);border-radius:14px;padding:16px 18px;margin-bottom:20px;text-align:left;}
+  .rule-box h3{font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:12px;font-family:'Noto Sans KR',sans-serif;}
+  .rule-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .rule-table th{color:var(--muted);font-weight:700;padding:4px 8px;text-align:left;font-family:'Noto Sans KR',sans-serif;border-bottom:1px solid #A8D8B8;}
+  .rule-table td{padding:7px 8px;border-bottom:1px solid #A8D8B8;font-weight:700;font-family:'Nunito',sans-serif;}
+  .rule-table tr:last-child td{border-bottom:none;}
+  .rule-table .subj-col{color:var(--sky-dark);}
+  .rule-table .form-col{color:var(--green-dark);}
+  .rule-table .ex-col{color:var(--muted);font-size:12px;font-family:'Noto Sans KR',sans-serif;}
+  .important-note{margin-top:12px;padding:10px 12px;background:white;border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;color:var(--green-dark);font-weight:700;line-height:1.6;}
+  .how-to{text-align:left;background:var(--sky-light);border-radius:14px;padding:16px 18px;margin-bottom:28px;}
+  .how-to h3{font-size:13px;font-weight:700;color:var(--sky-dark);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .how-to ol{padding-left:18px;}
+  .how-to li{font-size:13px;color:var(--text);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;line-height:1.5;}
+  .how-to li b{color:var(--sky-dark);}
+  .btn-start{width:100%;background:linear-gradient(135deg,var(--green),var(--green-dark));color:white;border:none;border-radius:14px;padding:18px;font-size:18px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 16px rgba(46,158,91,.4);}
+  .btn-start:hover{transform:translateY(-2px);}
+  #result-screen{display:none;padding:20px;max-width:640px;width:100%;}
+  .result-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(46,158,91,.1);}
+  .stars{font-size:40px;margin-bottom:12px;letter-spacing:4px;}
+  .result-score{font-size:52px;font-weight:900;color:var(--green);line-height:1;margin-bottom:4px;}
+  .result-total{font-size:14px;color:var(--muted);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;}
+  .result-msg{font-size:16px;font-weight:700;margin-bottom:24px;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+  .wrong-review{text-align:left;background:var(--coral-light);border-radius:14px;padding:16px 18px;margin-bottom:24px;}
+  .wrong-review h3{font-size:13px;font-weight:700;color:var(--coral);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .wrong-item{font-size:13px;margin-bottom:10px;line-height:1.7;font-family:'Noto Sans KR',sans-serif;padding-bottom:10px;border-bottom:1px dashed #f5c0b8;}
+  .wrong-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .wrong-item .wi-orig{color:var(--muted);font-size:12px;}
+  .wrong-item .wi-ans{color:var(--green-dark);font-weight:600;}
+  .retry-buttons{display:flex;flex-direction:column;gap:10px;}
+  .btn-retry{width:100%;background:linear-gradient(135deg,var(--green),var(--green-dark));color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 12px rgba(46,158,91,.35);}
+  .btn-retry:hover{transform:translateY(-2px);}
+  .btn-retry-wrong{width:100%;background:white;color:var(--coral);border:2px solid var(--coral);border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s;}
+  .btn-retry-wrong:hover{background:var(--coral-light);transform:translateY(-2px);}
+  .btn-retry-wrong .ko{font-size:12px;font-weight:600;font-family:'Noto Sans KR',sans-serif;display:block;margin-top:2px;opacity:.8;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>의문문편 · 3단계 · A형</h1>
+  <div class="subtitle">일반동사 현재 의문문 만들기 · Do / Does</div>
+  <div class="code-tag">GQ-L3-A</div>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="set-badge">의문문편 · 3단계 · A형</div>
+    <div class="start-title">Do / Does 의문문! ❓</div>
+    <div class="start-sub">이번엔 일반동사 의문문이에요!<br>be동사와 달리 <b>Do / Does</b>를 문장 앞에 붙여요.<br><span style="font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;">현재 시제 · 10문제 | GQ-L3-A</span></div>
+    <div class="rule-box">
+      <h3>📖 핵심 규칙 — 일반동사 현재 의문문</h3>
+      <table class="rule-table">
+        <tr><th>주어</th><th>의문문 형태</th><th>예시</th></tr>
+        <tr><td class="subj-col">I / You / We / They</td><td class="form-col">Do + 주어 + 동사원형 ~?</td><td class="ex-col">Do you like cats?</td></tr>
+        <tr><td class="subj-col">He / She / It (3인칭 단수)</td><td class="form-col">Does + 주어 + 동사원형 ~?</td><td class="ex-col">Does she like cats?</td></tr>
+      </table>
+      <div class="important-note">⚠️ Does를 쓰면 동사는 반드시 <b>원형</b>으로 바꿔요!<br>She likes cats. → Does she <b>like</b> cats? (likes ❌)</div>
+    </div>
+    <div class="how-to">
+      <h3>📋 이렇게 해요</h3>
+      <ol>
+        <li>주어가 <b>3인칭 단수(He/She/It 등)</b>이면 Does, 나머지는 Do를 써요.</li>
+        <li>Does를 쓸 때는 동사를 <b>원형</b>으로 바꿔요.</li>
+        <li>빈칸에 알맞은 말을 골라요.</li>
+      </ol>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">시작하기 🚀</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none;width:100%;max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <main>
+    <div class="card">
+      <div class="q-type" id="q-type-text"></div>
+      <div class="transform-box" id="transform-box">
+        <div class="transform-label">📝 평서문</div>
+        <div class="transform-sentence" id="original-sentence"></div>
+        <div class="transform-arrow">↓ 의문문으로 바꾸면?</div>
+        <div class="transform-result" id="result-sentence"></div>
+      </div>
+      <div id="choices-area"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </main>
+</div>
+
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">❌ 틀린 문제만 다시 풀기<span class="ko">오답만 골라서 다시 도전해요!</span></button>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const allQuestions=[
+  {qType:'이지선다',qLabel:'빈칸에 알맞은 말을 고르세요.',original:'You like cats very much.',resultParts:['___','you','like','cats','very','much','?'],blankIdx:0,choices:['Do','Does'],correct:0,answer:'Do you like cats very much?',explanation:"주어 <b>You</b> → <b>Do</b> you like cats very much?",rule:"I / You / We / They → Do ~?"},
+  {qType:'이지선다',qLabel:'빈칸에 알맞은 말을 고르세요.',original:'She likes chocolate.',resultParts:['___','she','like','chocolate','?'],blankIdx:0,choices:['Do','Does'],correct:1,answer:'Does she like chocolate?',explanation:"주어 <b>She</b>는 3인칭 단수 → <b>Does</b> she like chocolate? (likes → like로 바꿔요!)",rule:"He / She / It → Does ~? (동사 원형!)"},
+  {qType:'이지선다',qLabel:'빈칸에 알맞은 말을 고르세요.',original:'They play soccer after school.',resultParts:['___','they','play','soccer','after','school','?'],blankIdx:0,choices:['Do','Does'],correct:0,answer:'Do they play soccer after school?',explanation:"주어 <b>They</b> → <b>Do</b> they play soccer after school?",rule:"They → Do ~?"},
+  {qType:'이지선다',qLabel:'빈칸에 알맞은 말을 고르세요.',original:'He studies English every day.',resultParts:['___','he','study','English','every','day','?'],blankIdx:0,choices:['Do','Does'],correct:1,answer:'Does he study English every day?',explanation:"주어 <b>He</b>는 3인칭 단수 → <b>Does</b> he study English every day? (studies → study로 바꿔요!)",rule:"He → Does ~? (동사 원형!)"},
+  {qType:'이지선다',qLabel:'빈칸에 알맞은 말을 고르세요.',original:'We have lunch together.',resultParts:['___','we','have','lunch','together','?'],blankIdx:0,choices:['Do','Does'],correct:0,answer:'Do we have lunch together?',explanation:"주어 <b>We</b> → <b>Do</b> we have lunch together?",rule:"We → Do ~?"},
+  {qType:'이지선다',qLabel:'빈칸에 알맞은 말을 고르세요.',original:'Your mom goes to work by bus.',resultParts:['___','your','mom','go','to','work','by','bus','?'],blankIdx:0,choices:['Do','Does'],correct:1,answer:'Does your mom go to work by bus?',explanation:"주어 <b>Your mom</b>은 3인칭 단수 → <b>Does</b> your mom go to work by bus? (goes → go로 바꿔요!)",rule:"단수 명사 → Does ~? (동사 원형!)"},
+  {qType:'사지선다',qLabel:'다음을 의문문으로 바꾼 것으로 알맞은 것은?',original:'Tom likes pizza.',choices:['Does Tom likes pizza?','Do Tom like pizza?','Does Tom like pizza?','Is Tom like pizza?'],correct:2,answer:'Does Tom like pizza?',explanation:"주어 <b>Tom</b>은 3인칭 단수 → Does를 써요. 이때 <b>likes → like</b>로 원형으로 바꿔야 해요!",rule:"Does ~? → 동사 반드시 원형!"},
+  {qType:'사지선다',qLabel:'다음 중 <b>어법상 옳은</b> 의문문은?',original:null,choices:['Does you like music?','Do she reads books?','Do your friends play games?','Does they go to school?'],correct:2,answer:'Do your friends play games?',explanation:"① you → Do ② She → Does + read ④ they → Do로 고쳐야 해요.<br>③ <b>your friends</b>는 복수 → Do your friends play games? ✅",rule:"복수 주어 → Do ~?"},
+  {qType:'사지선다',qLabel:'다음 중 <b>어법상 틀린</b> 의문문은?',original:null,choices:['Do you know her name?','Does he eat breakfast every day?','Does she goes to school by bike?','Do they live near here?'],correct:2,answer:'Does she go to school by bike?',explanation:"③ Does를 썼으면 동사는 원형 → <b>goes → go</b>로 고쳐야 해요. Does she <b>go</b> to school by bike?",rule:"Does + 동사원형 (goes ❌ → go ✅)"},
+  {qType:'사지선다',qLabel:'빈칸에 알맞은 것은?\n\nA: ___ your sister like K-pop?\nB: Yes, she does.',original:null,choices:['Is','Are','Do','Does'],correct:3,answer:'Does your sister like K-pop?',explanation:"주어 <b>your sister</b>는 3인칭 단수 → <b>Does</b>를 써요. 대답 Yes, she does.에서도 Does임을 확인할 수 있어요.",rule:"단수 명사 → Does ~?"}
+];
+
+let questions=[...allQuestions],currentQ=0,score=0,wrongItems=[];
+
+function startQuiz(){document.getElementById('start-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+
+function loadQuestion(){
+  const q=questions[currentQ];
+  document.getElementById('q-num').textContent=`문제 ${currentQ+1} / ${questions.length}`;
+  document.getElementById('q-score').textContent=`맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width=`${(currentQ/questions.length)*100}%`;
+  document.getElementById('q-type-text').innerHTML=q.qLabel.replace(/\n/g,'<br>');
+  const tbox=document.getElementById('transform-box');
+  tbox.style.display=q.original?'block':'none';
+  if(q.original){
+    document.getElementById('original-sentence').textContent=q.original;
+    const resultEl=document.getElementById('result-sentence');resultEl.innerHTML='';
+    if(q.qType==='이지선다'&&q.resultParts){
+      q.resultParts.forEach((part,i)=>{
+        if(i===q.blankIdx){const blank=document.createElement('span');blank.className='blank-word';blank.id='blank-display';resultEl.appendChild(blank);}
+        else{const span=document.createElement('span');span.textContent=part;resultEl.appendChild(span);}
+      });
+    } else {
+      resultEl.innerHTML=`<span style="color:var(--muted);font-size:15px;font-family:'Noto Sans KR',sans-serif;">아래에서 알맞은 의문문을 고르세요.</span>`;
+    }
+  }
+  const area=document.getElementById('choices-area');area.innerHTML='';
+  if(q.qType==='이지선다'){
+    const grid=document.createElement('div');grid.className='choices-2';
+    q.choices.forEach((c,i)=>{const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=c;btn.addEventListener('click',()=>selectAnswer(i,btn,grid,q));grid.appendChild(btn);});
+    area.appendChild(grid);
+  } else {
+    const col=document.createElement('div');col.className='choices-4';
+    const labels=['①','②','③','④'];
+    q.choices.forEach((c,i)=>{const btn=document.createElement('button');btn.className='choice-btn';btn.innerHTML=`<span class="choice-num">${labels[i]}</span><span>${c}</span>`;btn.addEventListener('click',()=>selectAnswer(i,btn,col,q));col.appendChild(btn);});
+    area.appendChild(col);
+  }
+  document.getElementById('feedback').className='feedback';document.getElementById('feedback').innerHTML='';document.getElementById('btn-next').className='btn-next';
+}
+
+function selectAnswer(index,btn,container,q){
+  const btns=container.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);
+  const isCorrect=(index===q.correct);const fb=document.getElementById('feedback');
+  if(q.qType==='이지선다'){const blankEl=document.getElementById('blank-display');if(blankEl){blankEl.textContent=q.choices[index];blankEl.style.color=isCorrect?'var(--mint)':'var(--coral)';blankEl.style.borderBottomColor=isCorrect?'var(--mint)':'var(--coral)';}}
+  if(isCorrect){
+    score++;btn.classList.add('correct');
+    if(q.qType==='사지선다'){btn.querySelector('.choice-num').style.background='var(--mint)';btn.querySelector('.choice-num').style.color='white';}
+    fb.className='feedback correct-fb show';fb.innerHTML=`<div class="fb-title">✅ 정답!</div><div class="fb-body">${q.explanation}<br><span class="rule-tag">📌 ${q.rule}</span></div>`;
+  } else {
+    btn.classList.add('wrong');
+    if(q.qType==='사지선다'){btn.querySelector('.choice-num').style.background='var(--coral)';btn.querySelector('.choice-num').style.color='white';btns[q.correct].classList.add('show-correct');btns[q.correct].querySelector('.choice-num').style.background='var(--mint)';btns[q.correct].querySelector('.choice-num').style.color='white';}
+    else{btns[q.correct].classList.add('show-correct');}
+    fb.className='feedback wrong-fb show';fb.innerHTML=`<div class="fb-title">❌ 다시 생각해봐요!</div><div class="fb-body">정답: <b>${q.answer}</b><br><br>${q.explanation}<br><span class="rule-tag">📌 ${q.rule}</span></div>`;
+    wrongItems.push({q});
+  }
+  document.getElementById('btn-next').className='btn-next show';
+}
+
+function nextQuestion(){currentQ++;if(currentQ>=questions.length)showResult();else loadQuestion();}
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';
+  const pct=score/questions.length;let stars,msg;
+  if(pct===1){stars='⭐⭐⭐';msg='완벽해요! 👏👏👏<br>Do/Does 의문문을 완벽하게 만들었어요!';}
+  else if(pct>=.7){stars='⭐⭐';msg='잘했어요! 😊<br>Does 뒤에는 반드시 동사 원형인지 다시 확인해봐요!';}
+  else{stars='⭐';msg='괜찮아요! 💪<br>3인칭 단수→Does, 나머지→Do! 동사는 항상 원형으로 써요!';}
+  document.getElementById('stars-display').textContent=stars;document.getElementById('result-score').textContent=`${score}점`;
+  document.getElementById('result-total').textContent=`${questions.length}문제 중 ${score}문제 정답`;document.getElementById('result-msg').innerHTML=msg;
+  if(wrongItems.length>0){
+    document.getElementById('wrong-review').style.display='block';document.getElementById('btn-retry-wrong').style.display='block';
+    document.getElementById('wrong-list').innerHTML=wrongItems.map(item=>`<div class="wrong-item"><div class="wi-orig">${item.q.original?'평서문: '+item.q.original:''}</div><div class="wi-ans">✅ 의문문: ${item.q.answer}</div></div>`).join('');
+  } else{document.getElementById('btn-retry-wrong').style.display='none';}
+}
+function retryWrong(){questions=wrongItems.map(i=>i.q);currentQ=0;score=0;wrongItems=[];document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+function resetQuiz(){questions=[...allQuestions];currentQ=0;score=0;wrongItems=[];document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+</script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GV-L1-E | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  :root {
+    --sky:#4BA3E3;--sky-light:#E8F4FD;--sky-dark:#2980C4;
+    --mint:#3DBFA0;--mint-light:#E6F7F4;
+    --sun:#F5A623;--sun-light:#FEF6E7;
+    --coral:#F0614A;--coral-light:#FEF0EE;
+    --teal:#1A8FA0;--teal-light:#E6F5F7;--teal-dark:#136E7C;
+    --bg:#F7FBFF;--card:#FFFFFF;--text:#1A2A3A;--muted:#7A8FA0;--border:#D6E8F5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+  header{width:100%;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:white;padding:18px 24px 14px;text-align:center;}
+  header .brand{font-size:11px;letter-spacing:1.5px;opacity:.8;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;}
+  header h1{font-size:22px;font-weight:900;}
+  header .subtitle{font-size:13px;opacity:.85;margin-top:3px;font-family:'Noto Sans KR',sans-serif;}
+  header .code-tag{font-size:10px;opacity:.55;margin-top:4px;letter-spacing:1px;}
+
+  .progress-wrap{width:100%;max-width:640px;padding:16px 20px 0;}
+  .progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+  .progress-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--mint));border-radius:99px;transition:width .4s ease;}
+
+  main{width:100%;max-width:640px;padding:16px 20px 32px;flex:1;}
+  .card{background:var(--card);border-radius:20px;border:1.5px solid var(--border);padding:28px 24px 24px;box-shadow:0 4px 20px rgba(26,143,160,.08);}
+
+  /* 동사 힌트 배지 */
+  .verb-hint{
+    background:var(--teal-light);border:1.5px solid var(--teal);
+    border-radius:12px;padding:12px 16px;margin-bottom:18px;
+    text-align:center;font-family:'Noto Sans KR',sans-serif;
+  }
+  .verb-hint .hint-label{font-size:11px;color:var(--teal-dark);font-weight:700;margin-bottom:4px;letter-spacing:.5px;}
+  .verb-hint .hint-verb{font-size:24px;font-weight:900;color:var(--teal);font-family:'Nunito',sans-serif;letter-spacing:.5px;}
+  .verb-hint .hint-note{font-size:12px;color:var(--teal-dark);margin-top:4px;font-weight:600;}
+
+  /* 문장 (빈칸이 앞에) */
+  .sentence-area{margin-bottom:24px;}
+  .sentence-label{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .sentence{font-size:21px;font-weight:800;line-height:1.7;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;}
+  .blank{display:inline-block;min-width:100px;height:28px;border:none;border-bottom:3px solid var(--teal);vertical-align:bottom;text-align:center;font-style:normal;font-size:18px;font-weight:800;color:var(--teal);padding:0 8px;}
+  .verb-highlight{background:var(--teal-light);border-radius:6px;padding:2px 6px;color:var(--teal-dark);font-weight:900;border:1px solid var(--teal);}
+
+  /* 선택지 — 4개 주어 */
+  .choices-4{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+  .choice-btn{background:white;border:2px solid var(--border);border-radius:14px;padding:14px 18px;text-align:left;cursor:pointer;transition:all .15s ease;font-size:16px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--text);display:flex;align-items:center;gap:12px;}
+  .choice-btn:hover:not(:disabled){border-color:var(--teal);background:var(--teal-light);transform:translateX(4px);}
+  .choice-btn:disabled{cursor:not-allowed;}
+  .choice-num{width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-light);animation:pop .3s ease;}
+  .choice-btn.correct .choice-num{background:var(--mint);color:white;}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-light);animation:shake .3s ease;}
+  .choice-btn.wrong .choice-num{background:var(--coral);color:white;}
+  .choice-btn.show-correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.show-correct .choice-num{background:var(--mint);color:white;}
+
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+  .feedback{border-radius:14px;padding:14px 18px;margin-bottom:16px;display:none;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+  .feedback.show{display:block;animation:fadeIn .25s ease;}
+  .feedback.correct-fb{background:var(--mint-light);border:1.5px solid var(--mint);}
+  .feedback.wrong-fb{background:var(--coral-light);border:1.5px solid var(--coral);}
+  .feedback .fb-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .feedback .fb-body{font-size:13px;color:var(--text);line-height:1.7;}
+  .feedback .fb-body b{font-weight:700;}
+  .verb-box{display:inline-flex;align-items:center;gap:6px;background:var(--teal-light);border-radius:8px;padding:3px 10px;font-size:12px;font-weight:700;color:var(--teal-dark);margin:4px 0;font-family:'Noto Sans KR',sans-serif;}
+
+  .btn-next{width:100%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito',sans-serif;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 12px rgba(26,143,160,.35);}
+  .btn-next.show{display:block;animation:fadeIn .25s ease;}
+  .btn-next:hover{transform:translateY(-2px);}
+
+  /* 시작 화면 */
+  #start-screen{width:100%;max-width:640px;padding:20px;}
+  .start-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(26,143,160,.1);}
+  .set-badge{display:inline-block;background:var(--teal);color:white;font-size:13px;font-weight:800;padding:4px 16px;border-radius:99px;margin-bottom:16px;font-family:'Noto Sans KR',sans-serif;}
+  .start-title{font-size:26px;font-weight:900;margin-bottom:8px;}
+  .start-sub{font-size:14px;color:var(--muted);margin-bottom:24px;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+
+  /* 역방향 설명 박스 */
+  .reverse-box{background:var(--teal-light);border:1.5px solid var(--teal);border-radius:14px;padding:16px 18px;margin-bottom:20px;text-align:left;}
+  .reverse-box h3{font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .reverse-box .example{background:white;border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:14px;}
+  .reverse-box .ex-sentence{font-weight:800;color:var(--text);margin-bottom:4px;}
+  .reverse-box .ex-arrow{font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;}
+  .reverse-box .ex-answer{font-size:13px;font-weight:700;color:var(--teal-dark);font-family:'Noto Sans KR',sans-serif;}
+
+  .how-to{text-align:left;background:var(--sky-light);border-radius:14px;padding:16px 18px;margin-bottom:28px;}
+  .how-to h3{font-size:13px;font-weight:700;color:var(--sky-dark);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .how-to ol{padding-left:18px;}
+  .how-to li{font-size:13px;color:var(--text);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;line-height:1.5;}
+  .how-to li b{color:var(--sky-dark);}
+
+  .btn-start{width:100%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;border:none;border-radius:14px;padding:18px;font-size:18px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 16px rgba(26,143,160,.4);}
+  .btn-start:hover{transform:translateY(-2px);}
+
+  /* 결과 화면 */
+  #result-screen{display:none;padding:20px;max-width:640px;width:100%;}
+  .result-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(26,143,160,.1);}
+  .stars{font-size:40px;margin-bottom:12px;letter-spacing:4px;}
+  .result-score{font-size:52px;font-weight:900;color:var(--teal);line-height:1;margin-bottom:4px;}
+  .result-total{font-size:14px;color:var(--muted);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;}
+  .result-msg{font-size:16px;font-weight:700;margin-bottom:24px;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+  .wrong-review{text-align:left;background:var(--coral-light);border-radius:14px;padding:16px 18px;margin-bottom:24px;}
+  .wrong-review h3{font-size:13px;font-weight:700;color:var(--coral);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .wrong-item{font-size:13px;margin-bottom:10px;line-height:1.7;font-family:'Noto Sans KR',sans-serif;padding-bottom:10px;border-bottom:1px dashed #f5c0b8;}
+  .wrong-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .wrong-item .sentence-text{font-weight:700;font-size:14px;margin-bottom:2px;}
+  .wrong-item .correct-text{color:var(--teal-dark);font-weight:600;}
+  .retry-buttons{display:flex;flex-direction:column;gap:10px;}
+  .btn-retry{width:100%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 12px rgba(26,143,160,.35);}
+  .btn-retry:hover{transform:translateY(-2px);}
+  .btn-retry-wrong{width:100%;background:white;color:var(--coral);border:2px solid var(--coral);border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s;}
+  .btn-retry-wrong:hover{background:var(--coral-light);transform:translateY(-2px);}
+  .btn-retry-wrong .ko{font-size:12px;font-weight:600;font-family:'Noto Sans KR',sans-serif;display:block;margin-top:2px;opacity:.8;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>동사편 · 1단계 · E형</h1>
+  <div class="subtitle">주어를 찾아라! · 동사로 주어 역추적 · 현재 시제</div>
+  <div class="code-tag">GV-L1-E</div>
+</header>
+
+<!-- 시작 화면 -->
+<div id="start-screen">
+  <div class="start-card">
+    <div class="set-badge">동사편 · 1단계 · E형</div>
+    <div class="start-title">주어를 찾아라! 🕵️</div>
+    <div class="start-sub">
+      이번엔 반대로! 동사를 보고<br>어떤 주어가 올 수 있는지 찾아봐요.<br>
+      <span style="font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;">현재 시제 · 10문제 &nbsp;|&nbsp; GV-L1-E</span>
+    </div>
+
+    <div class="reverse-box">
+      <h3>🔄 이렇게 생각해요!</h3>
+      <div class="example">
+        <div class="ex-sentence">___ <span style="color:var(--teal);border-bottom:2px solid var(--teal);">runs</span> every morning.</div>
+        <div class="ex-arrow">↓ runs = -(e)s가 붙어 있으니까 → 3인칭 단수 주어!</div>
+        <div class="ex-answer">✅ My dog (3인칭 단수) → My dog runs ⭕</div>
+      </div>
+      <div class="example">
+        <div class="ex-sentence">___ <span style="color:var(--teal);border-bottom:2px solid var(--teal);">play</span> soccer together.</div>
+        <div class="ex-arrow">↓ play = 원형 그대로 → 3인칭 단수가 아닌 주어!</div>
+        <div class="ex-answer">✅ We (복수) → We play ⭕ &nbsp;&nbsp; ❌ She (단수) → She plays ✗</div>
+      </div>
+    </div>
+
+    <div class="how-to">
+      <h3>📋 이렇게 해요</h3>
+      <ol>
+        <li>문장에서 <b style="color:var(--teal-dark);">동사(청록색)</b>를 먼저 봐요.</li>
+        <li>동사에 -(e)s가 붙어 있으면 → <b>3인칭 단수 주어</b>를 골라요.</li>
+        <li>동사가 원형 그대로면 → <b>3인칭 단수가 아닌 주어</b>를 골라요.</li>
+      </ol>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">시작하기 🚀</button>
+  </div>
+</div>
+
+<!-- 퀴즈 화면 -->
+<div id="quiz-screen" style="display:none;width:100%;max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <main>
+    <div class="card">
+      <div id="verb-hint-area"></div>
+      <div class="sentence-area">
+        <div class="sentence-label">빈칸에 알맞은 주어를 고르세요</div>
+        <div class="sentence" id="sentence-display"></div>
+      </div>
+      <div id="choices-area"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </main>
+</div>
+
+<!-- 결과 화면 -->
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">
+        ❌ 틀린 문제만 다시 풀기
+        <span class="ko">오답만 골라서 다시 도전해요!</span>
+      </button>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// parts: 문장 배열, blankIndex: 주어 빈칸 위치
+// verb: 강조할 동사, verbIndex: 동사 위치
+// verbType: 'singular'(3인칭단수형) | 'base'(원형)
+// verbNote: 동사 힌트 설명
+// choices: 주어 선택지 4개
+// correctIndex: 정답
+const allQuestions = [
+  // ── 동사 원형 → 3인칭 단수 아닌 주어 ──
+  {
+    parts: ['_', 'run', 'every', 'morning', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'run', verbType: 'base',
+    verbNote: 'run → 원형 그대로 → 3인칭 단수 주어 ❌',
+    choices: ['My dog', 'She', 'We', 'Tom'],
+    correctIndex: 2,
+    explanation: "<b>run</b>은 동사 원형이에요. 3인칭 단수 주어(My dog, She, Tom)가 오면 runs가 돼야 해요. 원형 그대로인 run에는 <b>We</b>(복수)가 와야 해요."
+  },
+  // ── 동사 -(e)s → 3인칭 단수 주어 ──
+  {
+    parts: ['_', 'likes', 'chocolate', 'very', 'much', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'likes', verbType: 'singular',
+    verbNote: 'likes → -s가 붙어 있어요 → 3인칭 단수 주어 ✅',
+    choices: ['I', 'They', 'My brother', 'We'],
+    correctIndex: 2,
+    explanation: "<b>likes</b>는 like에 -s가 붙은 3인칭 단수 현재형이에요. I, They, We에는 like를 쓰고, <b>My brother</b>(3인칭 단수)에만 likes를 써요."
+  },
+  {
+    parts: ['_', 'goes', 'to', 'school', 'by', 'bus', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'goes', verbType: 'singular',
+    verbNote: 'goes → go + es → 3인칭 단수 주어 ✅',
+    choices: ['You', 'My sister', 'They', 'My friends'],
+    correctIndex: 1,
+    explanation: "<b>goes</b>는 go의 3인칭 단수형이에요. You, They, My friends에는 go를 써요. <b>My sister</b>(3인칭 단수)에만 goes를 써요."
+  },
+  {
+    parts: ['_', 'play', 'soccer', 'after', 'school', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'play', verbType: 'base',
+    verbNote: 'play → 원형 그대로 → 3인칭 단수 주어 ❌',
+    choices: ['He', 'My cat', 'Tom and I', 'The dog'],
+    correctIndex: 2,
+    explanation: "<b>play</b>는 동사 원형이에요. He, My cat, The dog가 주어면 plays가 돼야 해요. <b>Tom and I</b>(복수)가 와야 play를 쓸 수 있어요."
+  },
+  {
+    parts: ['_', 'studies', 'hard', 'every', 'night', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'studies', verbType: 'singular',
+    verbNote: 'studies → study + ies → 3인칭 단수 주어 ✅',
+    choices: ['We', 'My classmates', 'Jane', 'They'],
+    correctIndex: 2,
+    explanation: "<b>studies</b>는 study의 3인칭 단수형(y→ies)이에요. We, My classmates, They에는 study를 써요. <b>Jane</b>(3인칭 단수)에만 studies를 써요."
+  },
+  {
+    parts: ['_', 'have', 'a', 'big', 'garden', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'have', verbType: 'base',
+    verbNote: 'have → 원형 → 3인칭 단수 주어는 has! ❌',
+    choices: ['She', 'He', 'My neighbor', 'My grandparents'],
+    correctIndex: 3,
+    explanation: "<b>have</b>는 동사 원형이에요. She, He, My neighbor가 주어면 has를 써야 해요. <b>My grandparents</b>(복수)가 와야 have를 쓸 수 있어요. have → has는 불규칙 변화예요!"
+  },
+  {
+    parts: ['_', 'watches', 'TV', 'every', 'evening', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'watches', verbType: 'singular',
+    verbNote: 'watches → watch + es → 3인칭 단수 주어 ✅',
+    choices: ['I', 'My little brother', 'You', 'We'],
+    correctIndex: 1,
+    explanation: "<b>watches</b>는 watch의 3인칭 단수형(-ch+es)이에요. I, You, We에는 watch를 써요. <b>My little brother</b>(3인칭 단수)에만 watches를 써요."
+  },
+  {
+    parts: ['_', 'eat', 'lunch', 'together', 'every', 'day', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'eat', verbType: 'base',
+    verbNote: 'eat → 원형 그대로 → 3인칭 단수 주어 ❌',
+    choices: ['The cat', 'My dog', 'My family', 'She'],
+    correctIndex: 2,
+    explanation: "<b>eat</b>은 동사 원형이에요. The cat, My dog, She가 주어면 eats가 돼야 해요. <b>My family</b>는 여러 명이라서 복수 취급을 해 eat을 써요."
+  },
+  {
+    parts: ['_', 'flies', 'south', 'every', 'winter', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'flies', verbType: 'singular',
+    verbNote: 'flies → fly + ies → 3인칭 단수 주어 ✅',
+    choices: ['Many birds', 'They', 'The bird', 'We'],
+    correctIndex: 2,
+    explanation: "<b>flies</b>는 fly의 3인칭 단수형(y→ies)이에요. Many birds, They, We에는 fly를 써요. <b>The bird</b>(3인칭 단수)에만 flies를 써요."
+  },
+  {
+    parts: ['_', 'teach', 'math', 'at', 'our', 'school', '.'],
+    blankIndex: 0, verbIndex: 1,
+    verb: 'teach', verbType: 'base',
+    verbNote: 'teach → 원형 → 3인칭 단수이면 teaches! ❌',
+    choices: ['Our teacher', 'Mr. Kim', 'Two teachers', 'She'],
+    correctIndex: 2,
+    explanation: "<b>teach</b>는 동사 원형이에요. Our teacher, Mr. Kim, She가 주어면 teaches가 돼야 해요. <b>Two teachers</b>(복수)가 와야 teach를 쓸 수 있어요."
+  }
+];
+
+let questions=[...allQuestions],currentQ=0,score=0,answered=false,wrongItems=[];
+
+function startQuiz(){
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  answered=false;
+  const q=questions[currentQ];
+  document.getElementById('q-num').textContent=`문제 ${currentQ+1} / ${questions.length}`;
+  document.getElementById('q-score').textContent=`맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width=`${(currentQ/questions.length)*100}%`;
+
+  // 동사 힌트 배지
+  const hintArea=document.getElementById('verb-hint-area');
+  const typeLabel=q.verbType==='singular'?'3인칭 단수형 (-(e)s 붙음)':'동사 원형 (그대로)';
+  const typeColor=q.verbType==='singular'?'var(--mint)':'var(--coral)';
+  hintArea.innerHTML=`
+    <div class="verb-hint">
+      <div class="hint-label">문장의 동사</div>
+      <div class="hint-verb">${q.verb}</div>
+      <div class="hint-note" style="color:${typeColor}">▶ ${typeLabel}</div>
+      <div class="hint-note" style="color:var(--muted);margin-top:2px;">${q.verbNote}</div>
+    </div>`;
+
+  // 문장 표시
+  const display=document.getElementById('sentence-display');
+  display.innerHTML='';
+  q.parts.forEach((word,i)=>{
+    if(word==='.'){
+      const dot=document.createElement('span');dot.textContent='.';dot.style.fontWeight='800';display.appendChild(dot);
+    } else if(i===q.blankIndex){
+      const blank=document.createElement('span');blank.className='blank';blank.textContent='';blank.id='blank-display';display.appendChild(blank);
+    } else if(i===q.verbIndex){
+      const span=document.createElement('span');span.textContent=word;span.className='verb-highlight';display.appendChild(span);
+    } else {
+      const span=document.createElement('span');span.textContent=word;display.appendChild(span);
+    }
+  });
+
+  // 선택지
+  const area=document.getElementById('choices-area');area.innerHTML='';
+  const col=document.createElement('div');col.className='choices-4';
+  const labels=['①','②','③','④'];
+  q.choices.forEach((choice,i)=>{
+    const btn=document.createElement('button');btn.className='choice-btn';
+    btn.innerHTML=`<span class="choice-num">${labels[i]}</span><span>${choice}</span>`;
+    btn.addEventListener('click',()=>selectAnswer(i));col.appendChild(btn);
+  });
+  area.appendChild(col);
+
+  document.getElementById('feedback').className='feedback';document.getElementById('feedback').innerHTML='';document.getElementById('btn-next').className='btn-next';
+}
+
+function selectAnswer(index){
+  if(answered)return;answered=true;
+  const q=questions[currentQ];const isCorrect=index===q.correctIndex;
+  const btns=document.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);
+
+  // 빈칸에 선택한 주어 채워넣기
+  const blankEl=document.getElementById('blank-display');
+  if(blankEl){
+    blankEl.textContent=q.choices[index];
+    blankEl.style.color=isCorrect?'var(--mint)':'var(--coral)';
+    blankEl.style.borderBottomColor=isCorrect?'var(--mint)':'var(--coral)';
+  }
+
+  const fb=document.getElementById('feedback');
+  const typeLabel=q.verbType==='singular'?'3인칭 단수형':'동사 원형';
+
+  if(isCorrect){
+    score++;btns[index].classList.add('correct');
+    fb.className='feedback correct-fb show';
+    fb.innerHTML=`<div class="fb-title">✅ 정답!</div>
+      <div class="fb-body"><span class="verb-box">동사 <b>${q.verb}</b> → ${typeLabel}</span><br>${q.explanation}</div>`;
+  } else {
+    btns[index].classList.add('wrong');btns[q.correctIndex].classList.add('show-correct');
+    btns[q.correctIndex].querySelector('.choice-num').style.background='var(--mint)';btns[q.correctIndex].querySelector('.choice-num').style.color='white';
+    fb.className='feedback wrong-fb show';
+    fb.innerHTML=`<div class="fb-title">❌ 다시 생각해봐요!</div>
+      <div class="fb-body"><span class="verb-box">동사 <b>${q.verb}</b> → ${typeLabel}</span><br>정답은 <b>${q.choices[q.correctIndex]}</b>이에요.<br><br>${q.explanation}</div>`;
+    wrongItems.push({q});
+  }
+  document.getElementById('btn-next').className='btn-next show';
+}
+
+function nextQuestion(){currentQ++;if(currentQ>=questions.length)showResult();else loadQuestion();}
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';document.getElementById('result-screen').style.display='block';
+  const pct=score/questions.length;let stars,msg;
+  if(pct===1){stars='⭐⭐⭐';msg='완벽해요! 👏👏👏<br>동사만 보고 주어를 완벽하게 찾아냈어요!';}
+  else if(pct>=.7){stars='⭐⭐';msg='잘했어요! 😊<br>동사 형태를 꼼꼼히 보면 더 잘할 수 있어요!';}
+  else{stars='⭐';msg='괜찮아요! 💪<br>동사에 -(e)s가 있으면 3인칭 단수, 원형이면 복수 주어예요!';}
+  document.getElementById('stars-display').textContent=stars;document.getElementById('result-score').textContent=`${score}점`;document.getElementById('result-total').textContent=`${questions.length}문제 중 ${score}문제 정답`;document.getElementById('result-msg').innerHTML=msg;
+  if(wrongItems.length>0){
+    document.getElementById('wrong-review').style.display='block';document.getElementById('btn-retry-wrong').style.display='block';
+    document.getElementById('wrong-list').innerHTML=wrongItems.map(item=>{
+      const sentence=item.q.parts.map((w,i)=>{
+        if(i===item.q.blankIndex)return`<b style="color:var(--teal-dark)">${item.q.choices[item.q.correctIndex]}</b>`;
+        if(i===item.q.verbIndex)return`<span style="color:var(--teal);font-weight:900">${w}</span>`;
+        return w;
+      }).join(' ');
+      return`<div class="wrong-item">
+        <div class="sentence-text">${sentence}</div>
+        <div class="correct-text">✅ 주어: ${item.q.choices[item.q.correctIndex]} (동사 ${item.q.verb} → ${item.q.verbType==='singular'?'3인칭 단수형':'원형'})</div>
+      </div>`;
+    }).join('');
+  } else{document.getElementById('btn-retry-wrong').style.display='none';}
+}
+
+function retryWrong(){questions=wrongItems.map(item=>item.q);currentQ=0;score=0;answered=false;wrongItems=[];document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+function resetQuiz(){questions=[...allQuestions];currentQ=0;score=0;answered=false;wrongItems=[];document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GQ-L1-C | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  :root {
+    --sky:#4BA3E3;--sky-light:#E8F4FD;--sky-dark:#2980C4;
+    --mint:#3DBFA0;--mint-light:#E6F7F4;
+    --coral:#F0614A;--coral-light:#FEF0EE;
+    --sun:#F5A623;--sun-light:#FEF6E7;
+    --teal:#1A8FA0;--teal-light:#E6F5F7;--teal-dark:#136E7C;
+    --red:#C0392B;--red-light:#FDECEA;--red-dark:#96281B;
+    --purple:#7C5CBF;--purple-light:#F0ECF9;--purple-dark:#5E40A0;
+    --bg:#F7FBFF;--card:#FFFFFF;--text:#1A2A3A;--muted:#7A8FA0;--border:#D6E8F5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+  header{width:100%;background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dark) 100%);color:white;padding:18px 24px 14px;text-align:center;}
+  header .brand{font-size:11px;letter-spacing:1.5px;opacity:.8;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;}
+  header h1{font-size:22px;font-weight:900;}
+  header .subtitle{font-size:13px;opacity:.85;margin-top:3px;font-family:'Noto Sans KR',sans-serif;}
+  header .code-tag{font-size:10px;opacity:.55;margin-top:4px;letter-spacing:1px;}
+
+  .progress-wrap{width:100%;max-width:640px;padding:16px 20px 0;}
+  .progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+  .progress-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--teal));border-radius:99px;transition:width .4s ease;}
+
+  main{width:100%;max-width:640px;padding:16px 20px 32px;flex:1;}
+  .card{background:var(--card);border-radius:20px;border:1.5px solid var(--border);padding:28px 24px 24px;box-shadow:0 4px 20px rgba(124,92,191,.08);}
+
+  /* 문제 유형 배지 */
+  .q-type-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+  .badge-q{background:var(--teal-light);color:var(--teal-dark);border:1.5px solid var(--teal);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+  .badge-n{background:var(--red-light);color:var(--red-dark);border:1.5px solid var(--red);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+  .badge-mix{background:var(--purple-light);color:var(--purple-dark);border:1.5px solid var(--purple);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+
+  /* 지시문 */
+  .q-instruction{font-size:15px;font-weight:800;color:var(--text);margin-bottom:16px;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+
+  /* 변환 박스 */
+  .transform-box{border-radius:14px;padding:16px 18px;margin-bottom:20px;}
+  .transform-box.q-box{background:var(--teal-light);border:1.5px solid var(--teal);}
+  .transform-box.n-box{background:var(--red-light);border:1.5px solid var(--red);}
+  .transform-box.plain{background:var(--sky-light);border:1.5px solid var(--sky);}
+  .transform-label{font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;}
+  .q-box .transform-label{color:var(--teal-dark);}
+  .n-box .transform-label{color:var(--red-dark);}
+  .plain .transform-label{color:var(--sky-dark);}
+  .transform-sentence{font-size:20px;font-weight:800;color:var(--text);margin-bottom:10px;line-height:1.5;}
+  .transform-arrow{font-size:13px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;margin-bottom:8px;font-weight:600;}
+  .transform-result{font-size:20px;font-weight:800;line-height:1.6;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .q-box .transform-result{color:var(--teal-dark);}
+  .n-box .transform-result{color:var(--red-dark);}
+  .blank-word{display:inline-block;min-width:80px;height:32px;border:none;text-align:center;font-size:18px;font-weight:800;font-family:'Nunito',sans-serif;vertical-align:bottom;}
+  .q-blank{border-bottom:3px solid var(--teal);color:var(--teal);}
+  .n-blank{border-bottom:3px solid var(--red);color:var(--red);}
+
+  /* 선택지 */
+  .choices-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .choices-4{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .choice-btn{background:white;border:2px solid var(--border);border-radius:14px;padding:14px 18px;text-align:center;cursor:pointer;transition:all .15s;font-size:16px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--text);}
+  .choice-btn:hover:not(:disabled){border-color:var(--purple);background:var(--purple-light);transform:translateY(-2px);}
+  .choice-btn:disabled{cursor:not-allowed;}
+  .choices-4 .choice-btn{text-align:left;display:flex;align-items:center;gap:12px;font-size:15px;}
+  .choice-num{width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--muted);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.correct .choice-num{background:var(--mint);color:white;}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-light);}
+  .choice-btn.wrong .choice-num{background:var(--coral);color:white;}
+  .choice-btn.show-correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.show-correct .choice-num{background:var(--mint);color:white;}
+
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+  .feedback{border-radius:14px;padding:14px 18px;margin-bottom:16px;display:none;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+  .feedback.show{display:block;animation:fadeIn .25s ease;}
+  .feedback.correct-fb{background:var(--mint-light);border:1.5px solid var(--mint);}
+  .feedback.wrong-fb{background:var(--coral-light);border:1.5px solid var(--coral);}
+  .feedback .fb-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .feedback .fb-body{font-size:13px;color:var(--text);line-height:1.7;}
+  .feedback .fb-body b{font-weight:700;}
+  .rule-tag{display:inline-block;background:var(--purple-light);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--purple-dark);margin:4px 0;font-family:'Noto Sans KR',sans-serif;}
+
+  .btn-next{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 12px rgba(124,92,191,.35);}
+  .btn-next.show{display:block;animation:fadeIn .25s ease;}
+  .btn-next:hover{transform:translateY(-2px);}
+
+  /* 시작 화면 */
+  #start-screen{width:100%;max-width:640px;padding:20px;}
+  .start-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(124,92,191,.1);}
+  .set-badge{display:inline-block;background:var(--purple);color:white;font-size:13px;font-weight:800;padding:4px 16px;border-radius:99px;margin-bottom:16px;font-family:'Noto Sans KR',sans-serif;}
+  .start-title{font-size:26px;font-weight:900;margin-bottom:8px;}
+  .start-sub{font-size:14px;color:var(--muted);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+
+  .level-notice{background:var(--sun-light);border:1.5px solid var(--sun);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;font-family:'Noto Sans KR',sans-serif;color:#8B6200;line-height:1.6;text-align:left;}
+  .level-notice b{font-weight:700;}
+
+  .review-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+  .review-card{border-radius:12px;padding:14px;text-align:center;}
+  .review-card.q-card{background:var(--teal-light);border:1.5px solid var(--teal);}
+  .review-card.n-card{background:var(--red-light);border:1.5px solid var(--red);}
+  .review-card .rc-title{font-size:12px;font-weight:700;margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;}
+  .q-card .rc-title{color:var(--teal-dark);}
+  .n-card .rc-title{color:var(--red-dark);}
+  .review-card .rc-rule{font-size:13px;font-weight:800;line-height:1.6;font-family:'Nunito',sans-serif;}
+  .q-card .rc-rule{color:var(--teal-dark);}
+  .n-card .rc-rule{color:var(--red-dark);}
+
+  .how-to{text-align:left;background:var(--sky-light);border-radius:14px;padding:16px 18px;margin-bottom:28px;}
+  .how-to h3{font-size:13px;font-weight:700;color:var(--sky-dark);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .how-to ol{padding-left:18px;}
+  .how-to li{font-size:13px;color:var(--text);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;line-height:1.5;}
+  .how-to li b{color:var(--sky-dark);}
+
+  .btn-start{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:white;border:none;border-radius:14px;padding:18px;font-size:18px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 16px rgba(124,92,191,.4);}
+  .btn-start:hover{transform:translateY(-2px);}
+
+  /* 결과 화면 */
+  #result-screen{display:none;padding:20px;max-width:640px;width:100%;}
+  .result-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(124,92,191,.1);}
+  .stars{font-size:40px;margin-bottom:12px;letter-spacing:4px;}
+  .result-score{font-size:52px;font-weight:900;color:var(--purple);line-height:1;margin-bottom:4px;}
+  .result-total{font-size:14px;color:var(--muted);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;}
+  .result-msg{font-size:16px;font-weight:700;margin-bottom:24px;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+  .wrong-review{text-align:left;background:var(--coral-light);border-radius:14px;padding:16px 18px;margin-bottom:24px;}
+  .wrong-review h3{font-size:13px;font-weight:700;color:var(--coral);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .wrong-item{font-size:13px;margin-bottom:10px;line-height:1.7;font-family:'Noto Sans KR',sans-serif;padding-bottom:10px;border-bottom:1px dashed #f5c0b8;}
+  .wrong-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .wrong-item .wi-type{font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;display:inline-block;margin-bottom:4px;}
+  .wi-type-q{background:var(--teal-light);color:var(--teal-dark);}
+  .wi-type-n{background:var(--red-light);color:var(--red-dark);}
+  .wrong-item .wi-orig{color:var(--muted);font-size:12px;}
+  .wrong-item .wi-ans{color:var(--purple-dark);font-weight:600;}
+  .retry-buttons{display:flex;flex-direction:column;gap:10px;}
+  .btn-retry{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:white;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 12px rgba(124,92,191,.35);}
+  .btn-retry:hover{transform:translateY(-2px);}
+  .btn-retry-wrong{width:100%;background:white;color:var(--coral);border:2px solid var(--coral);border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s;}
+  .btn-retry-wrong:hover{background:var(--coral-light);transform:translateY(-2px);}
+  .btn-retry-wrong .ko{font-size:12px;font-weight:600;font-family:'Noto Sans KR',sans-serif;display:block;margin-top:2px;opacity:.8;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>의문문편 · 1단계 · C형</h1>
+  <div class="subtitle">be동사 현재 의문문 + 부정문 혼합</div>
+  <div class="code-tag">GQ-L1-C</div>
+</header>
+
+<!-- 시작 화면 -->
+<div id="start-screen">
+  <div class="start-card">
+    <div class="set-badge">의문문편 · 1단계 · C형</div>
+    <div class="start-title">의문문 vs 부정문! ❓🚫</div>
+    <div class="start-sub">
+      의문문과 부정문이 함께 나와요.<br>
+      먼저 문제를 잘 읽고 어떤 형태를 만들어야 하는지 확인해요!<br>
+      <span style="font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;">현재 시제 · 10문제 &nbsp;|&nbsp; GQ-L1-C</span>
+    </div>
+
+    <div class="level-notice">
+      ⚠️ <b>C형은 의문문과 부정문이 섞여서 나와요!</b><br>
+      A형·B형을 먼저 풀고 도전하면 더 좋아요.
+    </div>
+
+    <div class="review-box">
+      <div class="review-card q-card">
+        <div class="rc-title">❓ 의문문</div>
+        <div class="rc-rule">Am I ~?<br>Is she ~?<br>Are they ~?</div>
+      </div>
+      <div class="review-card n-card">
+        <div class="rc-title">🚫 부정문</div>
+        <div class="rc-rule">I am not ~<br>She isn't ~<br>They aren't ~</div>
+      </div>
+    </div>
+
+    <div class="how-to">
+      <h3>📋 이렇게 해요</h3>
+      <ol>
+        <li>문제를 읽고 <b>의문문인지 부정문인지</b> 먼저 확인해요.</li>
+        <li>주어에 맞는 be동사 형태를 생각해요.</li>
+        <li>알맞은 답을 골라요.</li>
+      </ol>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">시작하기 🚀</button>
+  </div>
+</div>
+
+<!-- 퀴즈 화면 -->
+<div id="quiz-screen" style="display:none;width:100%;max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <main>
+    <div class="card">
+      <div class="q-type-row" id="badge-area"></div>
+      <div class="q-instruction" id="q-instruction"></div>
+      <div id="transform-area"></div>
+      <div id="choices-area"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </main>
+</div>
+
+<!-- 결과 화면 -->
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">
+        ❌ 틀린 문제만 다시 풀기
+        <span class="ko">오답만 골라서 다시 도전해요!</span>
+      </button>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// formType: 'Q'=의문문, 'N'=부정문, 'MIX'=혼합판단
+// qType: '이지선다'|'사지선다'
+const allQuestions = [
+  // ── 의문문 ──
+  {
+    formType:'Q', qType:'이지선다',
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The flowers are beautiful.',
+    resultParts:['___','the','flowers','beautiful','?'],
+    blankIdx:0,
+    choices:['Is','Are'],
+    correct:1,
+    answer:'Are the flowers beautiful?',
+    explanation:"주어 <b>The flowers</b>는 복수 → <b>Are</b> the flowers beautiful?",
+    rule:"복수 명사 → Are ~?"
+  },
+  {
+    formType:'Q', qType:'이지선다',
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'Your sister is a doctor.',
+    resultParts:['___','your','sister','a','doctor','?'],
+    blankIdx:0,
+    choices:['Is','Are'],
+    correct:0,
+    answer:'Is your sister a doctor?',
+    explanation:"주어 <b>Your sister</b>는 3인칭 단수 → <b>Is</b> your sister a doctor?",
+    rule:"단수 명사 → Is ~?"
+  },
+  // ── 부정문 ──
+  {
+    formType:'N', qType:'이지선다',
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The children are noisy.',
+    resultParts:['The','children','___','noisy','.'],
+    blankIdx:2,
+    choices:["aren't","isn't"],
+    correct:0,
+    answer:"The children aren't noisy.",
+    explanation:"주어 <b>The children</b>은 복수 → <b>aren't</b>(are not)",
+    rule:"복수 명사 → aren't"
+  },
+  {
+    formType:'N', qType:'이지선다',
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'My cat is very fat.',
+    resultParts:['My','cat','___','very','fat','.'],
+    blankIdx:2,
+    choices:["isn't","aren't"],
+    correct:0,
+    answer:"My cat isn't very fat.",
+    explanation:"주어 <b>My cat</b>은 3인칭 단수 → <b>isn't</b>(is not)",
+    rule:"단수 명사 → isn't"
+  },
+  // ── 의문문 사지선다 ──
+  {
+    formType:'Q', qType:'사지선다',
+    instruction:'다음을 <b>의문문</b>으로 바꾼 것으로 알맞은 것은?',
+    original:'Mike and Sue are classmates.',
+    resultParts:null,
+    choices:[
+      'Is Mike and Sue classmates?',
+      'Are Mike and Sue classmates?',
+      'Mike and Sue are classmates?',
+      'Does Mike and Sue classmates?'
+    ],
+    correct:1,
+    answer:'Are Mike and Sue classmates?',
+    explanation:"주어 <b>Mike and Sue</b>는 복수 → <b>Are</b> Mike and Sue classmates?",
+    rule:"A and B (복수) → Are ~?"
+  },
+  // ── 부정문 사지선다 ──
+  {
+    formType:'N', qType:'사지선다',
+    instruction:'다음을 <b>부정문</b>으로 바꾼 것으로 알맞은 것은?',
+    original:'I am late for school.',
+    resultParts:null,
+    choices:[
+      "I isn't late for school.",
+      "I not am late for school.",
+      'I am not late for school.',
+      "I aren't late for school."
+    ],
+    correct:2,
+    answer:'I am not late for school.',
+    explanation:"주어 <b>I</b>일 때는 <b>am not</b>이에요. am not은 줄임말이 없어요!",
+    rule:"I → am not"
+  },
+  // ── 혼합 판단 문제 ──
+  {
+    formType:'MIX', qType:'사지선다',
+    instruction:'빈칸에 알맞은 말은?',
+    original:null,
+    resultParts:null,
+    choices:[
+      'Is she happy?',
+      "She isn't happy.",
+      'Are she happy?',
+      "She not is happy."
+    ],
+    correct:0,
+    specialText:'She is happy. → <b>의문문</b>으로 바꾸면?',
+    answer:'Is she happy?',
+    explanation:"주어 <b>She</b>는 3인칭 단수 → be동사 Is를 앞으로 → <b>Is she happy?</b>",
+    rule:"She → Is ~? (의문문)"
+  },
+  {
+    formType:'MIX', qType:'사지선다',
+    instruction:'빈칸에 알맞은 말은?',
+    original:null,
+    resultParts:null,
+    choices:[
+      "Are they not friends?",
+      "They isn't friends.",
+      "They aren't friends.",
+      "Is they friends?"
+    ],
+    correct:2,
+    specialText:'They are friends. → <b>부정문</b>으로 바꾸면?',
+    answer:"They aren't friends.",
+    explanation:"주어 <b>They</b>는 복수 → <b>aren't</b>(are not) → <b>They aren't friends.</b>",
+    rule:"They → aren't (부정문)"
+  },
+  // ── 어법 오류 찾기 ──
+  {
+    formType:'MIX', qType:'사지선다',
+    instruction:'다음 중 <b>어법상 옳은</b> 문장은?',
+    original:null,
+    resultParts:null,
+    choices:[
+      'Is you happy?',
+      "She aren't my friend.",
+      'Are your parents at home?',
+      'Am he a student?'
+    ],
+    correct:2,
+    answer:'Are your parents at home?',
+    explanation:"① Is you → Are you ② She aren't → She isn't ④ Am he → Is he로 고쳐야 해요.",
+    rule:"복수 주어 → Are ~?"
+  },
+  {
+    formType:'MIX', qType:'사지선다',
+    instruction:'다음 중 <b>어법상 틀린</b> 문장은?',
+    original:null,
+    resultParts:null,
+    choices:[
+      'Is the sky blue?',
+      "We aren't ready yet.",
+      "I isn't hungry.",
+      'Are they good friends?'
+    ],
+    correct:2,
+    answer:"I am not hungry.",
+    explanation:"③ I isn't → <b>I am not</b>으로 고쳐야 해요. I에는 am을 쓰기 때문에 isn't를 쓸 수 없어요!",
+    rule:"I → am not (isn't ❌)"
+  }
+];
+
+let questions=[...allQuestions],currentQ=0,score=0,wrongItems=[];
+
+function startQuiz(){
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  const q=questions[currentQ];
+  document.getElementById('q-num').textContent=`문제 ${currentQ+1} / ${questions.length}`;
+  document.getElementById('q-score').textContent=`맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width=`${(currentQ/questions.length)*100}%`;
+
+  // 배지
+  const badgeArea=document.getElementById('badge-area');
+  if(q.formType==='Q') badgeArea.innerHTML=`<span class="badge-q">❓ 의문문</span>`;
+  else if(q.formType==='N') badgeArea.innerHTML=`<span class="badge-n">🚫 부정문</span>`;
+  else badgeArea.innerHTML=`<span class="badge-mix">🔀 혼합</span>`;
+
+  document.getElementById('q-instruction').innerHTML=q.instruction;
+
+  // 변환 박스
+  const transArea=document.getElementById('transform-area');
+  const boxClass=q.formType==='Q'?'q-box':q.formType==='N'?'n-box':'plain';
+  const arrowText=q.formType==='Q'?'↓ 의문문으로 바꾸면?':q.formType==='N'?'↓ 부정문으로 바꾸면?':'';
+  const blankClass=q.formType==='Q'?'q-blank':'n-blank';
+
+  if(q.specialText){
+    transArea.innerHTML=`<div class="transform-box ${boxClass}">
+      <div class="transform-label">📝 문장</div>
+      <div class="transform-sentence">${q.specialText}</div>
+    </div>`;
+  } else if(q.qType==='이지선다'&&q.resultParts){
+    let resultHtml='';
+    q.resultParts.forEach((part,i)=>{
+      if(i===q.blankIdx) resultHtml+=`<span class="blank-word ${blankClass}" id="blank-display"></span>`;
+      else resultHtml+=`<span>${part}</span>`;
+    });
+    transArea.innerHTML=`<div class="transform-box ${boxClass}">
+      <div class="transform-label">📝 평서문</div>
+      <div class="transform-sentence">${q.original}</div>
+      <div class="transform-arrow">${arrowText}</div>
+      <div class="transform-result">${resultHtml}</div>
+    </div>`;
+  } else if(q.original){
+    transArea.innerHTML=`<div class="transform-box ${boxClass}">
+      <div class="transform-label">📝 평서문</div>
+      <div class="transform-sentence">${q.original}</div>
+    </div>`;
+  } else {
+    transArea.innerHTML='';
+  }
+
+  // 선택지
+  const area=document.getElementById('choices-area');area.innerHTML='';
+  if(q.qType==='이지선다'){
+    const grid=document.createElement('div');grid.className='choices-2';
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=c;
+      btn.addEventListener('click',()=>selectAnswer(i,btn,grid,q));grid.appendChild(btn);
+    });
+    area.appendChild(grid);
+  } else {
+    const col=document.createElement('div');col.className='choices-4';
+    const labels=['①','②','③','④'];
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');btn.className='choice-btn';
+      btn.innerHTML=`<span class="choice-num">${labels[i]}</span><span>${c}</span>`;
+      btn.addEventListener('click',()=>selectAnswer(i,btn,col,q));col.appendChild(btn);
+    });
+    area.appendChild(col);
+  }
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('btn-next').className='btn-next';
+}
+
+function selectAnswer(index,btn,container,q){
+  const btns=container.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);
+  const isCorrect=(index===q.correct);
+  const fb=document.getElementById('feedback');
+
+  if(q.qType==='이지선다'){
+    const blankEl=document.getElementById('blank-display');
+    if(blankEl){
+      blankEl.textContent=q.choices[index];
+      blankEl.style.color=isCorrect?'var(--mint)':'var(--coral)';
+      blankEl.style.borderBottomColor=isCorrect?'var(--mint)':'var(--coral)';
+    }
+  }
+
+  if(isCorrect){
+    score++;btn.classList.add('correct');
+    if(q.qType==='사지선다'){btn.querySelector('.choice-num').style.background='var(--mint)';btn.querySelector('.choice-num').style.color='white';}
+    fb.className='feedback correct-fb show';
+    fb.innerHTML=`<div class="fb-title">✅ 정답!</div><div class="fb-body">${q.explanation}<br><span class="rule-tag">📌 ${q.rule}</span></div>`;
+  } else {
+    btn.classList.add('wrong');
+    if(q.qType==='사지선다'){btn.querySelector('.choice-num').style.background='var(--coral)';btn.querySelector('.choice-num').style.color='white';btns[q.correct].classList.add('show-correct');btns[q.correct].querySelector('.choice-num').style.background='var(--mint)';btns[q.correct].querySelector('.choice-num').style.color='white';}
+    else{btns[q.correct].classList.add('show-correct');}
+    fb.className='feedback wrong-fb show';
+    fb.innerHTML=`<div class="fb-title">❌ 다시 생각해봐요!</div><div class="fb-body">정답: <b>${q.answer}</b><br><br>${q.explanation}<br><span class="rule-tag">📌 ${q.rule}</span></div>`;
+    wrongItems.push({q});
+  }
+  document.getElementById('btn-next').className='btn-next show';
+}
+
+function nextQuestion(){currentQ++;if(currentQ>=questions.length)showResult();else loadQuestion();}
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const pct=score/questions.length;let stars,msg;
+  if(pct===1){stars='⭐⭐⭐';msg='완벽해요! 👏👏👏<br>의문문과 부정문을 완벽하게 구분했어요!';}
+  else if(pct>=.7){stars='⭐⭐';msg='잘했어요! 😊<br>의문문과 부정문의 형태 차이를 다시 확인해봐요!';}
+  else{stars='⭐';msg='괜찮아요! 💪<br>A형·B형을 다시 복습하고 도전해봐요!';}
+
+  document.getElementById('stars-display').textContent=stars;
+  document.getElementById('result-score').textContent=`${score}점`;
+  document.getElementById('result-total').textContent=`${questions.length}문제 중 ${score}문제 정답`;
+  document.getElementById('result-msg').innerHTML=msg;
+
+  if(wrongItems.length>0){
+    document.getElementById('wrong-review').style.display='block';
+    document.getElementById('btn-retry-wrong').style.display='block';
+    document.getElementById('wrong-list').innerHTML=wrongItems.map(item=>{
+      const typeLabel=item.q.formType==='Q'?'의문문':'부정문';
+      const typeCls=item.q.formType==='Q'?'wi-type-q':'wi-type-n';
+      return`<div class="wrong-item">
+        <span class="wi-type ${typeCls}">${typeLabel}</span>
+        <div class="wi-orig">${item.q.original?'평서문: '+item.q.original:''}</div>
+        <div class="wi-ans">✅ 정답: ${item.q.answer}</div>
+      </div>`;
+    }).join('');
+  } else{document.getElementById('btn-retry-wrong').style.display='none';}
+}
+
+function retryWrong(){questions=wrongItems.map(i=>i.q);currentQ=0;score=0;wrongItems=[];document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+function resetQuiz(){questions=[...allQuestions];currentQ=0;score=0;wrongItems=[];document.getElementById('result-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';loadQuestion();}
+</script>
+</body>
+</html>

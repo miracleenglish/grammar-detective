@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GV-L1-A | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --sky: #4BA3E3;
+    --sky-light: #E8F4FD;
+    --sky-dark: #2980C4;
+    --mint: #3DBFA0;
+    --mint-light: #E6F7F4;
+    --sun: #F5A623;
+    --sun-light: #FEF6E7;
+    --coral: #F0614A;
+    --coral-light: #FEF0EE;
+    --purple: #7C5CBF;
+    --purple-light: #F0ECF9;
+    --bg: #F7FBFF;
+    --card: #FFFFFF;
+    --text: #1A2A3A;
+    --muted: #7A8FA0;
+    --border: #D6E8F5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── HEADER ── */
+  header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-dark) 100%);
+    color: white;
+    padding: 18px 24px 14px;
+    text-align: center;
+  }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; }
+  header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; font-family: 'Noto Sans KR', sans-serif; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    width: 100%;
+    max-width: 640px;
+    padding: 16px 20px 0;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky), var(--mint));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── SCORE BADGE ── */
+  .score-row {
+    display: flex;
+    gap: 10px;
+    padding: 10px 20px 0;
+    width: 100%;
+    max-width: 640px;
+  }
+  .badge {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .badge span { color: var(--sky); }
+
+  /* ── MAIN CARD ── */
+  main {
+    width: 100%;
+    max-width: 640px;
+    padding: 16px 20px 32px;
+    flex: 1;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    padding: 28px 24px 24px;
+    box-shadow: 0 4px 20px rgba(75,163,227,0.08);
+  }
+
+  /* ── INSTRUCTION ── */
+  .instruction {
+    background: var(--sky-light);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--sky-dark);
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+  }
+  .instruction strong { font-weight: 700; }
+
+  /* ── SENTENCE ── */
+  .sentence-area {
+    margin-bottom: 24px;
+  }
+  .sentence-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .sentence {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.6;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .word {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.15s ease;
+    user-select: none;
+    display: inline-block;
+  }
+  .word:hover { background: var(--sky-light); border-color: var(--sky); }
+  .word.selected { background: var(--sun-light); border-color: var(--sun); color: #B87A00; }
+  .word.correct-be { background: #E8F4FD; border-color: var(--sky); color: var(--sky-dark); animation: pop 0.3s ease; }
+  .word.correct-general { background: var(--mint-light); border-color: var(--mint); color: #1A7A6A; animation: pop 0.3s ease; }
+  .word.wrong { background: var(--coral-light); border-color: var(--coral); color: var(--coral); animation: shake 0.3s ease; }
+  .word.non-verb { cursor: default; }
+  .word.non-verb:hover { background: transparent; border-color: transparent; }
+
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  /* ── VERB TYPE BUTTONS ── */
+  .verb-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .verb-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 16px 12px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .verb-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .verb-btn .ko { font-size: 11px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; opacity: 0.8; }
+
+  .btn-be {
+    background: var(--sky-light);
+    color: var(--sky-dark);
+    border: 2px solid var(--sky);
+  }
+  .btn-be:not(:disabled):hover { background: var(--sky); color: white; transform: translateY(-2px); }
+  .btn-be:not(:disabled):active { transform: translateY(0); }
+
+  .btn-general {
+    background: var(--mint-light);
+    color: #1A7A6A;
+    border: 2px solid var(--mint);
+  }
+  .btn-general:not(:disabled):hover { background: var(--mint); color: white; transform: translateY(-2px); }
+  .btn-general:not(:disabled):active { transform: translateY(0); }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.7;
+  }
+  .feedback.show { display: block; animation: fadeIn 0.25s ease; }
+  .feedback.correct { background: var(--mint-light); border: 1.5px solid var(--mint); }
+  .feedback.wrong-fb { background: var(--coral-light); border: 1.5px solid var(--coral); }
+  .feedback .fb-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .feedback .fb-body { font-size: 13px; color: var(--text); }
+  .feedback .fb-body b { font-weight: 700; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── NEXT BUTTON ── */
+  .btn-next {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 0.3px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(75,163,227,0.35);
+  }
+  .btn-next.show { display: block; animation: fadeIn 0.25s ease; }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(75,163,227,0.4); }
+
+  /* ── STEP INDICATOR ── */
+  .step-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .step-hint .active-step { color: var(--sky); font-weight: 700; }
+
+  /* ── RESULT SCREEN ── */
+  #result-screen {
+    display: none;
+    padding: 20px;
+    max-width: 640px;
+    width: 100%;
+  }
+  .result-card {
+    background: white;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(75,163,227,0.1);
+  }
+  .stars {
+    font-size: 40px;
+    margin-bottom: 12px;
+    letter-spacing: 4px;
+  }
+  .result-score {
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--sky);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .result-total { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-family: 'Noto Sans KR', sans-serif; }
+  .result-msg { font-size: 16px; font-weight: 700; margin-bottom: 24px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+
+  .wrong-review {
+    text-align: left;
+    background: var(--coral-light);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+  }
+  .wrong-review h3 { font-size: 13px; font-weight: 700; color: var(--coral); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .wrong-item { font-size: 13px; margin-bottom: 8px; line-height: 1.6; font-family: 'Noto Sans KR', sans-serif; }
+  .wrong-item .sentence-text { font-weight: 700; font-size: 14px; }
+  .wrong-item .answer-text { color: var(--coral); }
+  .wrong-item .correct-text { color: var(--mint); }
+
+  .retry-buttons { display: flex; flex-direction: column; gap: 10px; }
+
+  .btn-retry {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: transform 0.15s;
+    box-shadow: 0 4px 12px rgba(75,163,227,0.35);
+  }
+  .btn-retry:hover { transform: translateY(-2px); }
+
+  .btn-retry-wrong {
+    width: 100%;
+    background: white;
+    color: var(--coral);
+    border: 2px solid var(--coral);
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s;
+  }
+  .btn-retry-wrong:hover { background: var(--coral-light); transform: translateY(-2px); }
+  .btn-retry-wrong .ko { font-size: 12px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; display: block; margin-top: 2px; opacity: 0.8; }
+
+  /* ── START SCREEN ── */
+  #start-screen {
+    width: 100%;
+    max-width: 640px;
+    padding: 20px;
+  }
+  .start-card {
+    background: white;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(75,163,227,0.1);
+  }
+  .set-badge {
+    display: inline-block;
+    background: var(--sky);
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .start-title { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+  .start-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+  .how-to {
+    text-align: left;
+    background: var(--sky-light);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 28px;
+  }
+  .how-to h3 { font-size: 13px; font-weight: 700; color: var(--sky-dark); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .how-to ol { padding-left: 18px; }
+  .how-to li { font-size: 13px; color: var(--text); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.5; }
+  .how-to li b { color: var(--sky-dark); }
+
+  .btn-start {
+    width: 100%;
+    background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: transform 0.15s;
+    box-shadow: 0 4px 16px rgba(75,163,227,0.4);
+    letter-spacing: 0.3px;
+  }
+  .btn-start:hover { transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>동사편 · 1단계 · A형</h1>
+  <div class="subtitle">동사를 찾아라! · be동사 vs 일반동사 · 현재 시제</div>
+  <div style="font-size:10px; opacity:0.55; margin-top:4px; letter-spacing:1px;">GV-L1-A</div>
+</header>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <div class="start-card">
+    <div class="set-badge">동사편 · 1단계 · A형</div>
+    <div class="start-title">동사를 찾아라! 🔍</div>
+    <div class="start-sub">문장에서 동사를 직접 찾고<br>be동사인지 일반동사인지 구분해요.<br><span style="font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;">현재 시제 · 10문제 &nbsp;|&nbsp; GV-L1-A</span></div>
+    <div class="how-to">
+      <h3>📋 이렇게 해요</h3>
+      <ol>
+        <li>문장을 읽고 <b>동사 단어를 탭</b>해요.</li>
+        <li>탭한 단어가 맞으면 <b>be동사 / 일반동사</b> 버튼이 활성화돼요.</li>
+        <li>알맞은 버튼을 눌러서 종류를 선택해요.</li>
+        <li>틀린 문제는 마지막에 다시 볼 수 있어요.</li>
+      </ol>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">시작하기 🚀</button>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen" style="display:none; width:100%; max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div class="card">
+      <div class="instruction">
+        👇 문장을 읽고 <strong>동사 단어를 탭</strong>한 다음, be동사인지 일반동사인지 선택하세요!
+      </div>
+
+      <div class="sentence-area">
+        <div class="sentence-label">문장</div>
+        <div class="sentence" id="sentence-display"></div>
+      </div>
+
+      <div class="verb-buttons">
+        <button class="verb-btn btn-be" id="btn-be" disabled onclick="checkAnswer('be')">
+          be동사
+          <span class="ko">am / is / are</span>
+        </button>
+        <button class="verb-btn btn-general" id="btn-general" disabled onclick="checkAnswer('general')">
+          일반동사
+          <span class="ko">play / like / have…</span>
+        </button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+
+      <div class="step-hint">
+        <span id="step1-hint" class="active-step">① 동사를 탭하세요</span>
+        <span id="step2-hint" style="color:var(--muted)"> → ② 종류를 선택하세요</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">
+        ❌ 틀린 문제만 다시 풀기
+        <span class="ko">오답만 골라서 다시 도전해요!</span>
+      </button>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    sentence: ["She", "is", "my", "best", "friend", "."],
+    verbIndex: 1,
+    verbType: "be",
+    explanation: "<b>is</b>는 be동사예요. am / is / are 중 하나죠! 주어가 She(3인칭 단수)이기 때문에 <b>is</b>를 써요."
+  },
+  {
+    sentence: ["I", "like", "chocolate", "ice", "cream", "."],
+    verbIndex: 1,
+    verbType: "general",
+    explanation: "<b>like</b>는 일반동사예요. '좋아하다'라는 뜻이에요. be동사(am/is/are)가 아닌 모든 동사는 일반동사예요!"
+  },
+  {
+    sentence: ["They", "are", "happy", "today", "."],
+    verbIndex: 1,
+    verbType: "be",
+    explanation: "<b>are</b>는 be동사예요. 주어가 They(복수)이기 때문에 <b>are</b>를 써요."
+  },
+  {
+    sentence: ["My", "dog", "runs", "very", "fast", "."],
+    verbIndex: 2,
+    verbType: "general",
+    explanation: "<b>runs</b>는 일반동사예요. 'run(달리다)'의 3인칭 단수 현재형이에요."
+  },
+  {
+    sentence: ["He", "is", "a", "good", "student", "."],
+    verbIndex: 1,
+    verbType: "be",
+    explanation: "<b>is</b>는 be동사예요. 주어가 He(3인칭 단수)이기 때문에 <b>is</b>를 써요."
+  },
+  {
+    sentence: ["We", "play", "soccer", "after", "school", "."],
+    verbIndex: 1,
+    verbType: "general",
+    explanation: "<b>play</b>는 일반동사예요. '(운동을) 하다'라는 뜻이에요."
+  },
+  {
+    sentence: ["The", "cat", "sleeps", "on", "the", "sofa", "."],
+    verbIndex: 2,
+    verbType: "general",
+    explanation: "<b>sleeps</b>는 일반동사예요. 'sleep(자다)'의 3인칭 단수 현재형이에요."
+  },
+  {
+    sentence: ["You", "are", "so", "kind", "."],
+    verbIndex: 1,
+    verbType: "be",
+    explanation: "<b>are</b>는 be동사예요. 주어가 You일 때는 <b>are</b>를 써요."
+  },
+  {
+    sentence: ["Tom", "has", "a", "red", "bike", "."],
+    verbIndex: 1,
+    verbType: "general",
+    explanation: "<b>has</b>는 일반동사예요. 'have(가지다)'의 3인칭 단수 현재형이에요. be동사처럼 보일 수 있지만 have/has는 일반동사랍니다!"
+  },
+  {
+    sentence: ["I", "am", "hungry", "now", "."],
+    verbIndex: 1,
+    verbType: "be",
+    explanation: "<b>am</b>은 be동사예요. 주어가 I일 때는 반드시 <b>am</b>을 써요!"
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let selectedWordIndex = null;
+let answered = false;
+let wrongItems = [];
+
+function startQuiz() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  selectedWordIndex = null;
+  const q = questions[currentQ];
+
+  // Progress
+  document.getElementById('q-num').textContent = `문제 ${currentQ + 1} / ${questions.length}`;
+  document.getElementById('q-score').textContent = `맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width = `${(currentQ / questions.length) * 100}%`;
+
+  // Sentence
+  const display = document.getElementById('sentence-display');
+  display.innerHTML = '';
+  q.sentence.forEach((word, i) => {
+    if (word === '.') {
+      const dot = document.createElement('span');
+      dot.textContent = '.';
+      dot.style.fontWeight = '800';
+      display.appendChild(dot);
+      return;
+    }
+    const btn = document.createElement('span');
+    btn.textContent = word;
+    btn.className = 'word';
+    btn.dataset.index = i;
+    btn.addEventListener('click', () => selectWord(i, btn));
+    display.appendChild(btn);
+  });
+
+  // Buttons
+  document.getElementById('btn-be').disabled = true;
+  document.getElementById('btn-general').disabled = true;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('btn-next').className = 'btn-next';
+
+  // Step hints
+  document.getElementById('step1-hint').className = 'active-step';
+  document.getElementById('step2-hint').style.color = 'var(--muted)';
+}
+
+function selectWord(index, el) {
+  if (answered) return;
+
+  // Clear previous selection
+  document.querySelectorAll('.word').forEach(w => {
+    w.classList.remove('selected', 'wrong');
+  });
+
+  selectedWordIndex = index;
+  el.classList.add('selected');
+
+  // Enable buttons
+  document.getElementById('btn-be').disabled = false;
+  document.getElementById('btn-general').disabled = false;
+
+  // Step hints
+  document.getElementById('step1-hint').style.color = 'var(--muted)';
+  document.getElementById('step2-hint').style.color = 'var(--sky)';
+  document.getElementById('step2-hint').style.fontWeight = '700';
+}
+
+function checkAnswer(type) {
+  if (answered || selectedWordIndex === null) return;
+  answered = true;
+
+  const q = questions[currentQ];
+  const wordEls = document.querySelectorAll('.word');
+  const selectedEl = [...wordEls].find(w => parseInt(w.dataset.index) === selectedWordIndex);
+
+  const verbCorrect = (selectedWordIndex === q.verbIndex);
+  const typeCorrect = (type === q.verbType);
+
+  document.getElementById('btn-be').disabled = true;
+  document.getElementById('btn-general').disabled = true;
+
+  const fb = document.getElementById('feedback');
+
+  if (verbCorrect && typeCorrect) {
+    // Full correct
+    score++;
+    selectedEl.classList.remove('selected');
+    selectedEl.classList.add(type === 'be' ? 'correct-be' : 'correct-general');
+
+    fb.className = 'feedback correct show';
+    fb.innerHTML = `<div class="fb-title">✅ 정답!</div><div class="fb-body">${q.explanation}</div>`;
+  } else if (!verbCorrect && typeCorrect) {
+    // Wrong word, right type
+    selectedEl.classList.remove('selected');
+    selectedEl.classList.add('wrong');
+
+    // Show correct word
+    const correctEl = [...wordEls].find(w => parseInt(w.dataset.index) === q.verbIndex);
+    if (correctEl) correctEl.classList.add(q.verbType === 'be' ? 'correct-be' : 'correct-general');
+
+    const typeName = q.verbType === 'be' ? 'be동사' : '일반동사';
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `<div class="fb-title">❌ 동사를 다시 찾아봐요!</div><div class="fb-body">동사의 종류는 맞았어요 (${typeName})! 하지만 동사 단어를 잘못 골랐어요.<br><b>${q.sentence[q.verbIndex]}</b>이 동사예요.<br><br>${q.explanation}</div>`;
+    wrongItems.push({ q, userVerb: q.sentence[selectedWordIndex], userType: type, correct: false });
+  } else if (verbCorrect && !typeCorrect) {
+    // Right word, wrong type
+    selectedEl.classList.remove('selected');
+    selectedEl.classList.add('wrong');
+
+    const typeName = q.verbType === 'be' ? 'be동사' : '일반동사';
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `<div class="fb-title">❌ 종류를 다시 생각해봐요!</div><div class="fb-body">동사는 잘 찾았어요! 하지만 <b>${q.sentence[q.verbIndex]}</b>은 <b>${typeName}</b>이에요.<br><br>${q.explanation}</div>`;
+    wrongItems.push({ q, userVerb: q.sentence[selectedWordIndex], userType: type, correct: false });
+  } else {
+    // Both wrong
+    selectedEl.classList.remove('selected');
+    selectedEl.classList.add('wrong');
+    const correctEl = [...wordEls].find(w => parseInt(w.dataset.index) === q.verbIndex);
+    if (correctEl) correctEl.classList.add(q.verbType === 'be' ? 'correct-be' : 'correct-general');
+
+    const typeName = q.verbType === 'be' ? 'be동사' : '일반동사';
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `<div class="fb-title">❌ 다시 도전해봐요!</div><div class="fb-body">동사는 <b>${q.sentence[q.verbIndex]}</b>이고, <b>${typeName}</b>이에요.<br><br>${q.explanation}</div>`;
+    wrongItems.push({ q, userVerb: q.sentence[selectedWordIndex], userType: type, correct: false });
+  }
+
+  document.getElementById('btn-next').className = 'btn-next show';
+  document.getElementById('step2-hint').style.color = 'var(--muted)';
+  document.getElementById('step2-hint').style.fontWeight = '400';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResult();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const pct = score / questions.length;
+  let stars = '⭐';
+  let msg = '';
+
+  if (pct === 1) {
+    stars = '⭐⭐⭐';
+    msg = '완벽해요! 👏👏👏<br>be동사와 일반동사를 완벽하게 구분했어요!';
+  } else if (pct >= 0.7) {
+    stars = '⭐⭐';
+    msg = '잘했어요! 😊<br>조금만 더 연습하면 완벽해질 거예요!';
+  } else {
+    stars = '⭐';
+    msg = '괜찮아요! 💪<br>틀린 문제를 다시 보고 한 번 더 도전해봐요!';
+  }
+
+  document.getElementById('stars-display').textContent = stars;
+  document.getElementById('result-score').textContent = `${score}점`;
+  document.getElementById('result-total').textContent = `${questions.length}문제 중 ${score}문제 정답`;
+  document.getElementById('result-msg').innerHTML = msg;
+
+  if (wrongItems.length > 0) {
+    const wr = document.getElementById('wrong-review');
+    const wl = document.getElementById('wrong-list');
+    wr.style.display = 'block';
+    wl.innerHTML = wrongItems.map(item => {
+      const typeName = item.q.verbType === 'be' ? 'be동사' : '일반동사';
+      return `<div class="wrong-item">
+        <div class="sentence-text">${item.q.sentence.join(' ')}</div>
+        <div class="correct-text">✅ 동사: ${item.q.sentence[item.q.verbIndex]} → ${typeName}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('btn-retry-wrong').style.display = 'block';
+  } else {
+    document.getElementById('btn-retry-wrong').style.display = 'none';
+  }
+}
+
+function retryWrong() {
+  // 틀린 문제들만 추출해서 새 문제 세트로
+  const wrongQuestions = wrongItems.map(item => item.q);
+  // questions 배열을 틀린 것만으로 교체
+  questions.splice(0, questions.length, ...wrongQuestions);
+  currentQ = 0;
+  score = 0;
+  selectedWordIndex = null;
+  answered = false;
+  wrongItems = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  // 헤더 안내 업데이트
+  document.getElementById('q-num').textContent = `문제 1 / ${questions.length}`;
+  loadQuestion();
+}
+
+function resetQuiz() {
+  // 전체 문제 복원
+  questions.splice(0, questions.length,
+    { sentence: ["She", "is", "my", "best", "friend", "."], verbIndex: 1, verbType: "be", explanation: "<b>is</b>는 be동사예요. am / is / are 중 하나죠! 주어가 She(3인칭 단수)이기 때문에 <b>is</b>를 써요." },
+    { sentence: ["I", "like", "chocolate", "ice", "cream", "."], verbIndex: 1, verbType: "general", explanation: "<b>like</b>는 일반동사예요. '좋아하다'라는 뜻이에요. be동사(am/is/are)가 아닌 모든 동사는 일반동사예요!" },
+    { sentence: ["They", "are", "happy", "today", "."], verbIndex: 1, verbType: "be", explanation: "<b>are</b>는 be동사예요. 주어가 They(복수)이기 때문에 <b>are</b>를 써요." },
+    { sentence: ["My", "dog", "runs", "very", "fast", "."], verbIndex: 2, verbType: "general", explanation: "<b>runs</b>는 일반동사예요. 'run(달리다)'의 3인칭 단수 현재형이에요." },
+    { sentence: ["He", "is", "a", "good", "student", "."], verbIndex: 1, verbType: "be", explanation: "<b>is</b>는 be동사예요. 주어가 He(3인칭 단수)이기 때문에 <b>is</b>를 써요." },
+    { sentence: ["We", "play", "soccer", "after", "school", "."], verbIndex: 1, verbType: "general", explanation: "<b>play</b>는 일반동사예요. '(운동을) 하다'라는 뜻이에요." },
+    { sentence: ["The", "cat", "sleeps", "on", "the", "sofa", "."], verbIndex: 2, verbType: "general", explanation: "<b>sleeps</b>는 일반동사예요. 'sleep(자다)'의 3인칭 단수 현재형이에요." },
+    { sentence: ["You", "are", "so", "kind", "."], verbIndex: 1, verbType: "be", explanation: "<b>are</b>는 be동사예요. 주어가 You일 때는 <b>are</b>를 써요." },
+    { sentence: ["Tom", "has", "a", "red", "bike", "."], verbIndex: 1, verbType: "general", explanation: "<b>has</b>는 일반동사예요. 'have(가지다)'의 3인칭 단수 현재형이에요. be동사처럼 보일 수 있지만 have/has는 일반동사랍니다!" },
+    { sentence: ["I", "am", "hungry", "now", "."], verbIndex: 1, verbType: "be", explanation: "<b>am</b>은 be동사예요. 주어가 I일 때는 반드시 <b>am</b>을 써요!" }
+  );
+  currentQ = 0;
+  score = 0;
+  selectedWordIndex = null;
+  answered = false;
+  wrongItems = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+</script>
+</body>
+</html>

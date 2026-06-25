@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GQ-X | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  :root {
+    --sky:#4BA3E3;--sky-light:#E8F4FD;--sky-dark:#2980C4;
+    --mint:#3DBFA0;--mint-light:#E6F7F4;
+    --coral:#F0614A;--coral-light:#FEF0EE;
+    --sun:#F5A623;--sun-light:#FEF6E7;
+    --teal:#1A8FA0;--teal-light:#E6F5F7;--teal-dark:#136E7C;
+    --red:#C0392B;--red-light:#FDECEA;--red-dark:#96281B;
+    --green:#2E9E5B;--green-light:#E8F7EF;--green-dark:#1E7A44;
+    --indigo:#3D5A9E;--indigo-light:#EBF0FB;--indigo-dark:#2C4180;
+    --slate:#5C6E8A;--slate-light:#EEF1F6;--slate-dark:#3D4F63;
+    --gold:#C9960A;--gold-light:#FDF6DC;
+    --navy:#1A2A3A;--navy2:#2C4A6A;
+    --bg:#F7FBFF;--card:#FFFFFF;--text:#1A2A3A;--muted:#7A8FA0;--border:#D6E8F5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+  header{width:100%;background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:white;padding:18px 24px 14px;text-align:center;}
+  header .brand{font-size:11px;letter-spacing:1.5px;opacity:.7;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;}
+  header h1{font-size:24px;font-weight:900;}
+  header .subtitle{font-size:13px;opacity:.8;margin-top:3px;font-family:'Noto Sans KR',sans-serif;}
+  header .code-tag{font-size:10px;opacity:.45;margin-top:4px;letter-spacing:1px;}
+
+  .progress-wrap{width:100%;max-width:640px;padding:16px 20px 0;}
+  .progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+  .progress-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--mint));border-radius:99px;transition:width .4s ease;}
+
+  main{width:100%;max-width:640px;padding:16px 20px 32px;flex:1;}
+  .card{background:var(--card);border-radius:20px;border:1.5px solid var(--border);padding:28px 24px 24px;box-shadow:0 4px 20px rgba(26,42,58,.08);}
+
+  /* 배지 영역 */
+  .badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .badge{border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;font-family:'Noto Sans KR',sans-serif;}
+  .b-be-p{background:var(--teal-light);color:var(--teal-dark);border:1px solid var(--teal);}
+  .b-be-pa{background:var(--red-light);color:var(--red-dark);border:1px solid var(--red);}
+  .b-gen-p{background:var(--green-light);color:var(--green-dark);border:1px solid var(--green);}
+  .b-gen-pa{background:var(--indigo-light);color:var(--indigo-dark);border:1px solid var(--indigo);}
+  .b-q{background:var(--sky-light);color:var(--sky-dark);border:1px solid var(--sky);}
+  .b-n{background:var(--slate-light);color:var(--slate-dark);border:1px solid var(--slate);}
+  .b-mix{background:var(--gold-light);color:var(--gold);border:1px solid var(--gold);}
+
+  .q-instruction{font-size:15px;font-weight:800;color:var(--text);margin-bottom:16px;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+
+  /* 변환 박스 */
+  .transform-box{border-radius:14px;padding:14px 16px;margin-bottom:16px;background:var(--sky-light);border:1.5px solid var(--sky);}
+  .transform-label{font-size:11px;font-weight:700;color:var(--sky-dark);letter-spacing:.5px;margin-bottom:6px;font-family:'Noto Sans KR',sans-serif;}
+  .transform-sentence{font-size:19px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.5;}
+  .transform-arrow{font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;margin-bottom:6px;font-weight:600;}
+  .transform-result{font-size:19px;font-weight:800;color:var(--navy2);line-height:1.6;display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+  .blank-word{display:inline-block;min-width:80px;height:30px;border:none;border-bottom:3px solid var(--navy);text-align:center;font-size:16px;font-weight:800;color:var(--navy);font-family:'Nunito',sans-serif;vertical-align:bottom;}
+
+  /* 선택지 */
+  .choices-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .choices-4{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+  .choice-btn{background:white;border:2px solid var(--border);border-radius:14px;padding:13px 16px;text-align:center;cursor:pointer;transition:all .15s;font-size:16px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--text);}
+  .choice-btn:hover:not(:disabled){border-color:var(--navy);background:var(--sky-light);transform:translateY(-2px);}
+  .choice-btn:disabled{cursor:not-allowed;}
+  .choices-4 .choice-btn{text-align:left;display:flex;align-items:center;gap:12px;font-size:14px;}
+  .choice-num{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--muted);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .choice-btn.correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.correct .choice-num{background:var(--mint);color:white;}
+  .choice-btn.wrong{border-color:var(--coral);background:var(--coral-light);}
+  .choice-btn.wrong .choice-num{background:var(--coral);color:white;}
+  .choice-btn.show-correct{border-color:var(--mint);background:var(--mint-light);}
+  .choice-btn.show-correct .choice-num{background:var(--mint);color:white;}
+
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+  .feedback{border-radius:14px;padding:13px 16px;margin-bottom:14px;display:none;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+  .feedback.show{display:block;animation:fadeIn .25s ease;}
+  .feedback.correct-fb{background:var(--mint-light);border:1.5px solid var(--mint);}
+  .feedback.wrong-fb{background:var(--coral-light);border:1.5px solid var(--coral);}
+  .feedback .fb-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .feedback .fb-body{font-size:13px;color:var(--text);line-height:1.7;}
+  .feedback .fb-body b{font-weight:700;}
+  .rule-tag{display:inline-block;background:var(--gold-light);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--gold);margin:3px 0;font-family:'Noto Sans KR',sans-serif;}
+
+  .btn-next{width:100%;background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 12px rgba(26,42,58,.3);}
+  .btn-next.show{display:block;animation:fadeIn .25s ease;}
+  .btn-next:hover{transform:translateY(-2px);}
+
+  /* 홈 화면 */
+  #home-screen{width:100%;max-width:640px;padding:20px;}
+  .home-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:32px 24px;text-align:center;box-shadow:0 4px 24px rgba(26,42,58,.1);}
+  .home-title{font-size:28px;font-weight:900;margin-bottom:6px;}
+  .home-sub{font-size:14px;color:var(--muted);margin-bottom:24px;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+
+  .level-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:8px;}
+  .level-card{background:white;border:2px solid var(--border);border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:14px;}
+  .level-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
+  .level-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .level-info{flex:1;}
+  .level-name{font-size:15px;font-weight:800;margin-bottom:2px;}
+  .level-desc{font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;line-height:1.5;}
+  .level-badge-sm{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;float:right;font-family:'Noto Sans KR',sans-serif;}
+
+  .lv1{border-color:var(--teal);}.lv1:hover{background:var(--teal-light);}
+  .lv1 .level-icon{background:var(--teal-light);}.lv1 .level-name{color:var(--teal-dark);}
+  .lv1 .level-badge-sm{background:var(--teal-light);color:var(--teal-dark);}
+
+  .lv2{border-color:var(--green);}.lv2:hover{background:var(--green-light);}
+  .lv2 .level-icon{background:var(--green-light);}.lv2 .level-name{color:var(--green-dark);}
+  .lv2 .level-badge-sm{background:var(--green-light);color:var(--green-dark);}
+
+  .lv3{border-color:var(--indigo);}.lv3:hover{background:var(--indigo-light);}
+  .lv3 .level-icon{background:var(--indigo-light);}.lv3 .level-name{color:var(--indigo-dark);}
+  .lv3 .level-badge-sm{background:var(--indigo-light);color:var(--indigo-dark);}
+
+  .lv4{border-color:var(--gold);}.lv4:hover{background:var(--gold-light);}
+  .lv4 .level-icon{background:var(--gold-light);}.lv4 .level-name{color:var(--gold);}
+  .lv4 .level-badge-sm{background:var(--gold-light);color:var(--gold);}
+
+  /* 결과 화면 */
+  #result-screen{display:none;padding:20px;max-width:640px;width:100%;}
+  .result-card{background:white;border-radius:24px;border:1.5px solid var(--border);padding:36px 28px;text-align:center;box-shadow:0 4px 24px rgba(26,42,58,.1);}
+  .stars{font-size:40px;margin-bottom:12px;letter-spacing:4px;}
+  .result-score{font-size:52px;font-weight:900;color:var(--navy);line-height:1;margin-bottom:4px;}
+  .result-total{font-size:14px;color:var(--muted);margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;}
+  .result-level{font-size:13px;color:var(--muted);margin-bottom:20px;font-family:'Noto Sans KR',sans-serif;}
+  .result-msg{font-size:16px;font-weight:700;margin-bottom:24px;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+  .wrong-review{text-align:left;background:var(--coral-light);border-radius:14px;padding:16px 18px;margin-bottom:24px;}
+  .wrong-review h3{font-size:13px;font-weight:700;color:var(--coral);margin-bottom:10px;font-family:'Noto Sans KR',sans-serif;}
+  .wrong-item{font-size:13px;margin-bottom:10px;line-height:1.7;font-family:'Noto Sans KR',sans-serif;padding-bottom:10px;border-bottom:1px dashed #f5c0b8;}
+  .wrong-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .wrong-item .wi-type{font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--coral-light);color:var(--coral);display:inline-block;margin-bottom:3px;}
+  .wrong-item .wi-text{font-weight:700;font-size:13px;}
+  .wrong-item .wi-ans{color:var(--navy2);font-weight:600;font-size:12px;}
+  .retry-buttons{display:flex;flex-direction:column;gap:10px;}
+  .btn-home{width:100%;background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .btn-home:hover{transform:translateY(-2px);}
+  .btn-retry-wrong{width:100%;background:white;color:var(--coral);border:2px solid var(--coral);border-radius:14px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s;}
+  .btn-retry-wrong:hover{background:var(--coral-light);transform:translateY(-2px);}
+  .btn-retry-wrong .ko{font-size:12px;font-weight:600;font-family:'Noto Sans KR',sans-serif;display:block;margin-top:2px;opacity:.8;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>의문문·부정문 통합 도전 🏆</h1>
+  <div class="subtitle">be동사 + 일반동사 · 현재 + 과거 · 의문문 + 부정문</div>
+  <div class="code-tag">GQ-X</div>
+</header>
+
+<!-- 홈 화면 -->
+<div id="home-screen">
+  <div class="home-card">
+    <div class="home-title">레벨을 선택하세요 🎯</div>
+    <div class="home-sub">모든 유형이 섞여서 나와요.<br>실력에 맞는 레벨부터 도전해봐요!</div>
+    <div class="level-grid">
+
+      <div class="level-card lv1" onclick="startLevel(1)">
+        <div class="level-icon">🌱</div>
+        <div class="level-info">
+          <div class="level-name">레벨 1 — be동사 기초
+            <span class="level-badge-sm">현재 시제</span>
+          </div>
+          <div class="level-desc">be동사 현재 의문문 + 부정문 (Am/Is/Are, isn't/aren't)</div>
+        </div>
+      </div>
+
+      <div class="level-card lv2" onclick="startLevel(2)">
+        <div class="level-icon">🌿</div>
+        <div class="level-info">
+          <div class="level-name">레벨 2 — 일반동사 기초
+            <span class="level-badge-sm">현재 시제</span>
+          </div>
+          <div class="level-desc">일반동사 현재 의문문 + 부정문 (Do/Does, don't/doesn't)</div>
+        </div>
+      </div>
+
+      <div class="level-card lv3" onclick="startLevel(3)">
+        <div class="level-icon">🌳</div>
+        <div class="level-info">
+          <div class="level-name">레벨 3 — 과거 시제 도전
+            <span class="level-badge-sm">과거 시제</span>
+          </div>
+          <div class="level-desc">be동사+일반동사 과거 의문문+부정문 (Was/Were, Did, didn't)</div>
+        </div>
+      </div>
+
+      <div class="level-card lv4" onclick="startLevel(4)">
+        <div class="level-icon">🏆</div>
+        <div class="level-info">
+          <div class="level-name">레벨 4 — 최종 통합 도전
+            <span class="level-badge-sm">현재+과거</span>
+          </div>
+          <div class="level-desc">be동사+일반동사 · 현재+과거 · 의문문+부정문 전체 혼합</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 퀴즈 화면 -->
+<div id="quiz-screen" style="display:none;width:100%;max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <main>
+    <div class="card">
+      <div class="badge-row" id="badge-row"></div>
+      <div class="q-instruction" id="q-instruction"></div>
+      <div id="transform-area"></div>
+      <div id="choices-area"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </main>
+</div>
+
+<!-- 결과 화면 -->
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-level" id="result-level"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">
+        ❌ 틀린 문제만 다시 풀기<span class="ko">오답만 골라서 다시 도전해요!</span>
+      </button>
+      <button class="btn-home" onclick="goHome()">🏠 레벨 선택으로</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// verbType: 'be'|'general'  tense: 'present'|'past'  form: 'Q'|'N'
+// qType: '이지선다'|'사지선다'
+const allQuestions = [
+  // ── be동사 현재 의문문 ──
+  { verbType:'be', tense:'present', form:'Q', qType:'이지선다', level:[1,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The movie is very boring.',
+    resultParts:['___','the','movie','very','boring','?'], blankIdx:0,
+    choices:['Is','Are'], correct:0,
+    answer:'Is the movie very boring?',
+    explanation:"주어 <b>The movie</b>는 단수 → <b>Is</b> the movie very boring?",
+    rule:"be동사 현재 의문문: 단수 → Is ~?"
+  },
+  { verbType:'be', tense:'present', form:'Q', qType:'이지선다', level:[1,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'Your cousins are from Canada.',
+    resultParts:['___','your','cousins','from','Canada','?'], blankIdx:0,
+    choices:['Is','Are'], correct:1,
+    answer:'Are your cousins from Canada?',
+    explanation:"주어 <b>Your cousins</b>는 복수 → <b>Are</b> your cousins from Canada?",
+    rule:"be동사 현재 의문문: 복수 → Are ~?"
+  },
+  { verbType:'be', tense:'present', form:'Q', qType:'이지선다', level:[1,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'Your teacher is strict.',
+    resultParts:['___','your','teacher','strict','?'], blankIdx:0,
+    choices:['Is','Are'], correct:0,
+    answer:'Is your teacher strict?',
+    explanation:"주어 <b>Your teacher</b>는 단수 → <b>Is</b> your teacher strict?",
+    rule:"be동사 현재 의문문: 단수 명사 → Is ~?"
+  },
+  { verbType:'be', tense:'present', form:'Q', qType:'사지선다', level:[1,4],
+    instruction:'다음을 의문문으로 바꾼 것으로 알맞은 것은?',
+    original:'Mike and Anna are on the same team.',
+    choices:['Is Mike and Anna on the same team?','Does Mike and Anna on the same team?','Are Mike and Anna on the same team?','Mike and Anna are on the same team?'],
+    correct:2,
+    answer:'Are Mike and Anna on the same team?',
+    explanation:"주어 <b>Mike and Anna</b>는 복수 → <b>Are</b> Mike and Anna on the same team?",
+    rule:"A and B (복수) → Are ~?"
+  },
+  // ── be동사 현재 부정문 ──
+  { verbType:'be', tense:'present', form:'N', qType:'이지선다', level:[1,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The café is open today.',
+    resultParts:['The','café','___','open','today','.'], blankIdx:2,
+    choices:["isn't","aren't"], correct:0,
+    answer:"The café isn't open today.",
+    explanation:"주어 <b>The café</b>는 단수 → <b>isn't</b>(is not)",
+    rule:"be동사 현재 부정문: 단수 명사 → isn't"
+  },
+  { verbType:'be', tense:'present', form:'N', qType:'이지선다', level:[1,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The rooms are clean.',
+    resultParts:['The','rooms','___','clean','.'], blankIdx:2,
+    choices:["isn't","aren't"], correct:1,
+    answer:"The rooms aren't clean.",
+    explanation:"주어 <b>The rooms</b>는 복수 → <b>aren't</b>(are not)",
+    rule:"be동사 현재 부정문: 복수 명사 → aren't"
+  },
+  { verbType:'be', tense:'present', form:'N', qType:'이지선다', level:[1,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'I am good at math.',
+    resultParts:['I','___','good','at','math','.'], blankIdx:1,
+    choices:["am not","isn't"], correct:0,
+    answer:"I am not good at math.",
+    explanation:"주어 <b>I</b>일 때는 <b>am not</b>이에요. am not은 줄임말이 없어요!",
+    rule:"be동사 현재 부정문: I → am not"
+  },
+  { verbType:'be', tense:'present', form:'N', qType:'사지선다', level:[1,4],
+    instruction:'다음 중 <b>어법상 옳은</b> 부정문은?',
+    original:null,
+    choices:["He aren't my neighbor.","The boys isn't ready.","My bag isn't heavy.","I isn't tired at all."],
+    correct:2,
+    answer:"My bag isn't heavy.",
+    explanation:"① He → isn't ② The boys → aren't ④ I → am not으로 고쳐야 해요.",
+    rule:"단수→isn't / 복수→aren't / I→am not"
+  },
+  // ── be동사 과거 의문문 ──
+  { verbType:'be', tense:'past', form:'Q', qType:'이지선다', level:[3,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The test was very difficult.',
+    resultParts:['___','the','test','very','difficult','?'], blankIdx:0,
+    choices:['Was','Were'], correct:0,
+    answer:'Was the test very difficult?',
+    explanation:"주어 <b>The test</b>는 단수 → <b>Was</b> the test very difficult?",
+    rule:"be동사 과거 의문문: 단수 → Was ~?"
+  },
+  { verbType:'be', tense:'past', form:'Q', qType:'이지선다', level:[3,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The streets were crowded yesterday.',
+    resultParts:['___','the','streets','crowded','yesterday','?'], blankIdx:0,
+    choices:['Was','Were'], correct:1,
+    answer:'Were the streets crowded yesterday?',
+    explanation:"주어 <b>The streets</b>는 복수 → <b>Were</b> the streets crowded yesterday?",
+    rule:"be동사 과거 의문문: 복수 → Were ~?"
+  },
+  { verbType:'be', tense:'past', form:'Q', qType:'사지선다', level:[3,4],
+    instruction:'다음 중 <b>어법상 옳은</b> 의문문은?',
+    original:null,
+    choices:['Were the food delicious?','Was your parents at home?','Was the concert exciting?','Were he nervous?'],
+    correct:2,
+    answer:'Was the concert exciting?',
+    explanation:"① the food → Was ② parents → Were ④ he → Was로 고쳐야 해요.",
+    rule:"단수 → Was / 복수 → Were"
+  },
+  // ── be동사 과거 부정문 ──
+  { verbType:'be', tense:'past', form:'N', qType:'이지선다', level:[3,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The museum was open on Sunday.',
+    resultParts:['The','museum','___','open','on','Sunday','.'], blankIdx:2,
+    choices:["wasn't","weren't"], correct:0,
+    answer:"The museum wasn't open on Sunday.",
+    explanation:"주어 <b>The museum</b>은 단수 → <b>wasn't</b>(was not)",
+    rule:"be동사 과거 부정문: 단수 → wasn't"
+  },
+  { verbType:'be', tense:'past', form:'N', qType:'이지선다', level:[3,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The students were bored in class.',
+    resultParts:['The','students','___','bored','in','class','.'], blankIdx:2,
+    choices:["wasn't","weren't"], correct:1,
+    answer:"The students weren't bored in class.",
+    explanation:"주어 <b>The students</b>는 복수 → <b>weren't</b>(were not)",
+    rule:"be동사 과거 부정문: 복수 → weren't"
+  },
+  // ── 일반동사 현재 의문문 ──
+  { verbType:'general', tense:'present', form:'Q', qType:'이지선다', level:[2,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'My uncle grows vegetables in his garden.',
+    resultParts:['___','my','uncle','grow','vegetables','in','his','garden','?'], blankIdx:0,
+    choices:['Do','Does'], correct:1,
+    answer:'Does my uncle grow vegetables in his garden?',
+    explanation:"주어 <b>My uncle</b>은 단수 → <b>Does</b> + 동사 원형(grow)",
+    rule:"일반동사 현재 의문문: 단수 → Does ~?"
+  },
+  { verbType:'general', tense:'present', form:'Q', qType:'이지선다', level:[2,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The twins speak three languages.',
+    resultParts:['___','the','twins','speak','three','languages','?'], blankIdx:0,
+    choices:['Do','Does'], correct:0,
+    answer:'Do the twins speak three languages?',
+    explanation:"주어 <b>The twins</b>는 복수 → <b>Do</b> the twins speak three languages?",
+    rule:"일반동사 현재 의문문: 복수 → Do ~?"
+  },
+  { verbType:'general', tense:'present', form:'Q', qType:'이지선다', level:[2,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'Your neighbor walks to work every day.',
+    resultParts:['___','your','neighbor','walk','to','work','every','day','?'], blankIdx:0,
+    choices:['Do','Does'], correct:1,
+    answer:'Does your neighbor walk to work every day?',
+    explanation:"주어 <b>Your neighbor</b>는 단수 → <b>Does</b> + 동사 원형(walk)",
+    rule:"일반동사 현재 의문문: 단수 명사 → Does ~?"
+  },
+  { verbType:'general', tense:'present', form:'Q', qType:'사지선다', level:[2,4],
+    instruction:'다음 중 <b>어법상 틀린</b> 의문문은?',
+    original:null,
+    choices:['Does he play the violin?','Do they enjoy hiking?','Does she teaches history?','Do you want some coffee?'],
+    correct:2,
+    answer:'Does she teach history?',
+    explanation:"③ Does를 썼으면 동사는 원형 → <b>teaches → teach</b>로 고쳐야 해요.",
+    rule:"Does + 동사원형 (teaches ❌ → teach ✅)"
+  },
+  // ── 일반동사 현재 부정문 ──
+  { verbType:'general', tense:'present', form:'N', qType:'이지선다', level:[2,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'My grandmother uses a smartphone.',
+    resultParts:['My','grandmother','___','use','a','smartphone','.'], blankIdx:2,
+    choices:["don't","doesn't"], correct:1,
+    answer:"My grandmother doesn't use a smartphone.",
+    explanation:"주어 <b>My grandmother</b>는 단수 → <b>doesn't</b> + 원형(use)",
+    rule:"일반동사 현재 부정문: 단수 → doesn't + 동사원형"
+  },
+  { verbType:'general', tense:'present', form:'N', qType:'이지선다', level:[2,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'We take the bus to school.',
+    resultParts:['We','___','take','the','bus','to','school','.'], blankIdx:1,
+    choices:["don't","doesn't"], correct:0,
+    answer:"We don't take the bus to school.",
+    explanation:"주어 <b>We</b>는 복수 → <b>don't</b>를 써요.",
+    rule:"일반동사 현재 부정문: 복수 → don't"
+  },
+  { verbType:'general', tense:'present', form:'N', qType:'이지선다', level:[2,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'The store closes at nine.',
+    resultParts:['The','store','___','close','at','nine','.'], blankIdx:2,
+    choices:["don't","doesn't"], correct:1,
+    answer:"The store doesn't close at nine.",
+    explanation:"주어 <b>The store</b>는 단수 → <b>doesn't</b> + 원형(close)",
+    rule:"일반동사 현재 부정문: 단수 명사 → doesn't"
+  },
+  { verbType:'general', tense:'present', form:'N', qType:'사지선다', level:[2,4],
+    instruction:'다음 중 <b>어법상 옳은</b> 부정문은?',
+    original:null,
+    choices:["He don't like vegetables.","She doesn't speaks loudly.","I don't understand the question.","They doesn't go swimming."],
+    correct:2,
+    answer:"I don't understand the question.",
+    explanation:"① he → doesn't ② doesn't speaks → doesn't speak ④ they → don't로 고쳐야 해요.",
+    rule:"I → don't / 단수 → doesn't + 원형"
+  },
+  // ── 일반동사 과거 의문문 ──
+  { verbType:'general', tense:'past', form:'Q', qType:'이지선다', level:[3,4],
+    instruction:'다음을 <b>의문문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'Your brother passed the exam.',
+    resultParts:['___','your','brother','pass','the','exam','?'], blankIdx:0,
+    choices:['Did','Does'], correct:0,
+    answer:'Did your brother pass the exam?',
+    explanation:"과거 의문문 → <b>Did</b>를 써요. passed → pass로 원형으로 바꿔요!",
+    rule:"일반동사 과거 의문문 → Did + 동사원형"
+  },
+  { verbType:'general', tense:'past', form:'Q', qType:'사지선다', level:[3,4],
+    instruction:'다음 중 <b>어법상 틀린</b> 의문문은?',
+    original:null,
+    choices:['Did she bring her umbrella?','Did they finish the project?','Did he forgot his keys?','Did you enjoy the trip?'],
+    correct:2,
+    answer:'Did he forget his keys?',
+    explanation:"③ Did 뒤에는 원형 → <b>forgot → forget</b>으로 고쳐야 해요.",
+    rule:"Did + 동사원형 (forgot ❌ → forget ✅)"
+  },
+  // ── 일반동사 과거 부정문 ──
+  { verbType:'general', tense:'past', form:'N', qType:'이지선다', level:[3,4],
+    instruction:'다음을 <b>부정문</b>으로 바꿀 때 빈칸에 알맞은 말은?',
+    original:'My sister bought a new jacket.',
+    resultParts:['My','sister','___','buy','a','new','jacket','.'], blankIdx:2,
+    choices:["didn't","doesn't"], correct:0,
+    answer:"My sister didn't buy a new jacket.",
+    explanation:"과거 부정문 → <b>didn't</b>를 써요. bought → buy로 원형으로 바꿔요!",
+    rule:"일반동사 과거 부정문 → didn't + 동사원형"
+  },
+  { verbType:'general', tense:'past', form:'N', qType:'사지선다', level:[3,4],
+    instruction:'다음 중 <b>어법상 옳은</b> 부정문은?',
+    original:null,
+    choices:["He didn't brought his lunch.","We didn't sleep well last night.","She didn't went to the gym.","They didn't cleaned the room."],
+    correct:1,
+    answer:"We didn't sleep well last night.",
+    explanation:"① brought → bring ③ went → go ④ cleaned → clean으로 고쳐야 해요.",
+    rule:"didn't + 동사원형"
+  },
+  // ── 혼합 (레벨4 전용) ──
+  { verbType:'mix', tense:'mix', form:'MIX', qType:'사지선다', level:[4],
+    instruction:'빈칸에 알맞은 것은?\n\nA: ___ your grandpa read the newspaper every morning?\nB: Yes, he does.',
+    original:null,
+    choices:['Is','Was','Do','Does'],
+    correct:3,
+    answer:'Does your grandpa read the newspaper every morning?',
+    explanation:"일반동사 현재, 주어 your grandpa는 단수 → <b>Does</b>를 써요.",
+    rule:"일반동사 현재 단수 → Does ~?"
+  },
+  { verbType:'mix', tense:'mix', form:'MIX', qType:'사지선다', level:[4],
+    instruction:'빈칸에 알맞은 것은?\n\nA: ___ the children quiet during the movie?\nB: No, they weren\'t.',
+    original:null,
+    choices:['Do','Did','Are','Were'],
+    correct:3,
+    answer:'Were the children quiet during the movie?',
+    explanation:"be동사 과거 의문문, 주어 the children(복수) → <b>Were</b>를 써요.",
+    rule:"be동사 과거 의문문: 복수 → Were ~?"
+  },
+  { verbType:'mix', tense:'mix', form:'MIX', qType:'사지선다', level:[4],
+    instruction:'다음 중 <b>어법상 옳은</b> 문장은?',
+    original:null,
+    choices:["He don't exercise regularly.","Did she came home early?","The baby wasn't crying last night.","Does they play board games?"],
+    correct:2,
+    answer:"The baby wasn't crying last night.",
+    explanation:"① don't → doesn't ② came → come ④ Does they → Do they로 고쳐야 해요.<br>③ <b>The baby wasn't crying</b>이 올바른 문장이에요.",
+    rule:"be동사 과거 단수 부정 → wasn't"
+  }
+];
+
+const levelNames=['','레벨 1 — be동사 기초','레벨 2 — 일반동사 기초','레벨 3 — 과거 시제 도전','레벨 4 — 최종 통합 도전'];
+
+function getQuestionsForLevel(lv){
+  const pool=allQuestions.filter(q=>q.level.includes(lv));
+  const shuffled=pool.sort(()=>Math.random()-.5);
+  return shuffled.slice(0,Math.min(10,shuffled.length));
+}
+
+let questions=[],currentQ=0,score=0,wrongItems=[],currentLevel=1;
+
+function startLevel(lv){
+  currentLevel=lv;
+  questions=getQuestionsForLevel(lv);
+  currentQ=0;score=0;wrongItems=[];
+  document.getElementById('home-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  const q=questions[currentQ];
+  document.getElementById('q-num').textContent=`문제 ${currentQ+1} / ${questions.length}`;
+  document.getElementById('q-score').textContent=`맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width=`${(currentQ/questions.length)*100}%`;
+
+  // 배지
+  const bRow=document.getElementById('badge-row');
+  let badges='';
+  if(q.verbType==='be'&&q.tense==='present') badges+=`<span class="badge b-be-p">be동사 현재</span>`;
+  else if(q.verbType==='be'&&q.tense==='past') badges+=`<span class="badge b-be-pa">be동사 과거</span>`;
+  else if(q.verbType==='general'&&q.tense==='present') badges+=`<span class="badge b-gen-p">일반동사 현재</span>`;
+  else if(q.verbType==='general'&&q.tense==='past') badges+=`<span class="badge b-gen-pa">일반동사 과거</span>`;
+  else badges+=`<span class="badge b-mix">혼합</span>`;
+  if(q.form==='Q') badges+=`<span class="badge b-q">❓ 의문문</span>`;
+  else if(q.form==='N') badges+=`<span class="badge b-n">🚫 부정문</span>`;
+  else badges+=`<span class="badge b-mix">🔀 혼합</span>`;
+  bRow.innerHTML=badges;
+
+  document.getElementById('q-instruction').innerHTML=q.instruction;
+
+  // 변환 박스
+  const tArea=document.getElementById('transform-area');
+  if(q.original){
+    if(q.qType==='이지선다'&&q.resultParts){
+      let rHtml='';
+      q.resultParts.forEach((part,i)=>{
+        if(i===q.blankIdx) rHtml+=`<span class="blank-word" id="blank-display"></span>`;
+        else rHtml+=`<span>${part}</span>`;
+      });
+      const arrow=q.form==='Q'?'↓ 의문문으로 바꾸면?':'↓ 부정문으로 바꾸면?';
+      tArea.innerHTML=`<div class="transform-box">
+        <div class="transform-label">📝 평서문</div>
+        <div class="transform-sentence">${q.original}</div>
+        <div class="transform-arrow">${arrow}</div>
+        <div class="transform-result">${rHtml}</div>
+      </div>`;
+    } else {
+      tArea.innerHTML=`<div class="transform-box">
+        <div class="transform-label">📝 평서문</div>
+        <div class="transform-sentence">${q.original}</div>
+      </div>`;
+    }
+  } else {
+    tArea.innerHTML='';
+  }
+
+  // 선택지
+  const area=document.getElementById('choices-area');area.innerHTML='';
+  if(q.qType==='이지선다'){
+    const grid=document.createElement('div');grid.className='choices-2';
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=c;
+      btn.addEventListener('click',()=>selectAnswer(i,btn,grid,q));grid.appendChild(btn);
+    });
+    area.appendChild(grid);
+  } else {
+    const col=document.createElement('div');col.className='choices-4';
+    const labels=['①','②','③','④'];
+    q.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');btn.className='choice-btn';
+      btn.innerHTML=`<span class="choice-num">${labels[i]}</span><span>${c}</span>`;
+      btn.addEventListener('click',()=>selectAnswer(i,btn,col,q));col.appendChild(btn);
+    });
+    area.appendChild(col);
+  }
+
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('btn-next').className='btn-next';
+}
+
+function selectAnswer(index,btn,container,q){
+  const btns=container.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);
+  const isCorrect=(index===q.correct);
+  const fb=document.getElementById('feedback');
+
+  if(q.qType==='이지선다'){
+    const blankEl=document.getElementById('blank-display');
+    if(blankEl){blankEl.textContent=q.choices[index];blankEl.style.color=isCorrect?'var(--mint)':'var(--coral)';blankEl.style.borderBottomColor=isCorrect?'var(--mint)':'var(--coral)';}
+  }
+
+  if(isCorrect){
+    score++;btn.classList.add('correct');
+    if(q.qType==='사지선다'){btn.querySelector('.choice-num').style.background='var(--mint)';btn.querySelector('.choice-num').style.color='white';}
+    fb.className='feedback correct-fb show';
+    fb.innerHTML=`<div class="fb-title">✅ 정답!</div><div class="fb-body">${q.explanation}<br><span class="rule-tag">📌 ${q.rule}</span></div>`;
+  } else {
+    btn.classList.add('wrong');
+    if(q.qType==='사지선다'){btn.querySelector('.choice-num').style.background='var(--coral)';btn.querySelector('.choice-num').style.color='white';btns[q.correct].classList.add('show-correct');btns[q.correct].querySelector('.choice-num').style.background='var(--mint)';btns[q.correct].querySelector('.choice-num').style.color='white';}
+    else{btns[q.correct].classList.add('show-correct');}
+    fb.className='feedback wrong-fb show';
+    fb.innerHTML=`<div class="fb-title">❌ 다시 생각해봐요!</div><div class="fb-body">정답: <b>${q.answer}</b><br><br>${q.explanation}<br><span class="rule-tag">📌 ${q.rule}</span></div>`;
+    wrongItems.push({q});
+  }
+  document.getElementById('btn-next').className='btn-next show';
+}
+
+function nextQuestion(){currentQ++;if(currentQ>=questions.length)showResult();else loadQuestion();}
+
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const pct=score/questions.length;let stars,msg;
+  if(pct===1){stars='⭐⭐⭐';msg='완벽해요! 👏👏👏<br>모든 유형을 완벽하게 마스터했어요!';}
+  else if(pct>=.7){stars='⭐⭐';msg='잘했어요! 😊<br>조금만 더 연습하면 완벽해질 거예요!';}
+  else{stars='⭐';msg='괜찮아요! 💪<br>틀린 문제를 다시 보고 한 번 더 도전해봐요!';}
+  document.getElementById('stars-display').textContent=stars;
+  document.getElementById('result-score').textContent=`${score}점`;
+  document.getElementById('result-total').textContent=`${questions.length}문제 중 ${score}문제 정답`;
+  document.getElementById('result-level').textContent=levelNames[currentLevel];
+  document.getElementById('result-msg').innerHTML=msg;
+  if(wrongItems.length>0){
+    document.getElementById('wrong-review').style.display='block';
+    document.getElementById('btn-retry-wrong').style.display='block';
+    document.getElementById('wrong-list').innerHTML=wrongItems.map(item=>{
+      const q=item.q;
+      const typeLabel=q.verbType==='be'?'be동사':'일반동사';
+      const tenseLabel=q.tense==='present'?'현재':q.tense==='past'?'과거':'혼합';
+      const formLabel=q.form==='Q'?'의문문':q.form==='N'?'부정문':'혼합';
+      return`<div class="wrong-item">
+        <span class="wi-type">${typeLabel} ${tenseLabel} ${formLabel}</span>
+        <div class="wi-text">${q.original||''}</div>
+        <div class="wi-ans">✅ ${q.answer}</div>
+      </div>`;
+    }).join('');
+  } else{document.getElementById('btn-retry-wrong').style.display='none';}
+}
+
+function retryWrong(){
+  questions=wrongItems.map(i=>i.q);currentQ=0;score=0;wrongItems=[];
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  loadQuestion();
+}
+function goHome(){
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('home-screen').style.display='block';
+}
+</script>
+</body>
+</html>

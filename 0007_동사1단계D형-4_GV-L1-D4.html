@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영문법 탐정단 GV-L1-D4 | 미라클 영어 스터디</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --sky: #4BA3E3; --sky-light: #E8F4FD; --sky-dark: #2980C4;
+    --mint: #3DBFA0; --mint-light: #E6F7F4;
+    --sun: #F5A623; --sun-light: #FEF6E7;
+    --coral: #F0614A; --coral-light: #FEF0EE;
+    --green: #2E9E5B; --green-light: #E8F7EF;
+    --bg: #F7FBFF; --card: #FFFFFF;
+    --text: #1A2A3A; --muted: #7A8FA0; --border: #D6E8F5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+  header { width: 100%; background: linear-gradient(135deg, var(--green) 0%, #1E7A44 100%); color: white; padding: 18px 24px 14px; text-align: center; }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; opacity: 0.8; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; }
+  header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; font-family: 'Noto Sans KR', sans-serif; }
+  header .code-tag { font-size: 10px; opacity: 0.55; margin-top: 4px; letter-spacing: 1px; }
+
+  .progress-wrap { width: 100%; max-width: 640px; padding: 16px 20px 0; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; }
+  .progress-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--mint)); border-radius: 99px; transition: width 0.4s ease; }
+
+  main { width: 100%; max-width: 640px; padding: 16px 20px 32px; flex: 1; }
+  .card { background: var(--card); border-radius: 20px; border: 1.5px solid var(--border); padding: 28px 24px 24px; box-shadow: 0 4px 20px rgba(46,158,91,0.08); }
+
+  .type-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; margin-bottom: 16px; font-family: 'Noto Sans KR', sans-serif; }
+  .type-pair { background: var(--sun-light); color: #8B6200; border: 1.5px solid var(--sun); }
+  .type-fill { background: var(--green-light); color: var(--green); border: 1.5px solid var(--green); }
+  .pair-notice { background: var(--sun-light); border: 1.5px solid var(--sun); border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: #8B6200; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; text-align: center; }
+
+  .sentence-area { margin-bottom: 24px; }
+  .sentence-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .sentence { font-size: 22px; font-weight: 800; line-height: 1.6; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; }
+  .blank { display: inline-block; min-width: 90px; height: 28px; border: none; border-bottom: 3px solid var(--green); vertical-align: bottom; text-align: center; font-style: normal; font-size: 18px; font-weight: 800; color: var(--green); padding: 0 8px; }
+  .subject-highlight { background: var(--sky-light); border-radius: 6px; padding: 2px 6px; color: var(--sky-dark); font-weight: 900; }
+
+  .choices-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .choices-4 { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .choice-btn { background: white; border: 2px solid var(--border); border-radius: 14px; padding: 14px 18px; text-align: center; cursor: pointer; transition: all 0.15s ease; font-size: 18px; font-weight: 800; font-family: 'Nunito', sans-serif; color: var(--text); }
+  .choice-btn:hover:not(:disabled) { border-color: var(--green); background: var(--green-light); transform: translateY(-2px); }
+  .choice-btn:disabled { cursor: not-allowed; }
+  .choices-4 .choice-btn { text-align: left; display: flex; align-items: center; gap: 12px; }
+  .choice-num { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--muted); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .choice-btn.correct { border-color: var(--mint); background: var(--mint-light); animation: pop 0.3s ease; }
+  .choice-btn.correct .choice-num { background: var(--mint); color: white; }
+  .choice-btn.wrong { border-color: var(--coral); background: var(--coral-light); animation: shake 0.3s ease; }
+  .choice-btn.wrong .choice-num { background: var(--coral); color: white; }
+  .choice-btn.show-correct { border-color: var(--mint); background: var(--mint-light); }
+  .choice-btn.show-correct .choice-num { background: var(--mint); color: white; }
+
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+  .feedback { border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: none; font-family: 'Noto Sans KR', sans-serif; line-height: 1.7; }
+  .feedback.show { display: block; animation: fadeIn 0.25s ease; }
+  .feedback.correct-fb { background: var(--mint-light); border: 1.5px solid var(--mint); }
+  .feedback.wrong-fb { background: var(--coral-light); border: 1.5px solid var(--coral); }
+  .feedback .fb-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .feedback .fb-body { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .feedback .fb-body b { font-weight: 700; }
+  .spell-box { display: inline-block; background: var(--sun-light); border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 700; color: #8B6200; margin: 4px 0; font-family: 'Noto Sans KR', sans-serif; }
+  .subject-box { display: inline-flex; align-items: center; gap: 6px; background: var(--sky-light); border-radius: 8px; padding: 3px 10px; font-size: 12px; font-weight: 700; color: var(--sky-dark); margin: 4px 0; }
+
+  .btn-next { width: 100%; background: linear-gradient(135deg, var(--green), #1E7A44); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; display: none; font-family: 'Nunito', sans-serif; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 12px rgba(46,158,91,0.35); }
+  .btn-next.show { display: block; animation: fadeIn 0.25s ease; }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  #start-screen { width: 100%; max-width: 640px; padding: 20px; }
+  .start-card { background: white; border-radius: 24px; border: 1.5px solid var(--border); padding: 36px 28px; text-align: center; box-shadow: 0 4px 24px rgba(46,158,91,0.1); }
+  .set-badge { display: inline-block; background: var(--green); color: white; font-size: 13px; font-weight: 800; padding: 4px 16px; border-radius: 99px; margin-bottom: 16px; font-family: 'Noto Sans KR', sans-serif; }
+  .start-title { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+  .start-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.7; }
+
+  .spell-table { background: var(--sun-light); border-radius: 14px; padding: 16px 18px; margin-bottom: 20px; text-align: left; }
+  .spell-table h3 { font-size: 13px; font-weight: 700; color: #8B6200; margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .spell-table table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .spell-table th { color: var(--muted); font-weight: 700; padding: 4px 8px; text-align: left; font-family: 'Noto Sans KR', sans-serif; border-bottom: 1px solid #F5C8A0; }
+  .spell-table td { padding: 6px 8px; border-bottom: 1px solid #F5C8A0; font-family: 'Nunito', sans-serif; }
+  .spell-table tr:last-child td { border-bottom: none; }
+  .spell-table .rule-col { color: #8B6200; font-weight: 700; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; }
+  .spell-table .ex-col { color: var(--green); font-weight: 800; }
+
+  .how-to { text-align: left; background: var(--sky-light); border-radius: 14px; padding: 16px 18px; margin-bottom: 28px; }
+  .how-to h3 { font-size: 13px; font-weight: 700; color: var(--sky-dark); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .how-to ol { padding-left: 18px; }
+  .how-to li { font-size: 13px; color: var(--text); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.5; }
+  .how-to li b { color: var(--sky-dark); }
+
+  .btn-start { width: 100%; background: linear-gradient(135deg, var(--green), #1E7A44); color: white; border: none; border-radius: 14px; padding: 18px; font-size: 18px; font-weight: 900; cursor: pointer; font-family: 'Nunito', sans-serif; transition: transform 0.15s; box-shadow: 0 4px 16px rgba(46,158,91,0.4); }
+  .btn-start:hover { transform: translateY(-2px); }
+
+  #result-screen { display: none; padding: 20px; max-width: 640px; width: 100%; }
+  .result-card { background: white; border-radius: 24px; border: 1.5px solid var(--border); padding: 36px 28px; text-align: center; box-shadow: 0 4px 24px rgba(46,158,91,0.1); }
+  .stars { font-size: 40px; margin-bottom: 12px; letter-spacing: 4px; }
+  .result-score { font-size: 52px; font-weight: 900; color: var(--green); line-height: 1; margin-bottom: 4px; }
+  .result-total { font-size: 14px; color: var(--muted); margin-bottom: 20px; font-family: 'Noto Sans KR', sans-serif; }
+  .result-msg { font-size: 16px; font-weight: 700; margin-bottom: 24px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+  .wrong-review { text-align: left; background: var(--coral-light); border-radius: 14px; padding: 16px 18px; margin-bottom: 24px; }
+  .wrong-review h3 { font-size: 13px; font-weight: 700; color: var(--coral); margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .wrong-item { font-size: 13px; margin-bottom: 10px; line-height: 1.7; font-family: 'Noto Sans KR', sans-serif; padding-bottom: 10px; border-bottom: 1px dashed #f5c0b8; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wrong-item .sentence-text { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .wrong-item .correct-text { color: var(--green); font-weight: 600; }
+  .retry-buttons { display: flex; flex-direction: column; gap: 10px; }
+  .btn-retry { width: 100%; background: linear-gradient(135deg, var(--green), #1E7A44); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: transform 0.15s; box-shadow: 0 4px 12px rgba(46,158,91,0.35); }
+  .btn-retry:hover { transform: translateY(-2px); }
+  .btn-retry-wrong { width: 100%; background: white; color: var(--coral); border: 2px solid var(--coral); border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+  .btn-retry-wrong:hover { background: var(--coral-light); transform: translateY(-2px); }
+  .btn-retry-wrong .ko { font-size: 12px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; display: block; margin-top: 2px; opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">미라클 영어 스터디 · 영문법 탐정단</div>
+  <h1>동사편 · 1단계 · D형-4</h1>
+  <div class="subtitle">동사 형태를 골라라! · 철자 변화 집중 · 현재 시제</div>
+  <div class="code-tag">GV-L1-D4</div>
+</header>
+
+<div id="start-screen">
+  <div class="start-card">
+    <div class="set-badge">동사편 · 1단계 · D형-4</div>
+    <div class="start-title">동사 형태를 골라라! 🎯</div>
+    <div class="start-sub">
+      D형 네 번째 세트예요!<br>
+      철자 변화 동사들을 다시 한번 확인해봐요.<br>
+      <span style="font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;">현재 시제 · 10문제 &nbsp;|&nbsp; GV-L1-D4</span>
+    </div>
+
+    <div class="spell-table">
+      <h3>📖 철자 변화 규칙 다시 확인!</h3>
+      <table>
+        <tr><th>동사 끝 글자</th><th>변화 규칙</th><th>예시</th></tr>
+        <tr><td class="rule-col">대부분</td><td>+ s</td><td class="ex-col">run→runs, read→reads</td></tr>
+        <tr><td class="rule-col">-s,-sh,-ch,-x,-o</td><td>+ es</td><td class="ex-col">pass→passes, wash→washes</td></tr>
+        <tr><td class="rule-col">자음+y</td><td>y→i + es</td><td class="ex-col">fly→flies, carry→carries</td></tr>
+        <tr><td class="rule-col">have</td><td>불규칙</td><td class="ex-col">have→has</td></tr>
+      </table>
+    </div>
+
+    <div class="how-to">
+      <h3>📋 이렇게 해요</h3>
+      <ol>
+        <li>문장의 <b style="color:var(--sky-dark);">주어(파란색)</b>를 먼저 확인해요.</li>
+        <li>3인칭 단수이면 철자 변화 규칙을 적용해요.</li>
+        <li>알맞은 동사 형태를 골라요.</li>
+      </ol>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">시작하기 🚀</button>
+  </div>
+</div>
+
+<div id="quiz-screen" style="display:none; width:100%; max-width:640px;">
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="q-num" style="font-family:'Noto Sans KR',sans-serif;">문제 1 / 10</span>
+      <span id="q-score" style="font-family:'Noto Sans KR',sans-serif;">맞힌 문제: 0개</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+  <main>
+    <div class="card">
+      <div id="type-badge-area"></div>
+      <div id="pair-notice-area"></div>
+      <div class="sentence-area">
+        <div class="sentence-label">빈칸에 알맞은 동사를 고르세요</div>
+        <div class="sentence" id="sentence-display"></div>
+      </div>
+      <div id="choices-area"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </main>
+</div>
+
+<div id="result-screen">
+  <div class="result-card">
+    <div class="stars" id="stars-display"></div>
+    <div class="result-score" id="result-score"></div>
+    <div class="result-total" id="result-total"></div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="wrong-review" id="wrong-review" style="display:none;">
+      <h3>❌ 틀린 문제 다시 보기</h3>
+      <div id="wrong-list"></div>
+    </div>
+    <div class="retry-buttons">
+      <button class="btn-retry-wrong" id="btn-retry-wrong" onclick="retryWrong()" style="display:none;">
+        ❌ 틀린 문제만 다시 풀기
+        <span class="ko">오답만 골라서 다시 도전해요!</span>
+      </button>
+      <button class="btn-retry" onclick="resetQuiz()">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const allQuestions = [
+  // ── 쌍 1: fly / flies (단수 먼저) ──
+  {
+    qType: 'pair', pairGroup: 1, pairOrder: '1/2',
+    parts: ['A', 'bee', '_', 'from', 'flower', 'to', 'flower', '.'],
+    blankIndex: 2,
+    subject: 'A bee',
+    subjectNote: 'A bee → 3인칭 단수',
+    choices: ['fly', 'flies'],
+    correctIndex: 1,
+    explanation: "<b>A bee</b>는 3인칭 단수예요. fly는 자음+y로 끝나기 때문에 y를 i로 바꾸고 <b>-es</b>를 붙여서 <b>flies</b>가 돼요.",
+    spellNote: "fly → flies (자음+y → y를 i로 바꾸고 +es)"
+  },
+  {
+    qType: 'pair', pairGroup: 1, pairOrder: '2/2',
+    parts: ['Birds', '_', 'south', 'in', 'winter', '.'],
+    blankIndex: 1,
+    subject: 'Birds',
+    subjectNote: 'Birds → 복수',
+    choices: ['fly', 'flies'],
+    correctIndex: 0,
+    explanation: "<b>Birds</b>는 복수예요. 동사 원형 <b>fly</b>를 써요.",
+    spellNote: null
+  },
+
+  // ── 쌍 2: pass / passes (복수 먼저) ──
+  {
+    qType: 'pair', pairGroup: 2, pairOrder: '1/2',
+    parts: ['Many', 'cars', '_', 'our', 'house', 'every', 'day', '.'],
+    blankIndex: 2,
+    subject: 'Many cars',
+    subjectNote: 'Many cars → 복수',
+    choices: ['pass', 'passes'],
+    correctIndex: 0,
+    explanation: "<b>Many cars</b>는 복수예요. 동사 원형 <b>pass</b>를 써요.",
+    spellNote: null
+  },
+  {
+    qType: 'pair', pairGroup: 2, pairOrder: '2/2',
+    parts: ['A', 'bus', '_', 'our', 'house', 'every', 'morning', '.'],
+    blankIndex: 2,
+    subject: 'A bus',
+    subjectNote: 'A bus → 3인칭 단수',
+    choices: ['pass', 'passes'],
+    correctIndex: 1,
+    explanation: "<b>A bus</b>는 3인칭 단수예요. pass는 -ss로 끝나기 때문에 <b>-es</b>를 붙여서 <b>passes</b>가 돼요.",
+    spellNote: "pass → passes (-s로 끝나면 +es)"
+  },
+
+  // ── 쌍 3: carry / carries (단수 먼저) ──
+  {
+    qType: 'pair', pairGroup: 3, pairOrder: '1/2',
+    parts: ['My', 'mom', '_', 'a', 'heavy', 'bag', 'every', 'day', '.'],
+    blankIndex: 2,
+    subject: 'My mom',
+    subjectNote: 'My mom → 3인칭 단수',
+    choices: ['carry', 'carries'],
+    correctIndex: 1,
+    explanation: "<b>My mom</b>은 3인칭 단수예요. carry는 자음+y로 끝나기 때문에 y를 i로 바꾸고 <b>-es</b>를 붙여서 <b>carries</b>가 돼요.",
+    spellNote: "carry → carries (자음+y → y를 i로 바꾸고 +es)"
+  },
+  {
+    qType: 'pair', pairGroup: 3, pairOrder: '2/2',
+    parts: ['My', 'mom', 'and', 'dad', '_', 'heavy', 'bags', 'every', 'day', '.'],
+    blankIndex: 4,
+    subject: 'My mom and dad',
+    subjectNote: 'My mom and dad → 복수 (둘 이상)',
+    choices: ['carry', 'carries'],
+    correctIndex: 0,
+    explanation: "<b>My mom and dad</b>는 둘 이상이라서 복수예요. 동사 원형 <b>carry</b>를 써요.",
+    spellNote: null
+  },
+
+  // ── 문장 완성형 4문제 ──
+  {
+    qType: 'fill',
+    parts: ['My', 'grandma', '_', 'her', 'hands', 'before', 'cooking', '.'],
+    blankIndex: 2,
+    subject: 'My grandma',
+    subjectNote: 'My grandma → 3인칭 단수',
+    choices: ['wash', 'washes', 'washs', 'washing'],
+    correctIndex: 1,
+    explanation: "<b>My grandma</b>는 3인칭 단수예요. wash는 -sh로 끝나기 때문에 <b>-es</b>를 붙여서 <b>washes</b>가 돼요.",
+    spellNote: "wash → washes (-sh로 끝나면 +es)"
+  },
+  {
+    qType: 'fill',
+    parts: ['The', 'pilot', '_', 'a', 'plane', 'to', 'many', 'countries', '.'],
+    blankIndex: 2,
+    subject: 'The pilot',
+    subjectNote: 'The pilot → 3인칭 단수',
+    choices: ['fly', 'flies', 'flys', 'flying'],
+    correctIndex: 1,
+    explanation: "<b>The pilot</b>은 3인칭 단수예요. fly는 y를 i로 바꾸고 <b>-es</b>를 붙여서 <b>flies</b>가 돼요.",
+    spellNote: "fly → flies (자음+y → y를 i로 바꾸고 +es)"
+  },
+  {
+    qType: 'fill',
+    parts: ['My', 'older', 'sister', '_', 'me', 'to', 'school', 'sometimes', '.'],
+    blankIndex: 3,
+    subject: 'My older sister',
+    subjectNote: 'My older sister → 3인칭 단수',
+    choices: ['drive', 'drives', 'drived', 'driving'],
+    correctIndex: 1,
+    explanation: "<b>My older sister</b>는 3인칭 단수예요. drive는 -e로 끝나지만 그냥 <b>-s</b>만 붙여서 <b>drives</b>가 돼요.",
+    spellNote: "drive → drives (-e로 끝나면 그냥 +s)"
+  },
+  {
+    qType: 'fill',
+    parts: ['Tom,', 'Jane,', 'and', 'I', '_', 'in', 'the', 'same', 'club', '.'],
+    blankIndex: 4,
+    subject: 'Tom, Jane, and I',
+    subjectNote: 'Tom, Jane, and I → 복수 (셋 이상)',
+    choices: ['read', 'reads', 'reades', 'reading'],
+    correctIndex: 0,
+    explanation: "<b>Tom, Jane, and I</b>는 셋 이상이라서 복수예요. 동사 원형 <b>read</b>를 써요.",
+    spellNote: null
+  }
+];
+
+let questions = [...allQuestions];
+let currentQ = 0, score = 0, answered = false, wrongItems = [];
+
+function startQuiz() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+  document.getElementById('q-num').textContent = `문제 ${currentQ + 1} / ${questions.length}`;
+  document.getElementById('q-score').textContent = `맞힌 문제: ${score}개`;
+  document.getElementById('prog-fill').style.width = `${(currentQ / questions.length) * 100}%`;
+
+  document.getElementById('type-badge-area').innerHTML = q.qType === 'pair'
+    ? `<span class="type-badge type-pair">🔗 비교 문제 ${q.pairOrder}</span>`
+    : `<span class="type-badge type-fill">✏️ 빈칸 채우기</span>`;
+  document.getElementById('pair-notice-area').innerHTML = (q.qType === 'pair' && q.pairOrder === '2/2')
+    ? `<div class="pair-notice">⚠️ 앞 문제와 동사는 같아요 — 주어가 달라졌어요!</div>` : '';
+
+  const display = document.getElementById('sentence-display');
+  display.innerHTML = '';
+  q.parts.forEach((word, i) => {
+    if (word === '.') {
+      const dot = document.createElement('span');
+      dot.textContent = '.'; dot.style.fontWeight = '800'; display.appendChild(dot);
+    } else if (i === q.blankIndex) {
+      const blank = document.createElement('span');
+      blank.className = 'blank'; blank.textContent = ''; blank.id = 'blank-display';
+      display.appendChild(blank);
+    } else {
+      const isSubject = q.subject.includes(word) && i < q.blankIndex;
+      const span = document.createElement('span');
+      span.textContent = word;
+      if (isSubject) span.className = 'subject-highlight';
+      display.appendChild(span);
+    }
+  });
+
+  const area = document.getElementById('choices-area');
+  area.innerHTML = '';
+  if (q.choices.length === 2) {
+    const grid = document.createElement('div'); grid.className = 'choices-2';
+    q.choices.forEach((choice, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn'; btn.textContent = choice;
+      btn.addEventListener('click', () => selectAnswer(i)); grid.appendChild(btn);
+    });
+    area.appendChild(grid);
+  } else {
+    const col = document.createElement('div'); col.className = 'choices-4';
+    const labels = ['①', '②', '③', '④'];
+    q.choices.forEach((choice, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<span class="choice-num">${labels[i]}</span><span>${choice}</span>`;
+      btn.addEventListener('click', () => selectAnswer(i)); col.appendChild(btn);
+    });
+    area.appendChild(col);
+  }
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('btn-next').className = 'btn-next';
+}
+
+function selectAnswer(index) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const isCorrect = index === q.correctIndex;
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const blankEl = document.getElementById('blank-display');
+  if (blankEl) {
+    blankEl.textContent = q.choices[index];
+    blankEl.style.color = isCorrect ? 'var(--mint)' : 'var(--coral)';
+    blankEl.style.borderBottomColor = isCorrect ? 'var(--mint)' : 'var(--coral)';
+  }
+
+  const fb = document.getElementById('feedback');
+  const spellHtml = q.spellNote ? `<br><span class="spell-box">📝 ${q.spellNote}</span>` : '';
+
+  if (isCorrect) {
+    score++;
+    btns[index].classList.add('correct');
+    fb.className = 'feedback correct-fb show';
+    fb.innerHTML = `<div class="fb-title">✅ 정답!</div>
+      <div class="fb-body"><span class="subject-box">👤 ${q.subject} → ${q.subjectNote}</span><br>${q.explanation}${spellHtml}</div>`;
+  } else {
+    btns[index].classList.add('wrong');
+    btns[q.correctIndex].classList.add('show-correct');
+    if (q.choices.length === 4) {
+      btns[q.correctIndex].querySelector('.choice-num').style.background = 'var(--mint)';
+      btns[q.correctIndex].querySelector('.choice-num').style.color = 'white';
+    }
+    fb.className = 'feedback wrong-fb show';
+    fb.innerHTML = `<div class="fb-title">❌ 다시 생각해봐요!</div>
+      <div class="fb-body"><span class="subject-box">👤 ${q.subject} → ${q.subjectNote}</span><br>정답은 <b>${q.choices[q.correctIndex]}</b>이에요.<br><br>${q.explanation}${spellHtml}</div>`;
+    wrongItems.push({ q });
+  }
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= questions.length) showResult();
+  else loadQuestion();
+}
+
+function showResult() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  const pct = score / questions.length;
+  let stars, msg;
+  if (pct === 1) { stars = '⭐⭐⭐'; msg = '완벽해요! 👏👏👏<br>철자 변화 규칙을 완벽하게 익혔어요!'; }
+  else if (pct >= 0.7) { stars = '⭐⭐'; msg = '잘했어요! 😊<br>헷갈리는 규칙을 다시 한번 확인해봐요!'; }
+  else { stars = '⭐'; msg = '괜찮아요! 💪<br>시작 화면의 규칙표를 다시 보고 도전해봐요!'; }
+
+  document.getElementById('stars-display').textContent = stars;
+  document.getElementById('result-score').textContent = `${score}점`;
+  document.getElementById('result-total').textContent = `${questions.length}문제 중 ${score}문제 정답`;
+  document.getElementById('result-msg').innerHTML = msg;
+
+  if (wrongItems.length > 0) {
+    document.getElementById('wrong-review').style.display = 'block';
+    document.getElementById('btn-retry-wrong').style.display = 'block';
+    document.getElementById('wrong-list').innerHTML = wrongItems.map(item => {
+      const sentence = item.q.parts.map((w, i) =>
+        i === item.q.blankIndex ? `<b style="color:var(--green)">${item.q.choices[item.q.correctIndex]}</b>` : w
+      ).join(' ');
+      return `<div class="wrong-item">
+        <div class="sentence-text">${sentence}</div>
+        <div class="correct-text">✅ ${item.q.subject} → ${item.q.subjectNote} → <b>${item.q.choices[item.q.correctIndex]}</b></div>
+      </div>`;
+    }).join('');
+  } else { document.getElementById('btn-retry-wrong').style.display = 'none'; }
+}
+
+function retryWrong() {
+  questions = wrongItems.map(item => item.q);
+  currentQ = 0; score = 0; answered = false; wrongItems = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+
+function resetQuiz() {
+  questions = [...allQuestions];
+  currentQ = 0; score = 0; answered = false; wrongItems = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  loadQuestion();
+}
+</script>
+</body>
+</html>
