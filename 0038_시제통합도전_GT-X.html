@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시제편 통합 도전 · GT-X</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4FF; --card: #FFFFFF;
+    --primary: #7C5CBF; --primary-dark: #5C3EA0; --primary-light: #F0EBFD;
+    --correct: #3DBFA8; --correct-light: #E6F7F4;
+    --wrong: #F46B6B; --wrong-light: #FFF0F0;
+    --text: #1A2A3A; --muted: #7A8FA0; --border: #D8CFF5;
+    --progress-bg: #E8E0F8; --shadow: 0 4px 20px rgba(124,92,191,0.10);
+    --lv1: #4BA3E3; --lv1-light: #EBF5FD;
+    --lv2: #F5A623; --lv2-light: #FEF6E7;
+    --lv3: #3DBFA8; --lv3-light: #E6F7F4;
+    --lv4: #F46B6B; --lv4-light: #FFF0F0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito','Noto Sans KR',sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+  header { width: 100%; background: linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color: white; padding: 18px 24px 14px; text-align: center; }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: .8; margin-bottom: 4px; font-family: 'Noto Sans KR',sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; }
+  header .subtitle { font-size: 13px; opacity: .85; margin-top: 3px; font-family: 'Noto Sans KR',sans-serif; }
+
+  #levelScreen { width: 100%; max-width: 640px; padding: 20px; }
+  .level-intro { background: var(--primary-light); border-radius: 16px; padding: 18px 20px; margin-bottom: 20px; font-size: 14px; font-family: 'Noto Sans KR',sans-serif; line-height: 1.75; color: var(--text); text-align: center; }
+  .level-intro strong { color: var(--primary); font-size: 16px; }
+  .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .level-btn { border: none; border-radius: 16px; padding: 20px 16px; font-family: 'Nunito','Noto Sans KR',sans-serif; cursor: pointer; transition: all .18s; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,.08); }
+  .level-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,.12); }
+  .level-btn .lv-num { font-size: 22px; font-weight: 900; display: block; margin-bottom: 6px; }
+  .level-btn .lv-title { font-size: 13px; font-weight: 800; display: block; margin-bottom: 4px; font-family: 'Noto Sans KR',sans-serif; }
+  .level-btn .lv-desc { font-size: 11px; opacity: .8; font-family: 'Noto Sans KR',sans-serif; line-height: 1.4; }
+  .lv1-btn { background: var(--lv1-light); color: var(--lv1); border: 2px solid var(--lv1); }
+  .lv2-btn { background: var(--lv2-light); color: var(--lv2); border: 2px solid var(--lv2); }
+  .lv3-btn { background: var(--lv3-light); color: var(--lv3); border: 2px solid var(--lv3); }
+  .lv4-btn { background: var(--lv4-light); color: var(--lv4); border: 2px solid var(--lv4); }
+
+  .progress-wrap { width: 100%; max-width: 640px; padding: 16px 20px 0; display: none; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-family: 'Noto Sans KR',sans-serif; }
+  .progress-bar { height: 8px; background: var(--progress-bg); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,var(--primary),var(--correct)); border-radius: 99px; transition: width .4s ease; width: 0%; }
+
+  .level-badge-wrap { width: 100%; max-width: 640px; padding: 10px 20px 0; display: none; }
+  .level-badge { display: inline-block; border-radius: 20px; padding: 4px 14px; font-size: 12px; font-weight: 800; font-family: 'Noto Sans KR',sans-serif; }
+  .lv1-badge { background: var(--lv1-light); color: var(--lv1); }
+  .lv2-badge { background: var(--lv2-light); color: var(--lv2); }
+  .lv3-badge { background: var(--lv3-light); color: var(--lv3); }
+  .lv4-badge { background: var(--lv4-light); color: var(--lv4); }
+
+  main { width: 100%; max-width: 640px; padding: 12px 20px 40px; flex: 1; display: none; }
+  .card { background: var(--card); border-radius: 20px; border: 1.5px solid var(--border); padding: 28px 24px 24px; box-shadow: var(--shadow); }
+
+  .q-number { font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: .06em; margin-bottom: 6px; }
+  .q-type-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 9px; border-radius: 20px; margin-bottom: 10px; font-family: 'Noto Sans KR',sans-serif; }
+  .q-type-badge.two  { background: #EDE7FF; color: var(--primary); }
+  .q-type-badge.four { background: #E6F7F4; color: #1A7A6A; }
+  .q-instruction { background: var(--primary-light); border-radius: 12px; padding: 12px 16px; margin-bottom: 22px; font-size: 13px; color: var(--primary-dark); font-family: 'Noto Sans KR',sans-serif; line-height: 1.6; }
+
+  .q-sentence { font-size: 22px; font-weight: 800; line-height: 1.6; margin-bottom: 24px; letter-spacing: -.3px; }
+  .q-sentence .highlight  { background: #EDE7FF; color: var(--primary); border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .trap-word  { background: #FFE4E1; color: var(--wrong); border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .time-clue  { background: #FFF8E1; color: #B8860B; border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .blank { display: inline-block; min-width: 130px; height: 1.2em; border-bottom: 3px solid var(--primary); color: var(--primary); font-weight: 900; text-align: center; padding: 0 6px; vertical-align: middle; line-height: 1.2em; }
+
+  .choices-two  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .choices-four { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+  .choice-btn { border: 2px solid var(--border); background: #fff; border-radius: 14px; padding: 16px 12px; font-size: 15px; font-weight: 800; color: var(--text); cursor: pointer; transition: all .15s; font-family: 'Nunito',sans-serif; text-align: center; line-height: 1.4; }
+  .choices-four .choice-btn { font-size: 17px; padding: 16px 18px; }
+  .choice-btn:not(:disabled):hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-2px); }
+  .choice-btn.selected-correct { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn.selected-wrong   { background: var(--wrong-light);   border-color: var(--wrong);   color: #C94040; }
+  .choice-btn.show-answer      { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn:disabled { cursor: default; }
+
+  .transform-box { background: var(--primary-light); border-radius: 12px; padding: 12px 16px; margin-bottom: 14px; display: none; border: 1.5px solid var(--border); }
+  .transform-box.visible { display: block; animation: fadeIn .25s ease; }
+  .transform-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .transform-row:last-child { margin-bottom: 0; }
+  .transform-label { font-size: 10px; font-weight: 800; color: var(--primary); background: #fff; border: 1.5px solid var(--border); border-radius: 6px; padding: 2px 7px; white-space: nowrap; font-family: 'Noto Sans KR',sans-serif; }
+  .transform-sentence { font-size: 14px; font-weight: 700; color: var(--text); }
+  .transform-sentence.em { color: var(--primary); font-weight: 800; }
+  .arrow { color: var(--primary); font-size: 16px; font-weight: 900; }
+
+  .trap-box { background: #FFF4F4; border: 1.5px solid var(--wrong); border-radius: 12px; padding: 12px 16px; margin-bottom: 14px; display: none; font-size: 13px; font-family: 'Noto Sans KR',sans-serif; line-height: 1.7; color: #8B1A1A; }
+  .trap-box.visible { display: block; animation: fadeIn .25s ease; }
+  .trap-box strong { color: var(--wrong); }
+
+  .feedback { border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: none; font-family: 'Noto Sans KR',sans-serif; line-height: 1.7; font-size: 13px; }
+  .feedback.show    { display: block; animation: fadeIn .25s ease; }
+  .feedback.correct { background: var(--correct-light); border: 1.5px solid var(--correct); color: #1A7A6A; }
+  .feedback.wrong   { background: var(--wrong-light);   border: 1.5px solid var(--wrong);   color: #C94040; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+
+  .btn-next { width: 100%; background: linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; display: none; font-family: 'Nunito',sans-serif; transition: transform .15s,box-shadow .15s; box-shadow: 0 4px 12px rgba(124,92,191,.35); }
+  .btn-next.show { display: block; animation: fadeIn .25s ease; }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  #result-screen { display: none; padding: 20px; max-width: 640px; width: 100%; }
+  .result-card { background: white; border-radius: 24px; border: 1.5px solid var(--border); padding: 36px 28px; text-align: center; box-shadow: var(--shadow); }
+  .result-emoji { font-size: 60px; margin-bottom: 10px; }
+  .result-stars { font-size: 34px; letter-spacing: 4px; margin-bottom: 14px; }
+  .result-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .result-score { font-size: 15px; color: var(--muted); font-family: 'Noto Sans KR',sans-serif; margin-bottom: 20px; line-height: 1.7; }
+  .result-score strong { color: var(--text); font-size: 20px; }
+  .result-msg { background: var(--primary-light); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; font-family: 'Noto Sans KR',sans-serif; line-height: 1.75; color: var(--text); text-align: left; }
+  .btn-group { display: flex; flex-direction: column; gap: 10px; }
+  .btn-retry-wrong,.btn-retry-all,.btn-level-select { border: none; border-radius: 14px; padding: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito',sans-serif; transition: all .15s; }
+  .btn-retry-wrong  { background: linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%); color: #fff; box-shadow: 0 4px 12px rgba(124,92,191,.3); }
+  .btn-retry-all    { background: var(--primary-light); color: var(--primary); border: 2px solid var(--border); }
+  .btn-level-select { background: #fff; color: var(--text); border: 2px solid var(--border); }
+  .btn-retry-wrong:hover,.btn-retry-all:hover,.btn-level-select:hover { transform: translateY(-2px); }
+  .btn-retry-wrong:disabled { background: #ccc; box-shadow: none; cursor: default; transform: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">GT-X · 시제편 통합 도전 · 문법 함정 탈출</div>
+  <h1>🏆 시제편 통합 도전</h1>
+  <div class="subtitle">레벨을 선택해서 도전해보세요!</div>
+</header>
+
+<div id="levelScreen">
+  <div class="level-intro">
+    <strong>레벨을 선택하세요!</strong><br>
+    각 레벨은 10문제로 구성되어 있어요.<br>
+    어려운 레벨일수록 더 많은 판단이 필요해요!
+  </div>
+  <div class="level-grid">
+    <button class="level-btn lv1-btn" onclick="startLevel(1)">
+      <span class="lv-num">⭐</span>
+      <span class="lv-title">레벨 1</span>
+      <span class="lv-desc">be동사+ing<br>진짜 현재진행형 찾기</span>
+    </button>
+    <button class="level-btn lv2-btn" onclick="startLevel(2)">
+      <span class="lv-num">⭐⭐</span>
+      <span class="lv-title">레벨 2</span>
+      <span class="lv-desc">시간 표현 단서로<br>시제 고르기</span>
+    </button>
+    <button class="level-btn lv3-btn" onclick="startLevel(3)">
+      <span class="lv-num">⭐⭐⭐</span>
+      <span class="lv-title">레벨 3</span>
+      <span class="lv-desc">두 가지 기준<br>혼합 판단</span>
+    </button>
+    <button class="level-btn lv4-btn" onclick="startLevel(4)">
+      <span class="lv-num">⭐⭐⭐⭐</span>
+      <span class="lv-title">레벨 4</span>
+      <span class="lv-desc">-ing 함정 탈출<br>형용사·명사 구별</span>
+    </button>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-info">
+    <span id="progressLabel">0 / 10</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="level-badge-wrap" id="levelBadgeWrap">
+  <span class="level-badge" id="levelBadge"></span>
+</div>
+
+<main id="quizMain"><div class="card" id="quizCard"></div></main>
+
+<div id="result-screen">
+  <div class="result-card">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="btn-group">
+      <button class="btn-retry-wrong" id="btnRetryWrong" onclick="retryWrong()">오답만 다시 풀기</button>
+      <button class="btn-retry-all" onclick="retryAll()">같은 레벨 다시 풀기</button>
+      <button class="btn-level-select" onclick="goLevelSelect()">🔢 다른 레벨 선택</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LEVELS = {
+  1: {
+    name: "레벨 1 · be동사+ing 찾기", badgeClass: "lv1-badge",
+    questions: [
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The chef <span class='highlight'>is cutting</span> vegetables <span class='time-clue'>right now</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"The chef cuts vegetables.",progressive:"The chef is cutting vegetables right now."},
+        trapNote:null,
+        correctFeedback:"맞아요! is + cutting → be동사(is) 있으니 진짜 현재진행형! 🍳",
+        wrongFeedback:"is + cutting이에요. be동사(is)가 있으니 현재진행형이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"My cat <span class='highlight'>hates</span> getting wet.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! 동사는 hates예요. be동사 없음 → 현재시제! 🐱",
+        wrongFeedback:"getting이 보여도 be동사가 없어요. 동사는 hates → 현재시제예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"We <span class='highlight'>are packing</span> our bags <span class='time-clue'>right now</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"We pack our bags.",progressive:"We are packing our bags right now."},
+        trapNote:null,
+        correctFeedback:"정확해요! are + packing + right now → 현재진행형! 🧳",
+        wrongFeedback:"are + packing + right now → 현재진행형이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The teacher <span class='highlight'>explains</span> the rules <span class='time-clue'>every class</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"완벽해요! every class + be동사 없음 → 현재시제! 📋",
+        wrongFeedback:"every class는 반복이에요. be동사 없음 → 현재시제예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The girl <span class='highlight'>is drawing</span> a rainbow <span class='time-clue'>now</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"The girl draws a rainbow.",progressive:"The girl is drawing a rainbow now."},
+        trapNote:null,
+        correctFeedback:"맞아요! is + drawing + now → 현재진행형! 🌈",
+        wrongFeedback:"be동사(is) + drawing + now → 현재진행형이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Dad <span class='highlight'>reads</span> the newspaper <span class='time-clue'>every morning</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! every morning + be동사 없음 → 현재시제! 📰",
+        wrongFeedback:"every morning + 동사 reads → 현재시제예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The baby <span class='highlight'>is crawling</span> across the floor <span class='time-clue'>right now</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"The baby crawls across the floor.",progressive:"The baby is crawling across the floor right now."},
+        trapNote:null,
+        correctFeedback:"정확해요! is + crawling + right now → 현재진행형! 👶",
+        wrongFeedback:"be동사(is) + crawling + right now → 현재진행형이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"She <span class='highlight'>needs</span> helping with her project.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! helping이 보여도 동사는 needs예요. be동사 없음 → 현재시제! 🛠️",
+        wrongFeedback:"helping이 보여도 be동사가 없어요. 동사는 needs → 현재시제예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Look! A squirrel <span class='highlight'>is climbing</span> that tree <span class='time-clue'>now</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"A squirrel climbs that tree.",progressive:"A squirrel is climbing that tree now."},
+        trapNote:null,
+        correctFeedback:"맞아요! Look! + is + climbing + now → 현재진행형! 🐿️",
+        wrongFeedback:"be동사(is) + climbing + now → 현재진행형이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"My brother <span class='highlight'>keeps</span> leaving his shoes at the door.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"완벽해요! leaving이 보여도 동사는 keeps예요. be동사 없음 → 현재시제! 👟",
+        wrongFeedback:"leaving이 보여도 be동사가 없어요. 동사는 keeps → 현재시제예요." }
+    ]
+  },
+  2: {
+    name: "레벨 2 · 시간 표현 단서", badgeClass: "lv2-badge",
+    questions: [
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"Mike <span class='blank' id='blank'></span> his teeth <span class='time-clue'>every night</span>.",
+        choices:["brushes","is brushing","brush","are brushing"], answer:"brushes",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! every night → 반복 습관 → 현재시제 brushes! 🦷",
+        wrongFeedback:"every night은 반복 습관이에요. 현재시제 → brushes예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Quick! The train <span class='highlight'>is leaving</span> <span class='time-clue'>right now</span>!",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! is + leaving + right now → 현재진행형! 🚂",
+        wrongFeedback:"right now + be동사(is) → 현재진행형이에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"It <span class='blank' id='blank'></span> <span class='time-clue'>at the moment</span>. Bring an umbrella!",
+        choices:["is raining","rains","rain","are raining"], answer:"is raining",
+        transform:null, trapNote:null,
+        correctFeedback:"정확해요! at the moment → 지금 일어나는 일 → is raining! ☔",
+        wrongFeedback:"at the moment(지금 이 순간) → 현재진행형 → is raining이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"My family <span class='highlight'>eats</span> dinner together <span class='time-clue'>every evening</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"완벽해요! every evening + be동사 없음 → 현재시제! 🍽️",
+        wrongFeedback:"every evening은 반복 습관이에요. be동사 없음 → 현재시제예요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"Shh! The students <span class='blank' id='blank'></span> a test <span class='time-clue'>now</span>.",
+        choices:["are taking","take","takes","is taking"], answer:"are taking",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! now + 복수주어 → are taking! 📝",
+        wrongFeedback:"now(지금) → 현재진행형, 주어 students(복수) → are taking이에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"Lisa <span class='blank' id='blank'></span> to work by bike <span class='time-clue'>every day</span>.",
+        choices:["rides","is riding","ride","are riding"], answer:"rides",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! every day → 반복 습관 → 현재시제 rides! 🚲",
+        wrongFeedback:"every day는 반복 습관이에요. 현재시제 → rides예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The mechanic <span class='highlight'>is fixing</span> our car <span class='time-clue'>at the moment</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:null, trapNote:null,
+        correctFeedback:"정확해요! is + fixing + at the moment → 현재진행형! 🔧",
+        wrongFeedback:"be동사(is) + fixing + at the moment → 현재진행형이에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"The library <span class='blank' id='blank'></span> at 9 AM <span class='time-clue'>every day</span>.",
+        choices:["opens","is opening","open","are opening"], answer:"opens",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! every day → 반복 일과 → 현재시제 opens! 📚",
+        wrongFeedback:"every day는 반복 일과예요. 현재시제 → opens예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Watch out! The cup <span class='highlight'>is falling</span> off the table <span class='time-clue'>right now</span>!",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! is + falling + right now → 현재진행형! 🥤",
+        wrongFeedback:"Watch out! + right now → 현재진행형 → is falling이에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"He <span class='blank' id='blank'></span> <span class='time-clue'>always</span> his homework after dinner.",
+        choices:["does","is doing","do","are doing"], answer:"does",
+        transform:null, trapNote:null,
+        correctFeedback:"완벽해요! always → 반복 습관 → 현재시제 does! ✏️",
+        wrongFeedback:"always는 반복 습관이에요. 현재시제 → does예요." }
+    ]
+  },
+  3: {
+    name: "레벨 3 · 혼합 판단", badgeClass: "lv3-badge",
+    questions: [
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"The sun <span class='blank' id='blank'></span> in the east <span class='time-clue'>every day</span>.",
+        choices:["rises","is rising","rise","are rising"], answer:"rises",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! 변하지 않는 사실 + every day → 현재시제 rises! 🌅",
+        wrongFeedback:"변하지 않는 사실은 현재시제로 써요. every day → rises예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Look! A dolphin <span class='highlight'>is jumping</span> out of the water <span class='time-clue'>right now</span>!",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"A dolphin jumps out of the water.",progressive:"A dolphin is jumping out of the water right now."},
+        trapNote:null,
+        correctFeedback:"정확해요! Look! + is + jumping + right now → 현재진행형! 🐬",
+        wrongFeedback:"Look! + be동사(is) + jumping + right now → 현재진행형이에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"She <span class='blank' id='blank'></span> in Paris <span class='time-clue'>at the moment</span>.",
+        choices:["is staying","stays","stay","are staying"], answer:"is staying",
+        transform:{present:"She stays in Paris.",progressive:"She is staying in Paris at the moment."},
+        trapNote:null,
+        correctFeedback:"맞아요! at the moment → 현재진행형 → is staying! 🗼",
+        wrongFeedback:"at the moment(지금 이 순간) → 현재진행형 → is staying이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Bees <span class='highlight'>make</span> honey from flowers.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"완벽해요! 변하지 않는 사실 + be동사 없음 → 현재시제! 🐝",
+        wrongFeedback:"변하지 않는 사실은 현재시제로 써요. be동사 없음 → 현재시제예요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"The kids <span class='blank' id='blank'></span> loudly in the hall <span class='time-clue'>right now</span>.",
+        choices:["are laughing","laugh","laughs","is laughing"], answer:"are laughing",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! right now + 복수주어(kids) → are laughing! 😄",
+        wrongFeedback:"right now → 현재진행형, 주어 kids(복수) → are laughing이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Water <span class='highlight'>boils</span> at 100 degrees Celsius.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! 과학적 사실 → 현재시제! 🌡️",
+        wrongFeedback:"변하지 않는 과학적 사실은 현재시제로 써요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"My parents <span class='blank' id='blank'></span> a new house <span class='time-clue'>at the moment</span>.",
+        choices:["are building","build","builds","is building"], answer:"are building",
+        transform:{present:"My parents build a new house.",progressive:"My parents are building a new house at the moment."},
+        trapNote:null,
+        correctFeedback:"정확해요! at the moment + 복수주어 → are building! 🏠",
+        wrongFeedback:"at the moment + 주어 parents(복수) → are building이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"Dogs <span class='highlight'>wag</span> their tails when they are happy.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! 일반적인 사실 + be동사 없음 → 현재시제! 🐶",
+        wrongFeedback:"일반적인 사실은 현재시제로 써요. be동사 없음 → 현재시제예요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"Hurry! The concert <span class='blank' id='blank'></span> <span class='time-clue'>right now</span>!",
+        choices:["is starting","starts","start","are starting"], answer:"is starting",
+        transform:null, trapNote:null,
+        correctFeedback:"맞아요! Hurry! + right now → 현재진행형 → is starting! 🎵",
+        wrongFeedback:"Hurry! + right now는 현재진행형 신호예요. is starting이에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The moon <span class='highlight'>goes</span> around the earth.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"완벽해요! 변하지 않는 과학적 사실 → 현재시제! 🌙",
+        wrongFeedback:"변하지 않는 과학적 사실은 현재시제로 써요." }
+    ]
+  },
+  4: {
+    name: "레벨 4 · -ing 함정 탈출", badgeClass: "lv4-badge",
+    questions: [
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The weather today is <span class='trap-word'>amazing</span>!",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null,
+        trapNote:"⚠️ <strong>amazing</strong>은 '놀라운'이라는 뜻의 <strong>형용사</strong>예요. -ing로 끝나지만 현재진행형이 아니에요!",
+        correctFeedback:"맞아요! amazing은 '놀라운' 형용사예요. be동사 + 형용사 → 현재시제! ☀️",
+        wrongFeedback:"amazing은 '놀라운' 형용사예요. -ing로 끝나도 현재진행형이 아니에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"He lives on the third floor of that <span class='trap-word'>building</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null,
+        trapNote:"⚠️ <strong>building</strong>은 '건물'이라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 전혀 관계없어요!",
+        correctFeedback:"잘했어요! building은 '건물' 명사예요. 동사는 lives → 현재시제! 🏢",
+        wrongFeedback:"building은 '건물' 명사예요. -ing로 끝나도 현재진행형이 아니에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"This puzzle <span class='blank' id='blank'></span> really <span class='trap-word'>challenging</span>.",
+        choices:["is","is being","are","was"], answer:"is",
+        trapNote:"⚠️ <strong>challenging</strong>은 '도전적인'이라는 뜻의 <strong>형용사</strong>예요. be동사 + 형용사 → is가 맞아요.",
+        correctFeedback:"맞아요! challenging은 '도전적인' 형용사예요. be동사 + 형용사 → is! 🧩",
+        wrongFeedback:"challenging은 '도전적인' 형용사예요. be동사 + 형용사 → is가 맞아요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"She drinks a glass of milk <span class='time-clue'>every morning</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null, trapNote:null,
+        correctFeedback:"잘했어요! morning은 '아침' 명사, every morning → 반복 습관 → 현재시제! 🥛",
+        wrongFeedback:"every morning → 반복 습관 → 현재시제예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The new roller coaster is so <span class='trap-word'>exciting</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null,
+        trapNote:"⚠️ <strong>exciting</strong>은 '신나는'이라는 뜻의 <strong>형용사</strong>예요. be동사 + 형용사 → 현재시제!",
+        correctFeedback:"맞아요! exciting은 '신나는' 형용사예요. be동사 + 형용사 → 현재시제! 🎢",
+        wrongFeedback:"exciting은 '신나는' 형용사예요. -ing로 끝나도 현재진행형이 아니에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"The <span class='trap-word'>ring</span> on her finger <span class='blank' id='blank'></span> beautiful.",
+        choices:["looks","is looking","look","are looking"], answer:"looks",
+        trapNote:"⚠️ <strong>ring</strong>은 '반지'라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 무관해요!",
+        correctFeedback:"맞아요! ring은 '반지' 명사예요. 일반적인 상태 → 현재시제 looks! 💍",
+        wrongFeedback:"ring은 '반지' 명사예요. 일반적인 상태 → 현재시제 → looks예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"This book is really <span class='trap-word'>boring</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null,
+        trapNote:"⚠️ <strong>boring</strong>은 '지루한'이라는 뜻의 <strong>형용사</strong>예요. be동사 + 형용사 → 현재시제!",
+        correctFeedback:"잘했어요! boring은 '지루한' 형용사예요. be동사 + 형용사 → 현재시제! 😴",
+        wrongFeedback:"boring은 '지루한' 형용사예요. -ing로 끝나도 현재진행형이 아니에요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"My little brother <span class='highlight'>is singing</span> in the shower <span class='time-clue'>right now</span>.",
+        choices:["현재진행형 🔄","현재시제 ✅"], answer:"현재진행형 🔄",
+        transform:{present:"My little brother sings in the shower.",progressive:"My little brother is singing in the shower right now."},
+        trapNote:null,
+        correctFeedback:"맞아요! is + singing + right now → 진짜 현재진행형! 🎤",
+        wrongFeedback:"be동사(is) + singing + right now → 현재진행형이에요." },
+      { type:"four", instruction:"빈칸에 알맞은 말을 고르세요.",
+        sentence:"The <span class='trap-word'>king</span> <span class='blank' id='blank'></span> his people fairly.",
+        choices:["treats","is treating","treat","are treating"], answer:"treats",
+        trapNote:"⚠️ <strong>king</strong>은 '왕'이라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 전혀 관계없어요!",
+        correctFeedback:"맞아요! king은 '왕' 명사예요. 일반적 사실 → 현재시제 treats! 👑",
+        wrongFeedback:"king은 '왕' 명사예요. 일반적 사실 → 현재시제 → treats예요." },
+      { type:"two", instruction:"이 문장의 시제를 고르세요.",
+        sentence:"The science experiment is really <span class='trap-word'>interesting</span>.",
+        choices:["현재시제 ✅","현재진행형 🔄"], answer:"현재시제 ✅",
+        transform:null,
+        trapNote:"⚠️ <strong>interesting</strong>은 '흥미로운'이라는 뜻의 <strong>형용사</strong>예요. be동사 + 형용사 → 현재시제!",
+        correctFeedback:"완벽해요! interesting은 '흥미로운' 형용사예요. be동사 + 형용사 → 현재시제! 🔬",
+        wrongFeedback:"interesting은 '흥미로운' 형용사예요. -ing로 끝나도 현재진행형이 아니에요." }
+    ]
+  }
+};
+
+let currentLevel=null, questions=[], current=0, wrongIndexes=[];
+
+function startLevel(lv) {
+  currentLevel=lv;
+  const lvData=LEVELS[lv];
+  questions=shuffle([...lvData.questions]);
+  current=0; wrongIndexes=[];
+  document.getElementById('levelScreen').style.display='none';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('progressWrap').style.display='block';
+  document.getElementById('levelBadgeWrap').style.display='block';
+  document.getElementById('quizMain').style.display='block';
+  const badge=document.getElementById('levelBadge');
+  badge.textContent=lvData.name;
+  badge.className='level-badge '+lvData.badgeClass;
+  renderQuestion();
+}
+
+function shuffle(arr) {
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function renderQuestion() {
+  updateProgress();
+  if(current>=questions.length){showResult();return;}
+  const q=questions[current];
+  const isTwo=q.type==='two';
+  const choicesClass=isTwo?'choices-two':'choices-four';
+  const tBox=q.transform?`
+    <div class="transform-box" id="transformBox">
+      <div class="transform-row"><span class="transform-label">현재시제</span><span class="transform-sentence">${q.transform.present}</span></div>
+      <div class="transform-row"><span class="arrow">→</span><span class="transform-label">현재진행형</span><span class="transform-sentence em">${q.transform.progressive}</span></div>
+    </div>`:'';
+  const trapHTML=q.trapNote?`<div class="trap-box" id="trapBox">${q.trapNote}</div>`:'';
+  // 이지선다도 선택지 순서를 매번 섞어서 정답 위치 고정 방지
+  const displayChoices = isTwo ? shuffle([...q.choices]) : q.choices;
+  const choicesHTML=displayChoices.map(c=>`<button class="choice-btn" onclick="selectAnswer(this,'${c.replace(/'/g,"\\'")}')"> ${c} </button>`).join('');
+  document.getElementById('quizCard').innerHTML=`
+    <div class="q-number">Q${current+1} / ${questions.length}</div>
+    <span class="q-type-badge ${isTwo?'two':'four'}">${isTwo?'이지선다':'사지선다'}</span>
+    <div class="q-instruction">${q.instruction}</div>
+    <div class="q-sentence">${q.sentence}</div>
+    <div class="${choicesClass}">${choicesHTML}</div>
+    ${tBox}${trapHTML}
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+      ${current+1<questions.length?'다음 문제 →':'결과 보기 🏁'}
+    </button>`;
+}
+
+function selectAnswer(btn,chosen) {
+  const q=questions[current];
+  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  const feedback=document.getElementById('feedback');
+  const tBox=document.getElementById('transformBox');
+  const trapBox=document.getElementById('trapBox');
+  const btnNext=document.getElementById('btnNext');
+  const blankEl=document.getElementById('blank');
+  if(blankEl){blankEl.textContent=q.answer;blankEl.style.color='#1A7A6A';blankEl.style.borderBottomColor='#3DBFA8';}
+  if(chosen===q.answer){
+    btn.classList.add('selected-correct');
+    feedback.className='feedback correct show';
+    feedback.textContent='⭕ '+q.correctFeedback;
+  } else {
+    btn.classList.add('selected-wrong');
+    document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent.trim()===q.answer.trim())b.classList.add('show-answer');});
+    feedback.className='feedback wrong show';
+    feedback.textContent='❌ '+q.wrongFeedback;
+    wrongIndexes.push(current);
+  }
+  if(tBox)tBox.classList.add('visible');
+  if(trapBox)trapBox.classList.add('visible');
+  btnNext.classList.add('show');
+}
+
+function nextQuestion(){current++;renderQuestion();}
+
+function updateProgress(){
+  const total=questions.length;
+  const pct=total>0?Math.round((current/total)*100):0;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=`${current} / ${total}`;
+  document.getElementById('progressPct').textContent=pct+'%';
+}
+
+function showResult(){
+  document.getElementById('quizMain').style.display='none';
+  document.getElementById('levelBadgeWrap').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  const total=questions.length, correct=total-wrongIndexes.length;
+  const pct=Math.round((correct/total)*100);
+  const lvName=LEVELS[currentLevel].name;
+  let emoji,stars,title,msg;
+  if(pct===100){emoji='🏆';stars='⭐⭐⭐';title='완벽해요!';msg=`${lvName} 완벽 통과! 모든 문제를 맞혔어요. 다음 레벨도 도전해보세요! 🎉`;}
+  else if(pct>=70){emoji='😊';stars='⭐⭐';title='잘 했어요!';msg='거의 다 맞혔어요! 오답 복습으로 헷갈린 부분을 확인해 보세요.';}
+  else{emoji='💪';stars='⭐';title='다시 도전해봐요!';msg='같은 레벨을 한 번 더 풀어보거나 오답만 다시 풀어보세요!';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultStars').textContent=stars;
+  document.getElementById('resultTitle').textContent=title;
+  document.getElementById('resultScore').innerHTML=`<strong>${correct} / ${total}</strong> 문제 정답<br>정답률 ${pct}%`;
+  document.getElementById('resultMsg').textContent=msg;
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('progressLabel').textContent=`${total} / ${total}`;
+  document.getElementById('progressPct').textContent='100%';
+  const retryBtn=document.getElementById('btnRetryWrong');
+  retryBtn.disabled=wrongIndexes.length===0;
+  retryBtn.textContent=wrongIndexes.length>0?`오답만 다시 풀기 (${wrongIndexes.length}문제)`:'오답 없음 🎉';
+}
+
+function retryWrong(){
+  questions=wrongIndexes.map(i=>questions[i]);
+  current=0;wrongIndexes=[];
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('levelBadgeWrap').style.display='block';
+  document.getElementById('quizMain').style.display='block';
+  renderQuestion();
+}
+function retryAll(){startLevel(currentLevel);}
+function goLevelSelect(){
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('progressWrap').style.display='none';
+  document.getElementById('levelScreen').style.display='block';
+}
+</script>
+</body>
+</html>

@@ -17,7 +17,8 @@
     --green:#2E9E5B;--green-light:#E8F7EF;--green-dark:#1E7A44;
     --orange:#E8720C;--orange-light:#FEF0E6;
     --indigo:#3D5A9E;--indigo-light:#EBF0FB;
-    --purple:#7C5CBF;--purple-light:#F0ECF9;
+    --purple:#7C5CBF;--purple-light:#F0ECF9;--purple-dark:#5C3EA0;
+    --gt:#7C5CBF;--gt-light:#F0EBFD;--gt-dark:#5C3EA0;
     --bg:#F4F7FB;--card:#FFFFFF;--text:#1A2A3A;--muted:#7A8FA0;--border:#D6E8F5;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -51,6 +52,7 @@
   /* ── 영역별 카드 바탕색 ── */
   .gv-card{background:#EBF5FD!important;}
   .gq-card{background:#E6F5F7!important;}
+  .gt-card{background:#F0EBFD!important;}
   .challenge-card{background:#FDF6DC!important;}
   .test-card{background:#FFF3F0!important;}
 
@@ -98,6 +100,16 @@
   /* 통합/테스트 */
   .challenge-color{background:linear-gradient(135deg,var(--navy),var(--navy2));}
   .test-color{background:linear-gradient(135deg,#8B4513,#5C2A00);}
+  /* GT */
+  .gt-a-color{background:linear-gradient(135deg,#7C5CBF,#5C3EA0);}
+  .gt-b-color{background:linear-gradient(135deg,#9B6DD6,#7C5CBF);}
+  .gt-c-color{background:linear-gradient(135deg,#5C3EA0,#3D2070);}
+  .gt-border:hover{border-color:var(--gt);}
+  /* GT 탭 */
+  .tab-btn.t-gt{border-color:var(--gt-dark);}
+  .tab-btn.t-gt:hover,.tab-btn.t-gt.active{background:var(--gt-dark);border-color:var(--gt-dark);}
+  .tab-btn.t-gt.active .tb-name,.tab-btn.t-gt.active .tb-range,.tab-btn.t-gt:hover .tb-name,.tab-btn.t-gt:hover .tb-range{color:white;}
+  .badge-GT{background:#EDE7FF;color:#5C3EA0;}
 
   /* ── 배지 색상 ── */
   .badge-A{background:var(--sky-light);color:var(--sky-dark);}
@@ -158,9 +170,9 @@
   <h1>🔍 영문법 탐정단</h1>
   <div class="tagline">단계별로 차근차근 · 탭하고 선택하고 완성!</div>
   <div class="stats-row">
-    <div class="stat"><div class="n">2</div><div class="l">영역</div></div>
-    <div class="stat"><div class="n">34</div><div class="l">앱</div></div>
-    <div class="stat"><div class="n">6</div><div class="l">테스트</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">영역</div></div>
+    <div class="stat"><div class="n">40</div><div class="l">앱</div></div>
+    <div class="stat"><div class="n">7</div><div class="l">테스트</div></div>
   </div>
 </header>
 
@@ -176,7 +188,7 @@
     <button class="tab-btn t-all active" onclick="showTab('all', this)">
       <div class="tb-icon">🔍</div>
       <span class="tb-name">전체</span>
-      <span class="tb-range">0001 ~ 0033</span>
+      <span class="tb-range">0001 ~ 0039</span>
     </button>
     <button class="tab-btn t-gv" onclick="showTab('gv', this)">
       <div class="tb-icon">🔵</div>
@@ -187,6 +199,11 @@
       <div class="tb-icon">🟢</div>
       <span class="tb-name">의문문·부정문 GQ</span>
       <span class="tb-range">0018 ~ 0033</span>
+    </button>
+    <button class="tab-btn t-gt" onclick="showTab('gt', this)">
+      <div class="tb-icon">🟣</div>
+      <span class="tb-name">시제편 GT</span>
+      <span class="tb-range">0034 ~ 0039</span>
     </button>
   </div>
 </div>
@@ -440,6 +457,69 @@
 </div>
 </div><!-- /tab-gq -->
 
+<div class="divider tab-section show" id="div-gq" style="margin-top:20px;"><hr></div>
+
+<!-- GT -->
+<div class="tab-section show" id="tab-gt">
+<div class="section" style="margin-top:20px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,var(--gt),var(--gt-dark));">⏰</div>
+    <div>
+      <div class="section-title">GT 영역 — 시제편</div>
+      <div class="section-sub">현재시제 vs 현재진행형 · be동사+ing 판별 · -ing 함정 탈출</div>
+    </div>
+  </div>
+
+  <!-- 1단계 -->
+  <div style="font-size:12px;font-weight:700;color:var(--gt-dark);margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;">📌 1단계 — 현재시제 vs 현재진행형</div>
+  <div class="card-grid">
+    <a class="app-card gt-card gt-border" href="0034_시제1단계A형_GT-L1-A.html" style="border-color:var(--gt);">
+      <div class="app-num">0034</div><div class="app-icon gt-a-color">A</div>
+      <div class="app-info"><div class="app-name">진짜 현재진행형 찾기</div><div class="app-desc">be동사+ing 구별 · 이지선다 · 변환 박스</div></div>
+      <span class="app-badge badge-GT">GT-L1-A</span>
+    </a>
+    <a class="app-card gt-card gt-border" href="0035_시제1단계B형_GT-L1-B.html" style="border-color:var(--gt);">
+      <div class="app-num">0035</div><div class="app-icon gt-b-color">B</div>
+      <div class="app-info"><div class="app-name">시간 표현으로 시제 고르기</div><div class="app-desc">now/every day 등 시간 표현 단서 활용</div></div>
+      <span class="app-badge badge-GT">GT-L1-B</span>
+    </a>
+    <a class="app-card gt-card gt-border" href="0036_시제1단계C형_GT-L1-C.html" style="border-color:var(--gt);">
+      <div class="app-num">0036</div><div class="app-icon gt-c-color">C</div>
+      <div class="app-info"><div class="app-name">현재시제 vs 현재진행형 혼합</div><div class="app-desc">두 가지 판단 기준 혼합 · 12문제</div></div>
+      <span class="app-badge badge-GT">GT-L1-C</span>
+    </a>
+  </div>
+
+  <!-- 2단계 -->
+  <div style="font-size:12px;font-weight:700;color:var(--gt-dark);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">📌 2단계 — -ing 함정 탈출</div>
+  <div class="card-grid">
+    <a class="app-card gt-card gt-border" href="0037_시제2단계A형_GT-L2-A.html" style="border-color:var(--gt);">
+      <div class="app-num">0037</div><div class="app-icon gt-a-color">A</div>
+      <div class="app-info"><div class="app-name">-ing 함정 탈출</div><div class="app-desc">-ing로 끝나는 형용사·명사 구별 · 12문제</div></div>
+      <span class="app-badge badge-GT">GT-L2-A</span>
+    </a>
+  </div>
+
+  <!-- 통합도전 + 실전테스트 -->
+  <div style="font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">🏆 통합 도전 + 실전 테스트</div>
+  <div class="card-grid">
+    <a class="app-card challenge-card" href="0038_시제통합도전_GT-X.html" style="border-color:var(--gold);">
+      <div class="app-num">0038</div><div class="app-icon challenge-color">🏆</div>
+      <div class="app-info"><div class="app-name">시제편 통합 도전</div><div class="app-desc">레벨1~4 · 각 10문제 · be동사+ing·시간표현·함정</div></div>
+      <span class="app-badge badge-X">GT-X</span>
+    </a>
+  </div>
+  <div class="subgroup" style="margin-bottom:0;">
+    <div class="subgroup-title">📝 실전 테스트 (힌트 없이 풀기)</div>
+    <a class="app-card test-card" href="0039_시제실전테스트1_GT-TEST1.html" style="border-color:#D6E8F5;">
+      <div class="app-num">0039</div><div class="app-icon test-color" style="font-size:13px;">T1</div>
+      <div class="app-info"><div class="app-name">시제편 실전 테스트 1</div><div class="app-desc">현재시제 vs 현재진행형 · 기본 15문제</div></div>
+      <span class="app-badge badge-T">GT-TEST1</span>
+    </a>
+  </div>
+</div>
+</div><!-- /tab-gt -->
+
 <footer>
   미라클 영어 스터디 · 영문법 탐정단
 </footer>
@@ -450,9 +530,10 @@ function showTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const sections = {
-    gv: ['tab-gv', 'div-gv'],
-    gq: ['tab-gq'],
-    all: ['tab-gv', 'div-gv', 'tab-gq']
+    gv:  ['tab-gv', 'div-gv'],
+    gq:  ['tab-gq', 'div-gq'],
+    gt:  ['tab-gt'],
+    all: ['tab-gv', 'div-gv', 'tab-gq', 'div-gq', 'tab-gt']
   };
   document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('show'));
   const toShow = sections[tab] || sections['all'];

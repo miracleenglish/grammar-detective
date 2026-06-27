@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>-ing 함정 탈출 · GT-L2-A</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4FF;
+    --card: #FFFFFF;
+    --primary: #7C5CBF;
+    --primary-dark: #5C3EA0;
+    --primary-light: #F0EBFD;
+    --correct: #3DBFA8;
+    --correct-light: #E6F7F4;
+    --wrong: #F46B6B;
+    --wrong-light: #FFF0F0;
+    --text: #1A2A3A;
+    --muted: #7A8FA0;
+    --border: #D8CFF5;
+    --progress-bg: #E8E0F8;
+    --shadow: 0 4px 20px rgba(124,92,191,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+  header { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 18px 24px 14px; text-align: center; }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; }
+  header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; font-family: 'Noto Sans KR', sans-serif; }
+
+  .progress-wrap { width: 100%; max-width: 640px; padding: 16px 20px 0; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; }
+  .progress-bar { height: 8px; background: var(--progress-bg); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--correct)); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+
+  .tip-banner {
+    width: 100%; max-width: 640px;
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    padding: 12px 20px;
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.75;
+    color: var(--text);
+    margin-top: 14px;
+  }
+  .tip-banner strong { color: var(--primary); }
+  .tip-banner .warn { color: var(--wrong); font-weight: 800; }
+  .tip-banner .tip-row { margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; align-items: baseline; }
+  .tip-banner .tip-label { font-weight: 800; white-space: nowrap; }
+  .tip-banner .tip-label.adj { color: #2E7D32; }
+  .tip-banner .tip-label.noun { color: #1565C0; }
+  .tip-banner .tip-words { color: var(--text); font-size: 12px; }
+
+  main { width: 100%; max-width: 640px; padding: 16px 20px 40px; flex: 1; }
+  .card { background: var(--card); border-radius: 20px; border: 1.5px solid var(--border); padding: 28px 24px 24px; box-shadow: var(--shadow); }
+
+  .q-number { font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: 0.06em; margin-bottom: 6px; }
+  .q-type-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 9px; border-radius: 20px; margin-bottom: 10px; font-family: 'Noto Sans KR', sans-serif; }
+  .q-type-badge.two  { background: #EDE7FF; color: var(--primary); }
+  .q-type-badge.four { background: #E6F7F4; color: #1A7A6A; }
+
+  .q-instruction { background: var(--primary-light); border-radius: 12px; padding: 12px 16px; margin-bottom: 22px; font-size: 13px; color: var(--primary-dark); font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+
+  .q-sentence { font-size: 22px; font-weight: 800; line-height: 1.6; margin-bottom: 24px; letter-spacing: -0.3px; }
+  .q-sentence .highlight  { background: #EDE7FF; color: var(--primary); border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .trap-word  { background: #FFE4E1; color: var(--wrong); border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .time-clue  { background: #FFF8E1; color: #B8860B; border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .blank { display: inline-block; min-width: 130px; height: 1.2em; border-bottom: 3px solid var(--primary); color: var(--primary); font-weight: 900; text-align: center; padding: 0 6px; vertical-align: middle; line-height: 1.2em; }
+
+  .choices-two  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .choices-four { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+
+  .choice-btn { border: 2px solid var(--border); background: #fff; border-radius: 14px; padding: 16px 12px; font-size: 15px; font-weight: 800; color: var(--text); cursor: pointer; transition: all 0.15s; font-family: 'Nunito', sans-serif; text-align: center; line-height: 1.4; }
+  .choices-four .choice-btn { font-size: 17px; padding: 16px 18px; }
+  .choice-btn:not(:disabled):hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-2px); }
+  .choice-btn.selected-correct { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn.selected-wrong   { background: var(--wrong-light);   border-color: var(--wrong);   color: #C94040; }
+  .choice-btn.show-answer      { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn:disabled { cursor: default; }
+
+  /* 함정 해설 박스 */
+  .trap-box {
+    background: #FFF4F4;
+    border: 1.5px solid #F46B6B;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    display: none;
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.7;
+    color: #8B1A1A;
+  }
+  .trap-box.visible { display: block; animation: fadeIn 0.25s ease; }
+  .trap-box strong { color: var(--wrong); }
+
+  .feedback { border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: none; font-family: 'Noto Sans KR', sans-serif; line-height: 1.7; font-size: 13px; }
+  .feedback.show    { display: block; animation: fadeIn 0.25s ease; }
+  .feedback.correct { background: var(--correct-light); border: 1.5px solid var(--correct); color: #1A7A6A; }
+  .feedback.wrong   { background: var(--wrong-light);   border: 1.5px solid var(--wrong);   color: #C94040; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .btn-next { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; display: none; font-family: 'Nunito', sans-serif; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 12px rgba(124,92,191,0.35); }
+  .btn-next.show { display: block; animation: fadeIn 0.25s ease; }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  #result-screen { display: none; padding: 20px; max-width: 640px; width: 100%; }
+  .result-card { background: white; border-radius: 24px; border: 1.5px solid var(--border); padding: 36px 28px; text-align: center; box-shadow: var(--shadow); }
+  .result-emoji { font-size: 60px; margin-bottom: 10px; }
+  .result-stars { font-size: 34px; letter-spacing: 4px; margin-bottom: 14px; }
+  .result-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .result-score { font-size: 15px; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; margin-bottom: 20px; line-height: 1.7; }
+  .result-score strong { color: var(--text); font-size: 20px; }
+  .result-msg { background: var(--primary-light); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.75; color: var(--text); text-align: left; }
+  .btn-group { display: flex; flex-direction: column; gap: 10px; }
+  .btn-retry-wrong, .btn-retry-all { border: none; border-radius: 14px; padding: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+  .btn-retry-wrong { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 4px 12px rgba(124,92,191,0.3); }
+  .btn-retry-all   { background: var(--primary-light); color: var(--primary); border: 2px solid var(--border); }
+  .btn-retry-wrong:hover, .btn-retry-all:hover { transform: translateY(-2px); }
+  .btn-retry-wrong:disabled { background: #ccc; box-shadow: none; cursor: default; transform: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">GT-L2-A · 시제편 2단계 · 문법 함정 탈출</div>
+  <h1>🪤 -ing 함정 탈출</h1>
+  <div class="subtitle">-ing로 끝나도 현재진행형이 아닐 수 있어요!</div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="progressLabel">0 / 12</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="tip-banner">
+  ⚠️ <strong class="warn">-ing로 끝나지만 동사의 현재진행형이 아닌 단어들을 조심하세요!</strong>
+  <div class="tip-row">
+    <span class="tip-label adj">📗 형용사 →</span>
+    <span class="tip-words">exciting (신나는), interesting (흥미로운), boring (지루한), amazing (놀라운)</span>
+  </div>
+  <div class="tip-row">
+    <span class="tip-label noun">📘 명사 →</span>
+    <span class="tip-words">building (건물), morning (아침), king (왕), ring (반지)</span>
+  </div>
+  <div class="tip-row">
+    현재진행형은 반드시 <strong>be동사(am/is/are) + 동사-ing</strong> 예요!
+  </div>
+</div>
+
+<main id="quizMain">
+  <div class="card" id="quizCard"></div>
+</main>
+
+<div id="result-screen">
+  <div class="result-card">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="btn-group">
+      <button class="btn-retry-wrong" id="btnRetryWrong" onclick="retryWrong()">오답만 다시 풀기</button>
+      <button class="btn-retry-all" onclick="retryAll()">전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // ── 형용사 함정 (4문제) ──
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "The movie is really <span class='trap-word'>exciting</span>.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    trapNote: "⚠️ <strong>exciting</strong>은 '신나는'이라는 뜻의 <strong>형용사</strong>예요. -ing로 끝나지만 현재진행형이 아니에요! 동사는 is → 현재시제",
+    correctFeedback: "맞아요! exciting은 '신나는' 형용사예요. be동사 + 형용사 → 현재시제! 🎬",
+    wrongFeedback: "exciting은 '신나는'이라는 형용사예요. -ing로 끝나도 현재진행형이 아니에요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "The story sounds <span class='trap-word'>interesting</span>.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    trapNote: "⚠️ <strong>interesting</strong>은 '흥미로운'이라는 뜻의 <strong>형용사</strong>예요. 동사는 sounds → 현재시제",
+    correctFeedback: "잘했어요! interesting은 '흥미로운' 형용사예요. 동사는 sounds → 현재시제! 📖",
+    wrongFeedback: "interesting은 '흥미로운' 형용사예요. 동사는 sounds → 현재시제예요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "This science class is <span class='trap-word'>boring</span> to him.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    trapNote: "⚠️ <strong>boring</strong>은 '지루한'이라는 뜻의 <strong>형용사</strong>예요. -ing로 끝나도 현재진행형이 아니에요! 동사는 is → 현재시제",
+    correctFeedback: "정확해요! boring은 '지루한' 형용사예요. be동사 + 형용사 → 현재시제! 😴",
+    wrongFeedback: "boring은 '지루한' 형용사예요. -ing로 끝나도 현재진행형이 아니에요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "The view from here <span class='blank' id='blank'></span> <span class='trap-word'>amazing</span>.",
+    choices: ["is", "is looking", "are", "are looking"],
+    answer: "is",
+    trapNote: "⚠️ <strong>amazing</strong>은 '놀라운'이라는 뜻의 <strong>형용사</strong>예요. be동사 + 형용사 → 현재시제! is가 맞아요.",
+    correctFeedback: "맞아요! amazing은 '놀라운' 형용사예요. be동사 + 형용사 → is amazing! 🏔️",
+    wrongFeedback: "amazing은 '놀라운' 형용사예요. be동사 + 형용사 구조 → is가 맞아요."
+  },
+  // ── 명사 함정 (4문제) ──
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "They live in a tall <span class='trap-word'>building</span> downtown.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    trapNote: "⚠️ <strong>building</strong>은 '건물'이라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 전혀 관계없어요! 동사는 live → 현재시제",
+    correctFeedback: "잘했어요! building은 '건물'이라는 명사예요. 동사는 live → 현재시제! 🏢",
+    wrongFeedback: "building은 '건물'이라는 명사예요. -ing로 끝나도 현재진행형이 아니에요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "She drinks warm milk every <span class='trap-word'>morning</span>.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    trapNote: "⚠️ <strong>morning</strong>은 '아침'이라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 전혀 관계없어요! every morning → 반복 습관 → 현재시제",
+    correctFeedback: "완벽해요! morning은 '아침'이라는 명사예요. every morning → 현재시제! 🌅",
+    wrongFeedback: "morning은 '아침'이라는 명사예요. -ing로 끝나도 현재진행형이 아니에요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "The <span class='trap-word'>king</span> rules the whole country.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    trapNote: "⚠️ <strong>king</strong>은 '왕'이라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 전혀 관계없어요! 동사는 rules → 현재시제",
+    correctFeedback: "정확해요! king은 '왕'이라는 명사예요. 동사는 rules → 현재시제! 👑",
+    wrongFeedback: "king은 '왕'이라는 명사예요. -ing로 끝나도 현재진행형이 아니에요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "She wears a gold <span class='trap-word'>ring</span> and <span class='blank' id='blank'></span> very happy.",
+    choices: ["looks", "is looking", "look", "are looking"],
+    answer: "looks",
+    trapNote: "⚠️ <strong>ring</strong>은 '반지'라는 뜻의 <strong>명사</strong>예요. -ing로 끝나도 현재진행형과 무관해요! 동사는 looks → 현재시제",
+    correctFeedback: "맞아요! ring은 '반지'라는 명사예요. 일반적인 상태 → 현재시제 looks! 💍",
+    wrongFeedback: "ring은 '반지'라는 명사예요. -ing로 끝나도 현재진행형이 아니에요. looks가 맞아요."
+  },
+  // ── 진짜 현재진행형 (4문제) — 비교 연습 ──
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "Look! The boys <span class='highlight'>are playing</span> basketball <span class='time-clue'>right now</span>.",
+    choices: ["현재진행형 🔄", "현재시제 ✅"],
+    answer: "현재진행형 🔄",
+    trapNote: null,
+    correctFeedback: "맞아요! are + playing + right now → 진짜 현재진행형! 🏀",
+    wrongFeedback: "be동사(are) + playing + right now → 현재진행형이에요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "Shhh! The baby <span class='blank' id='blank'></span> <span class='time-clue'>right now</span>.",
+    choices: ["is sleeping", "sleeps", "sleep", "are sleeping"],
+    answer: "is sleeping",
+    trapNote: null,
+    correctFeedback: "잘했어요! right now → 지금 일어나는 일 → is sleeping! 😴",
+    wrongFeedback: "right now(지금) → 현재진행형 → is sleeping이에요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "Mom <span class='highlight'>is making</span> breakfast <span class='time-clue'>at the moment</span>.",
+    choices: ["현재진행형 🔄", "현재시제 ✅"],
+    answer: "현재진행형 🔄",
+    trapNote: null,
+    correctFeedback: "정확해요! is + making + at the moment → 진짜 현재진행형! 🍳",
+    wrongFeedback: "be동사(is) + making + at the moment → 현재진행형이에요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "We <span class='blank' id='blank'></span> for the school bus <span class='time-clue'>now</span>.",
+    choices: ["are waiting", "wait", "waits", "is waiting"],
+    answer: "are waiting",
+    trapNote: null,
+    correctFeedback: "완벽해요! now + 복수주어(We) → are waiting! 🚌",
+    wrongFeedback: "now(지금) → 현재진행형, 주어가 We(복수) → are waiting이에요."
+  }
+];
+
+let questions = [], current = 0, wrongIndexes = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function init(retryList = null) {
+  questions = retryList ? retryList : shuffle(ALL_QUESTIONS);
+  current = 0;
+  wrongIndexes = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quizMain').style.display = 'block';
+  document.querySelector('.tip-banner').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  updateProgress();
+  if (current >= questions.length) { showResult(); return; }
+
+  const q = questions[current];
+  const isTwo = q.type === 'two';
+  const badgeClass   = isTwo ? 'two' : 'four';
+  const badgeLabel   = isTwo ? '이지선다' : '사지선다';
+  const choicesClass = isTwo ? 'choices-two' : 'choices-four';
+
+  const trapHTML = q.trapNote
+    ? `<div class="trap-box" id="trapBox">${q.trapNote}</div>` : '';
+
+  const displayChoices = (q.type === 'two') ? shuffle([...q.choices]) : q.choices;
+  const choicesHTML = displayChoices.map(c =>
+    `<button class="choice-btn" onclick="selectAnswer(this,'${c.replace(/'/g,"\\'")}')">
+      ${c}
+    </button>`
+  ).join('');
+
+  document.getElementById('quizCard').innerHTML = `
+    <div class="q-number">Q${current + 1} / ${questions.length}</div>
+    <span class="q-type-badge ${badgeClass}">${badgeLabel}</span>
+    <div class="q-instruction">${q.instruction}</div>
+    <div class="q-sentence">${q.sentence}</div>
+    <div class="${choicesClass}" id="choicesWrap">
+      ${choicesHTML}
+    </div>
+    ${trapHTML}
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+      ${current + 1 < questions.length ? '다음 문제 →' : '결과 보기 🏁'}
+    </button>
+  `;
+}
+
+function selectAnswer(btn, chosen) {
+  const q = questions[current];
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+
+  const feedback = document.getElementById('feedback');
+  const trapBox  = document.getElementById('trapBox');
+  const btnNext  = document.getElementById('btnNext');
+  const blankEl  = document.getElementById('blank');
+
+  if (blankEl) {
+    blankEl.textContent = q.answer;
+    blankEl.style.color = '#1A7A6A';
+    blankEl.style.borderBottomColor = '#3DBFA8';
+  }
+
+  if (chosen === q.answer) {
+    btn.classList.add('selected-correct');
+    feedback.className = 'feedback correct show';
+    feedback.textContent = '⭕ ' + q.correctFeedback;
+  } else {
+    btn.classList.add('selected-wrong');
+    document.querySelectorAll('.choice-btn').forEach(b => {
+      if (b.textContent.trim() === q.answer.trim()) b.classList.add('show-answer');
+    });
+    feedback.className = 'feedback wrong show';
+    feedback.textContent = '❌ ' + q.wrongFeedback;
+    wrongIndexes.push(current);
+  }
+
+  if (trapBox) trapBox.classList.add('visible');
+  btnNext.classList.add('show');
+}
+
+function nextQuestion() { current++; renderQuestion(); }
+
+function updateProgress() {
+  const total = questions.length;
+  const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${current} / ${total}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+function showResult() {
+  document.getElementById('quizMain').style.display = 'none';
+  document.querySelector('.tip-banner').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total   = questions.length;
+  const correct = total - wrongIndexes.length;
+  const pct     = Math.round((correct / total) * 100);
+
+  let emoji, stars, title, msg;
+  if (pct === 100) {
+    emoji = '🏆'; stars = '⭐⭐⭐'; title = '완벽해요!';
+    msg = '-ing 함정을 모두 피했어요! exciting·boring·amazing은 형용사, building·morning·king·ring은 명사 — 이제 헷갈리지 않죠? 🎉';
+  } else if (pct >= 70) {
+    emoji = '😊'; stars = '⭐⭐'; title = '잘 했어요!';
+    msg = '-ing 함정을 잘 피했어요! 틀린 문제를 오답 복습으로 한 번 더 확인해 보세요.';
+  } else {
+    emoji = '💪'; stars = '⭐'; title = '다시 도전해봐요!';
+    msg = '기억해요: -ing로 끝나도 형용사(exciting, boring)나 명사(building, morning)일 수 있어요. 현재진행형은 반드시 be동사 + 동사-ing예요!';
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultStars').textContent = stars;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').innerHTML = `<strong>${correct} / ${total}</strong> 문제 정답<br>정답률 ${pct}%`;
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = `${total} / ${total}`;
+  document.getElementById('progressPct').textContent = '100%';
+
+  const retryBtn = document.getElementById('btnRetryWrong');
+  retryBtn.disabled = wrongIndexes.length === 0;
+  retryBtn.textContent = wrongIndexes.length > 0
+    ? `오답만 다시 풀기 (${wrongIndexes.length}문제)` : '오답 없음 🎉';
+}
+
+function retryWrong() { init(wrongIndexes.map(i => questions[i])); }
+function retryAll()   { init(); }
+
+init();
+</script>
+</body>
+</html>

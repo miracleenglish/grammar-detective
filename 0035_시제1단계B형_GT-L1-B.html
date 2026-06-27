@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시간 표현으로 시제 고르기 · GT-L1-B</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4FF;
+    --card: #FFFFFF;
+    --primary: #7C5CBF;
+    --primary-dark: #5C3EA0;
+    --primary-light: #F0EBFD;
+    --correct: #3DBFA8;
+    --correct-light: #E6F7F4;
+    --wrong: #F46B6B;
+    --wrong-light: #FFF0F0;
+    --text: #1A2A3A;
+    --muted: #7A8FA0;
+    --border: #D8CFF5;
+    --progress-bg: #E8E0F8;
+    --shadow: 0 4px 20px rgba(124,92,191,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 18px 24px 14px;
+    text-align: center;
+  }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; }
+  header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; font-family: 'Noto Sans KR', sans-serif; }
+
+  .progress-wrap { width: 100%; max-width: 640px; padding: 16px 20px 0; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; }
+  .progress-bar { height: 8px; background: var(--progress-bg); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--correct)); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+
+  .tip-banner { width: 100%; max-width: 640px; background: var(--primary-light); border-left: 4px solid var(--primary); padding: 11px 20px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.65; color: var(--text); margin-top: 14px; }
+  .tip-banner strong { color: var(--primary); }
+
+  main { width: 100%; max-width: 640px; padding: 16px 20px 40px; flex: 1; }
+
+  .card { background: var(--card); border-radius: 20px; border: 1.5px solid var(--border); padding: 28px 24px 24px; box-shadow: var(--shadow); }
+
+  .q-number { font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: 0.06em; margin-bottom: 6px; }
+  .q-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 9px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 0.03em;
+  }
+  .q-type-badge.two { background: #EDE7FF; color: var(--primary); }
+  .q-type-badge.four { background: #E6F7F4; color: #1A7A6A; }
+
+  .q-instruction { background: var(--primary-light); border-radius: 12px; padding: 12px 16px; margin-bottom: 22px; font-size: 13px; color: var(--primary-dark); font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+
+  .q-sentence { font-size: 22px; font-weight: 800; line-height: 1.6; margin-bottom: 24px; letter-spacing: -0.3px; }
+  .q-sentence .highlight { background: #EDE7FF; color: var(--primary); border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .time-clue { background: #FFF8E1; color: #B8860B; border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 130px;
+    height: 1.2em;
+    border-bottom: 3px solid var(--primary);
+    color: var(--primary);
+    font-weight: 900;
+    text-align: center;
+    padding: 0 6px;
+    vertical-align: middle;
+    line-height: 1.2em;
+  }
+
+  /* 이지선다 */
+  .choices-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  /* 사지선다 — 1열, 글씨 크게 */
+  .choices-four { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+
+  .choice-btn {
+    border: 2px solid var(--border);
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 12px;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .choices-four .choice-btn { font-size: 17px; padding: 16px 18px; }
+  .choice-btn:not(:disabled):hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-2px); }
+  .choice-btn.selected-correct { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn.selected-wrong { background: var(--wrong-light); border-color: var(--wrong); color: #C94040; }
+  .choice-btn.show-answer { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn:disabled { cursor: default; }
+
+  .feedback { border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: none; font-family: 'Noto Sans KR', sans-serif; line-height: 1.7; font-size: 13px; }
+  .feedback.show { display: block; animation: fadeIn 0.25s ease; }
+  .feedback.correct { background: var(--correct-light); border: 1.5px solid var(--correct); color: #1A7A6A; }
+  .feedback.wrong { background: var(--wrong-light); border: 1.5px solid var(--wrong); color: #C94040; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .btn-next { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; display: none; font-family: 'Nunito', sans-serif; letter-spacing: 0.3px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 12px rgba(124,92,191,0.35); }
+  .btn-next.show { display: block; animation: fadeIn 0.25s ease; }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  #result-screen { display: none; padding: 20px; max-width: 640px; width: 100%; }
+  .result-card { background: white; border-radius: 24px; border: 1.5px solid var(--border); padding: 36px 28px; text-align: center; box-shadow: var(--shadow); }
+  .result-emoji { font-size: 60px; margin-bottom: 10px; }
+  .result-stars { font-size: 34px; letter-spacing: 4px; margin-bottom: 14px; }
+  .result-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .result-score { font-size: 15px; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; margin-bottom: 20px; line-height: 1.7; }
+  .result-score strong { color: var(--text); font-size: 20px; }
+  .result-msg { background: var(--primary-light); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.75; color: var(--text); text-align: left; }
+  .btn-group { display: flex; flex-direction: column; gap: 10px; }
+  .btn-retry-wrong, .btn-retry-all { border: none; border-radius: 14px; padding: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+  .btn-retry-wrong { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 4px 12px rgba(124,92,191,0.3); }
+  .btn-retry-all { background: var(--primary-light); color: var(--primary); border: 2px solid var(--border); }
+  .btn-retry-wrong:hover, .btn-retry-all:hover { transform: translateY(-2px); }
+  .btn-retry-wrong:disabled { background: #ccc; box-shadow: none; cursor: default; transform: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">GT-L1-B · 시제편 1단계 · 문법 함정 탈출</div>
+  <h1>⏰ 시간 표현으로 시제 고르기</h1>
+  <div class="subtitle">시간 표현 단서를 찾아서 시제를 결정해요!</div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="progressLabel">0 / 10</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="tip-banner">
+  💡 <strong>시간 표현 단서:</strong>
+  <strong>now / right now / at the moment</strong> → 현재진행형 &nbsp;|&nbsp;
+  <strong>every day / always / usually / often</strong> → 현재시제
+</div>
+
+<main id="quizMain">
+  <div class="card" id="quizCard"></div>
+</main>
+
+<div id="result-screen">
+  <div class="result-card">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="btn-group">
+      <button class="btn-retry-wrong" id="btnRetryWrong" onclick="retryWrong()">오답만 다시 풀기</button>
+      <button class="btn-retry-all" onclick="retryAll()">전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// type: "two"=이지선다, "four"=사지선다
+// choices: 선택지 배열 (두 번째부터 오답)
+const ALL_QUESTIONS = [
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "The cat <span class='highlight'>is sleeping</span> on the sofa <span class='time-clue'>right now</span>.",
+    choices: ["현재진행형 🔄", "현재시제 ✅"],
+    answer: "현재진행형 🔄",
+    correctFeedback: "맞아요! right now(지금 당장) → 지금 일어나는 일 → 현재진행형! 😺",
+    wrongFeedback: "right now는 '지금 당장'이에요. 지금 일어나는 일이면 현재진행형을 써요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "Kevin <span class='highlight'>walks</span> to school <span class='time-clue'>every day</span>.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    correctFeedback: "잘했어요! every day(매일) → 반복되는 습관 → 현재시제! 🚶",
+    wrongFeedback: "every day는 '매일'이에요. 반복되는 습관이면 현재시제를 써요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "Look! The kids <span class='blank' id='blank'></span> in the pool <span class='time-clue'>now</span>.",
+    choices: ["are swimming", "swim", "swims", "is swim"],
+    answer: "are swimming",
+    correctFeedback: "정확해요! now(지금) + Look!(봐봐!) → 지금 일어나는 일 → are swimming! 🏊",
+    wrongFeedback: "now(지금)와 Look!은 현재진행형 신호예요. be동사 + -ing → are swimming이에요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "She <span class='highlight'>usually reads</span> before bed.",
+    choices: ["현재시제 ✅", "현재진행형 🔄"],
+    answer: "현재시제 ✅",
+    correctFeedback: "완벽해요! usually(보통) → 반복되는 습관 → 현재시제! 📕",
+    wrongFeedback: "usually는 '보통, 대개'예요. 반복 습관이면 현재시제를 써요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "Dad <span class='blank' id='blank'></span> dinner <span class='time-clue'>at the moment</span>.",
+    choices: ["is cooking", "cooks", "cook", "are cooking"],
+    answer: "is cooking",
+    correctFeedback: "맞아요! at the moment(지금 이 순간) → 현재진행형 → is cooking! 🍳",
+    wrongFeedback: "at the moment는 '지금 이 순간'이에요. 현재진행형 → is cooking을 써요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "My brother <span class='highlight'>is talking</span> on the phone <span class='time-clue'>right now</span>.",
+    choices: ["현재진행형 🔄", "현재시제 ✅"],
+    answer: "현재진행형 🔄",
+    correctFeedback: "잘했어요! right now → 지금 이 순간 일어나는 일 → 현재진행형! 📱",
+    wrongFeedback: "right now(지금 당장)가 있으면 현재진행형이에요. is talking이 맞아요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "Jenny <span class='blank' id='blank'></span> her teeth twice a day.",
+    choices: ["brushes", "is brushing", "brush", "are brushing"],
+    answer: "brushes",
+    correctFeedback: "정확해요! twice a day(하루에 두 번) → 반복 습관 → 현재시제 brushes! 🦷",
+    wrongFeedback: "twice a day는 '하루에 두 번'이에요. 반복 습관 → 현재시제 → brushes예요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "The students <span class='highlight'>are taking</span> a test <span class='time-clue'>now</span>.",
+    choices: ["현재진행형 🔄", "현재시제 ✅"],
+    answer: "현재진행형 🔄",
+    correctFeedback: "완벽해요! now(지금) → 지금 일어나는 일 → 현재진행형! 📝",
+    wrongFeedback: "now(지금)가 있으면 현재진행형이에요. are taking이 맞아요."
+  },
+  {
+    type: "four",
+    instruction: "빈칸에 알맞은 말을 고르세요.",
+    sentence: "It <span class='blank' id='blank'></span> a lot in summer here.",
+    choices: ["rains", "is raining", "rain", "are raining"],
+    answer: "rains",
+    correctFeedback: "맞아요! in summer(여름에) → 반복되는 날씨 패턴 → 현재시제 rains! ☔",
+    wrongFeedback: "in summer는 '여름에'로 반복 패턴을 나타내요. 현재시제 → rains예요."
+  },
+  {
+    type: "two",
+    instruction: "이 문장의 시제를 고르세요.",
+    sentence: "Mia <span class='highlight'>is drawing</span> a picture <span class='time-clue'>at the moment</span>.",
+    choices: ["현재진행형 🔄", "현재시제 ✅"],
+    answer: "현재진행형 🔄",
+    correctFeedback: "잘했어요! at the moment(지금 이 순간) → 현재진행형! 🎨",
+    wrongFeedback: "at the moment는 '지금 이 순간'이에요. 현재진행형 → is drawing이에요."
+  }
+];
+
+let questions = [], current = 0, wrongIndexes = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function init(retryList = null) {
+  questions = retryList ? retryList : shuffle(ALL_QUESTIONS);
+  current = 0;
+  wrongIndexes = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quizMain').style.display = 'block';
+  document.querySelector('.tip-banner').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  updateProgress();
+  if (current >= questions.length) { showResult(); return; }
+
+  const q = questions[current];
+  const isTwo = q.type === 'two';
+  const badgeLabel = isTwo ? '이지선다' : '사지선다';
+  const badgeClass = isTwo ? 'two' : 'four';
+  const choicesClass = isTwo ? 'choices-two' : 'choices-four';
+
+  const displayChoices = (q.type === 'two') ? shuffle([...q.choices]) : q.choices;
+  const choicesHTML = displayChoices.map(c =>
+    `<button class="choice-btn" onclick="selectAnswer(this,'${c.replace(/'/g,"\\'")}')">
+      ${c}
+    </button>`
+  ).join('');
+
+  document.getElementById('quizCard').innerHTML = `
+    <div class="q-number">Q${current + 1} / ${questions.length}</div>
+    <span class="q-type-badge ${badgeClass}">${badgeLabel}</span>
+    <div class="q-instruction">${q.instruction}</div>
+    <div class="q-sentence">${q.sentence}</div>
+    <div class="${choicesClass}" id="choicesWrap">
+      ${choicesHTML}
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+      ${current + 1 < questions.length ? '다음 문제 →' : '결과 보기 🏁'}
+    </button>
+  `;
+}
+
+function selectAnswer(btn, chosen) {
+  const q = questions[current];
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+
+  const feedback = document.getElementById('feedback');
+  const btnNext = document.getElementById('btnNext');
+
+  // 빈칸 문제면 정답 문장으로 업데이트
+  const blankEl = document.getElementById('blank');
+  if (blankEl) {
+    blankEl.textContent = q.answer;
+    blankEl.style.color = '#1A7A6A';
+    blankEl.style.borderBottomColor = '#3DBFA8';
+  }
+
+  if (chosen === q.answer) {
+    btn.classList.add('selected-correct');
+    feedback.className = 'feedback correct show';
+    feedback.textContent = '⭕ ' + q.correctFeedback;
+  } else {
+    btn.classList.add('selected-wrong');
+    document.querySelectorAll('.choice-btn').forEach(b => {
+      if (b.textContent.trim() === q.answer.trim()) b.classList.add('show-answer');
+    });
+    feedback.className = 'feedback wrong show';
+    feedback.textContent = '❌ ' + q.wrongFeedback;
+    wrongIndexes.push(current);
+  }
+
+  btnNext.classList.add('show');
+}
+
+function nextQuestion() { current++; renderQuestion(); }
+
+function updateProgress() {
+  const total = questions.length;
+  const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${current} / ${total}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+function showResult() {
+  document.getElementById('quizMain').style.display = 'none';
+  document.querySelector('.tip-banner').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const correct = total - wrongIndexes.length;
+  const pct = Math.round((correct / total) * 100);
+
+  let emoji, stars, title, msg;
+  if (pct === 100) {
+    emoji = '🏆'; stars = '⭐⭐⭐'; title = '완벽해요!';
+    msg = '모든 문제 정답! 시간 표현 단서를 완벽하게 읽었어요. now/right now → 진행형, every day/usually → 현재시제, 잊지 마세요! 🎉';
+  } else if (pct >= 70) {
+    emoji = '😊'; stars = '⭐⭐'; title = '잘 했어요!';
+    msg = '시간 표현 단서를 잘 활용했어요! 틀린 문제만 한 번 더 확인하면 완벽해질 거예요.';
+  } else {
+    emoji = '💪'; stars = '⭐'; title = '다시 도전해봐요!';
+    msg = '팁을 다시 읽어봐요: now / right now / at the moment → 현재진행형 / every day / always / usually → 현재시제';
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultStars').textContent = stars;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').innerHTML = `<strong>${correct} / ${total}</strong> 문제 정답<br>정답률 ${pct}%`;
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = `${total} / ${total}`;
+  document.getElementById('progressPct').textContent = '100%';
+
+  const retryBtn = document.getElementById('btnRetryWrong');
+  retryBtn.disabled = wrongIndexes.length === 0;
+  retryBtn.textContent = wrongIndexes.length > 0
+    ? `오답만 다시 풀기 (${wrongIndexes.length}문제)` : '오답 없음 🎉';
+}
+
+function retryWrong() { init(wrongIndexes.map(i => questions[i])); }
+function retryAll() { init(); }
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>진짜 현재진행형 찾기 · GT-L1-A</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4FF;
+    --card: #FFFFFF;
+    --primary: #7C5CBF;
+    --primary-dark: #5C3EA0;
+    --primary-light: #F0EBFD;
+    --correct: #3DBFA8;
+    --correct-light: #E6F7F4;
+    --wrong: #F46B6B;
+    --wrong-light: #FFF0F0;
+    --text: #1A2A3A;
+    --muted: #7A8FA0;
+    --border: #D8CFF5;
+    --progress-bg: #E8E0F8;
+    --shadow: 0 4px 20px rgba(124,92,191,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 18px 24px 14px;
+    text-align: center;
+  }
+  header .brand { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; font-family: 'Noto Sans KR', sans-serif; }
+  header h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; }
+  header .subtitle { font-size: 13px; opacity: 0.85; margin-top: 3px; font-family: 'Noto Sans KR', sans-serif; }
+
+  .progress-wrap { width: 100%; max-width: 640px; padding: 16px 20px 0; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-family: 'Noto Sans KR', sans-serif; }
+  .progress-bar { height: 8px; background: var(--progress-bg); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--correct)); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+
+  .tip-banner { width: 100%; max-width: 640px; background: var(--primary-light); border-left: 4px solid var(--primary); padding: 11px 20px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.65; color: var(--text); margin-top: 14px; }
+  .tip-banner strong { color: var(--primary); }
+
+  main { width: 100%; max-width: 640px; padding: 16px 20px 40px; flex: 1; }
+
+  .card { background: var(--card); border-radius: 20px; border: 1.5px solid var(--border); padding: 28px 24px 24px; box-shadow: var(--shadow); }
+
+  .q-number { font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: 0.06em; margin-bottom: 6px; }
+  .q-instruction { background: var(--primary-light); border-radius: 12px; padding: 12px 16px; margin-bottom: 22px; font-size: 13px; color: var(--primary-dark); font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+
+  .q-sentence { font-size: 22px; font-weight: 800; line-height: 1.6; margin-bottom: 24px; letter-spacing: -0.3px; }
+  .q-sentence .highlight { background: #EDE7FF; color: var(--primary); border-radius: 6px; padding: 2px 7px; font-weight: 900; }
+
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .choice-btn {
+    border: 2px solid var(--border);
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 12px;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .choice-btn:not(:disabled):hover { background: var(--primary-light); border-color: var(--primary); transform: translateY(-2px); }
+  .choice-btn.selected-correct { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn.selected-wrong { background: var(--wrong-light); border-color: var(--wrong); color: #C94040; }
+  .choice-btn.show-answer { background: var(--correct-light); border-color: var(--correct); color: #1A7A6A; }
+  .choice-btn:disabled { cursor: default; }
+
+  /* ── 변환 박스 ── */
+  .transform-box {
+    background: var(--primary-light);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    display: none;
+    border: 1.5px solid var(--border);
+  }
+  .transform-box.visible { display: block; animation: fadeIn 0.25s ease; }
+  .transform-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .transform-row:last-child { margin-bottom: 0; }
+  .transform-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 0.05em;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .transform-sentence { font-size: 14px; font-weight: 700; color: var(--text); }
+  .transform-sentence.em { color: var(--primary); font-weight: 800; }
+  .arrow { color: var(--primary); font-size: 16px; font-weight: 900; }
+
+  .feedback { border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: none; font-family: 'Noto Sans KR', sans-serif; line-height: 1.7; font-size: 13px; }
+  .feedback.show { display: block; animation: fadeIn 0.25s ease; }
+  .feedback.correct { background: var(--correct-light); border: 1.5px solid var(--correct); color: #1A7A6A; }
+  .feedback.wrong { background: var(--wrong-light); border: 1.5px solid var(--wrong); color: #C94040; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .btn-next { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; display: none; font-family: 'Nunito', sans-serif; letter-spacing: 0.3px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 12px rgba(124,92,191,0.35); }
+  .btn-next.show { display: block; animation: fadeIn 0.25s ease; }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124,92,191,0.4); }
+
+  #result-screen { display: none; padding: 20px; max-width: 640px; width: 100%; }
+  .result-card { background: white; border-radius: 24px; border: 1.5px solid var(--border); padding: 36px 28px; text-align: center; box-shadow: var(--shadow); }
+  .result-emoji { font-size: 60px; margin-bottom: 10px; }
+  .result-stars { font-size: 34px; letter-spacing: 4px; margin-bottom: 14px; }
+  .result-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .result-score { font-size: 15px; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; margin-bottom: 20px; line-height: 1.7; }
+  .result-score strong { color: var(--text); font-size: 20px; }
+  .result-msg { background: var(--primary-light); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; line-height: 1.75; color: var(--text); text-align: left; }
+  .btn-group { display: flex; flex-direction: column; gap: 10px; }
+  .btn-retry-wrong, .btn-retry-all { border: none; border-radius: 14px; padding: 16px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+  .btn-retry-wrong { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; box-shadow: 0 4px 12px rgba(124,92,191,0.3); }
+  .btn-retry-all { background: var(--primary-light); color: var(--primary); border: 2px solid var(--border); }
+  .btn-retry-wrong:hover, .btn-retry-all:hover { transform: translateY(-2px); }
+  .btn-retry-wrong:disabled { background: #ccc; box-shadow: none; cursor: default; transform: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">GT-L1-A · 시제편 1단계 · 문법 함정 탈출</div>
+  <h1>🔍 진짜 현재진행형 찾기</h1>
+  <div class="subtitle">be동사 + -ing = 진짜 현재진행형!</div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="progressLabel">0 / 10</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<div class="tip-banner">
+  💡 <strong>함정 주의!</strong> -ing가 보여도 앞에 <strong>be동사(am / is / are)</strong>가 없으면 현재진행형이 <strong>아니에요</strong>.<br>
+  현재진행형 = <strong>be동사 + 동사원형-ing</strong>
+</div>
+
+<main id="quizMain">
+  <div class="card" id="quizCard"></div>
+</main>
+
+<div id="result-screen">
+  <div class="result-card">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="btn-group">
+      <button class="btn-retry-wrong" id="btnRetryWrong" onclick="retryWrong()">오답만 다시 풀기</button>
+      <button class="btn-retry-all" onclick="retryAll()">전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 문장의 highlight: 현재진행형 → be동사+ing 전체 / 현재시제 → 동사만
+const ALL_QUESTIONS = [
+  {
+    sentence: "She <span class='highlight'>is singing</span> a song.",
+    answer: "현재진행형",
+    transform: { present: "She sings a song.", progressive: "She is singing a song." },
+    correctFeedback: "맞아요! is + singing → be동사(is)가 있으니 진짜 현재진행형이에요! 🎵",
+    wrongFeedback: "is + singing이에요. be동사(is)가 있으니 현재진행형이 맞아요."
+  },
+  {
+    sentence: "He <span class='highlight'>enjoys</span> playing soccer.",
+    answer: "현재시제",
+    transform: null,
+    correctFeedback: "잘했어요! playing이 보여도 동사는 enjoys예요. be동사 없음 → 현재시제! ⚽",
+    wrongFeedback: "playing이 보여도 be동사가 없어요. 동사는 enjoys → 현재시제예요."
+  },
+  {
+    sentence: "They <span class='highlight'>are running</span> in the park.",
+    answer: "현재진행형",
+    transform: { present: "They run in the park.", progressive: "They are running in the park." },
+    correctFeedback: "정확해요! are + running → be동사(are)가 있으니 현재진행형! 🏃",
+    wrongFeedback: "are + running이에요. be동사(are)가 있으니 현재진행형이에요."
+  },
+  {
+    sentence: "The dog <span class='highlight'>likes</span> chasing cats.",
+    answer: "현재시제",
+    transform: null,
+    correctFeedback: "완벽해요! chasing이 보여도 동사는 likes예요. be동사 없음 → 현재시제! 🐶",
+    wrongFeedback: "chasing이 보여도 be동사가 없어요. 동사는 likes → 현재시제예요."
+  },
+  {
+    sentence: "I <span class='highlight'>am doing</span> my homework.",
+    answer: "현재진행형",
+    transform: { present: "I do my homework.", progressive: "I am doing my homework." },
+    correctFeedback: "맞아요! am + doing → be동사(am)가 있으니 현재진행형! 📚",
+    wrongFeedback: "am + doing이에요. be동사(am)가 있으니 현재진행형이에요."
+  },
+  {
+    sentence: "My sister <span class='highlight'>loves</span> reading books.",
+    answer: "현재시제",
+    transform: null,
+    correctFeedback: "잘했어요! reading이 보여도 동사는 loves예요. be동사 없음 → 현재시제! 📖",
+    wrongFeedback: "reading이 보여도 be동사가 없어요. 동사는 loves → 현재시제예요."
+  },
+  {
+    sentence: "We <span class='highlight'>are watching</span> a movie.",
+    answer: "현재진행형",
+    transform: { present: "We watch a movie.", progressive: "We are watching a movie." },
+    correctFeedback: "정확해요! are + watching → be동사(are)가 있으니 현재진행형! 🎬",
+    wrongFeedback: "are + watching이에요. be동사(are)가 있으니 현재진행형이에요."
+  },
+  {
+    sentence: "Tom <span class='highlight'>keeps</span> talking in class.",
+    answer: "현재시제",
+    transform: null,
+    correctFeedback: "완벽해요! talking이 보여도 동사는 keeps예요. be동사 없음 → 현재시제! 🗣️",
+    wrongFeedback: "talking이 보여도 be동사가 없어요. 동사는 keeps → 현재시제예요."
+  },
+  {
+    sentence: "The birds <span class='highlight'>are flying</span> over the roof.",
+    answer: "현재진행형",
+    transform: { present: "The birds fly over the roof.", progressive: "The birds are flying over the roof." },
+    correctFeedback: "맞아요! are + flying → be동사(are)가 있으니 현재진행형! 🐦",
+    wrongFeedback: "are + flying이에요. be동사(are)가 있으니 현재진행형이에요."
+  },
+  {
+    sentence: "My dad <span class='highlight'>is fixing</span> the car right now.",
+    answer: "현재진행형",
+    transform: { present: "My dad fixes the car.", progressive: "My dad is fixing the car right now." },
+    correctFeedback: "맞아요! is + fixing → be동사(is)가 있으니 현재진행형! 🔧",
+    wrongFeedback: "is + fixing이에요. be동사(is)가 있으니 현재진행형이에요."
+  }
+];
+
+const CHOICES = ["현재진행형", "현재시제"];
+const CHOICE_LABEL = { "현재진행형": "🔄 현재진행형", "현재시제": "✅ 현재시제" };
+
+let questions = [], current = 0, wrongIndexes = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function init(retryList = null) {
+  questions = retryList ? retryList : shuffle(ALL_QUESTIONS);
+  current = 0;
+  wrongIndexes = [];
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('quizMain').style.display = 'block';
+  document.querySelector('.tip-banner').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  updateProgress();
+  if (current >= questions.length) { showResult(); return; }
+
+  const q = questions[current];
+
+  const tBox = q.transform ? `
+    <div class="transform-box" id="transformBox">
+      <div class="transform-row">
+        <span class="transform-label">현재시제</span>
+        <span class="transform-sentence">${q.transform.present}</span>
+      </div>
+      <div class="transform-row">
+        <span class="arrow">→</span>
+        <span class="transform-label">현재진행형</span>
+        <span class="transform-sentence em">${q.transform.progressive}</span>
+      </div>
+    </div>` : '';
+
+  document.getElementById('quizCard').innerHTML = `
+    <div class="q-number">Q${current + 1} / ${questions.length}</div>
+    <div class="q-instruction">밑줄 친 부분을 보고 이 문장의 시제를 골라보세요.</div>
+    <div class="q-sentence">${q.sentence}</div>
+    <div class="choices">
+      ${shuffle([...CHOICES]).map(c =>
+        `<button class="choice-btn" onclick="selectAnswer(this,'${c}')">${CHOICE_LABEL[c]}</button>`
+      ).join('')}
+    </div>
+    ${tBox}
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+      ${current + 1 < questions.length ? '다음 문제 →' : '결과 보기 🏁'}
+    </button>
+  `;
+}
+
+function selectAnswer(btn, chosen) {
+  const q = questions[current];
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+
+  const feedback = document.getElementById('feedback');
+  const tBox = document.getElementById('transformBox');
+  const btnNext = document.getElementById('btnNext');
+
+  if (chosen === q.answer) {
+    btn.classList.add('selected-correct');
+    feedback.className = 'feedback correct show';
+    feedback.textContent = '⭕ ' + q.correctFeedback;
+  } else {
+    btn.classList.add('selected-wrong');
+    document.querySelectorAll('.choice-btn').forEach(b => {
+      if (b.textContent.trim() === CHOICE_LABEL[q.answer].trim()) b.classList.add('show-answer');
+    });
+    feedback.className = 'feedback wrong show';
+    feedback.textContent = '❌ ' + q.wrongFeedback;
+    wrongIndexes.push(current);
+  }
+
+  if (tBox) tBox.classList.add('visible');
+  btnNext.classList.add('show');
+}
+
+function nextQuestion() { current++; renderQuestion(); }
+
+function updateProgress() {
+  const total = questions.length;
+  const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${current} / ${total}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+function showResult() {
+  document.getElementById('quizMain').style.display = 'none';
+  document.querySelector('.tip-banner').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+
+  const total = questions.length;
+  const correct = total - wrongIndexes.length;
+  const pct = Math.round((correct / total) * 100);
+
+  let emoji, stars, title, msg;
+  if (pct === 100) {
+    emoji = '🏆'; stars = '⭐⭐⭐'; title = '완벽해요!';
+    msg = '모든 문제를 맞혔어요! be동사 + -ing = 진짜 현재진행형, 완전히 이해했네요! 🎉';
+  } else if (pct >= 70) {
+    emoji = '😊'; stars = '⭐⭐'; title = '잘 했어요!';
+    msg = '거의 다 맞혔어요! 헷갈렸던 문장들을 오답 복습으로 한 번 더 확인해 볼까요?';
+  } else {
+    emoji = '💪'; stars = '⭐'; title = '다시 도전해봐요!';
+    msg = '핵심을 기억해요: -ing만 보이면 안 돼요! be동사(am/is/are) + -ing가 함께 있어야 현재진행형이에요.';
+  }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultStars').textContent = stars;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').innerHTML = `<strong>${correct} / ${total}</strong> 문제 정답<br>정답률 ${pct}%`;
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = `${total} / ${total}`;
+  document.getElementById('progressPct').textContent = '100%';
+
+  const retryBtn = document.getElementById('btnRetryWrong');
+  retryBtn.disabled = wrongIndexes.length === 0;
+  retryBtn.textContent = wrongIndexes.length > 0
+    ? `오답만 다시 풀기 (${wrongIndexes.length}문제)` : '오답 없음 🎉';
+}
+
+function retryWrong() { init(wrongIndexes.map(i => questions[i])); }
+function retryAll() { init(); }
+
+init();
+</script>
+</body>
+</html>
