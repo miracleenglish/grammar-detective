@@ -128,7 +128,32 @@
   .divider hr{border:none;border-top:1.5px dashed var(--border);}
 
 
-  /* ── 탭 메뉴 ── */
+  /* ── 상위탭 (시리즈 선택) ── */
+  .series-wrap{max-width:720px;margin:20px auto 0;padding:0 16px;}
+  .series-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .series-bar::-webkit-scrollbar{display:none;}
+  .series-btn{
+    border:2.5px solid var(--border);background:white;border-radius:16px;
+    padding:12px 16px;cursor:pointer;transition:all .2s;
+    font-family:'Noto Sans KR',sans-serif;text-align:center;
+    flex-shrink:0;min-width:100px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+  }
+  .series-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.1);}
+  .series-btn .sb-icon{font-size:20px;margin-bottom:4px;}
+  .series-btn .sb-name{font-size:12px;font-weight:800;color:var(--text);display:block;white-space:nowrap;}
+  .series-btn .sb-sub{font-size:10px;color:var(--muted);display:block;margin-top:2px;white-space:nowrap;}
+  /* 활성 상위탭 */
+  .series-btn.s-trap{border-color:#1A2A3A;}
+  .series-btn.s-trap.active,.series-btn.s-trap:hover{background:var(--navy);border-color:var(--navy);}
+  .series-btn.s-trap.active .sb-name,.series-btn.s-trap.active .sb-sub,
+  .series-btn.s-trap:hover .sb-name,.series-btn.s-trap:hover .sb-sub{color:white;}
+  /* 준비중 버튼 */
+  .series-btn.s-coming{opacity:.5;cursor:not-allowed;background:#F0F4F8;}
+  .series-btn.s-coming:hover{transform:none;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .series-btn.s-coming .sb-name{color:var(--muted);}
+
+  /* ── 하위탭 영역 (기존 tab-wrap) ── */
   .tab-wrap{max-width:720px;margin:20px auto 0;padding:0 16px;position:relative;}
   .tab-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
   .tab-bar::-webkit-scrollbar{display:none;}
@@ -183,7 +208,45 @@
   </div>
 </div>
 
-<div class="tab-wrap">
+<!-- 상위탭: 시리즈 선택 -->
+<div class="series-wrap">
+  <div class="series-bar">
+    <button class="series-btn s-trap active" onclick="showSeries('trap', this)">
+      <div class="sb-icon">🪤</div>
+      <span class="sb-name">문법 함정 탈출</span>
+      <span class="sb-sub">GV · GQ · GT</span>
+    </button>
+    <button class="series-btn s-coming" disabled title="준비중">
+      <div class="sb-icon">📗</div>
+      <span class="sb-name">스타트 영문법</span>
+      <span class="sb-sub">준비중</span>
+    </button>
+    <button class="series-btn s-coming" disabled title="준비중">
+      <div class="sb-icon">📘</div>
+      <span class="sb-name">업 영문법</span>
+      <span class="sb-sub">준비중</span>
+    </button>
+    <button class="series-btn s-coming" disabled title="준비중">
+      <div class="sb-icon">📙</div>
+      <span class="sb-name">점프 영문법</span>
+      <span class="sb-sub">준비중</span>
+    </button>
+    <button class="series-btn s-coming" disabled title="준비중">
+      <div class="sb-icon">📕</div>
+      <span class="sb-name">코어 영문법</span>
+      <span class="sb-sub">준비중</span>
+    </button>
+    <button class="series-btn s-coming" disabled title="준비중">
+      <div class="sb-icon">🏆</div>
+      <span class="sb-name">마스터 영문법</span>
+      <span class="sb-sub">준비중</span>
+    </button>
+  </div>
+</div>
+
+<!-- 하위탭: 문법 함정 탈출 영역 선택 -->
+<div id="series-trap">
+<div class="tab-wrap" style="margin-top:12px;">
   <div class="tab-bar">
     <button class="tab-btn t-all active" onclick="showTab('all', this)">
       <div class="tb-icon">🔍</div>
@@ -207,9 +270,7 @@
     </button>
   </div>
 </div>
-
-
-<!-- GV -->
+</div>
 <div class="tab-section show" id="tab-gv">
 <div class="section" style="margin-top:24px;">
   <div class="section-header">
@@ -526,9 +587,23 @@
 
 
 <script>
+// 상위탭: 시리즈 선택
+function showSeries(series, btn) {
+  document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // 현재는 문법 함정 탈출만 있으므로 series-trap만 처리
+  const seriesEl = document.getElementById('series-trap');
+  if(series === 'trap') {
+    seriesEl.style.display = 'block';
+    // 하위탭도 전체로 초기화
+    showTab('all', document.querySelector('.tab-btn.t-all'));
+  }
+}
+
+// 하위탭: 영역 선택
 function showTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   const sections = {
     gv:  ['tab-gv', 'div-gv'],
     gq:  ['tab-gq', 'div-gq'],
