@@ -263,7 +263,7 @@
 </div>
 
 <!-- 하위탭: 문법 함정 탈출 영역 선택 -->
-<div id="series-trap">
+<div id="series-trap" style="display:block;">
 <div class="tab-wrap" style="margin-top:12px;">
   <div class="tab-bar">
     <button class="tab-btn t-all active" onclick="showTab('all', this)">
@@ -287,7 +287,6 @@
       <span class="tb-range">0034 ~ 0039</span>
     </button>
   </div>
-</div>
 </div>
 <div class="tab-section show" id="tab-gv">
 <div class="section" style="margin-top:24px;">
@@ -598,6 +597,7 @@
   </div>
 </div>
 </div><!-- /tab-gt -->
+</div><!-- /series-trap -->
 
 <footer>
   미라클 영어 스터디 · 영문법 탐정단
@@ -877,6 +877,7 @@ function showSeries(series, btn) {
   } else if(series === 'sg') {
     trapEl.style.display = 'none';
     sgEl.style.display   = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 }
 
