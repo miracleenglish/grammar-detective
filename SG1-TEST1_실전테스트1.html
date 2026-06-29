@@ -24,7 +24,7 @@
   .sentence-area{background:#FFF8F0;border:1.5px solid var(--border);border-radius:14px;padding:20px 16px;margin-bottom:20px;text-align:center}
   .q-sentence{font-size:21px;font-weight:700;color:var(--text);line-height:1.7}
   .q-sentence .blank{display:inline-block;min-width:72px;border-bottom:2.5px solid #D4891A;margin:0 3px;vertical-align:bottom}
-  .q-sentence2{font-size:18px;font-weight:700;color:var(--text-sub);margin-top:8px;display:none}
+  .q-sentence2{font-size:14px;font-weight:700;color:var(--accent-dark);margin-top:10px;display:none;font-family:'Noto Sans KR',sans-serif;}
   .choices-2{display:flex;gap:12px;justify-content:center;margin-bottom:14px}
   .choices-4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
   .choice-btn{flex:1;padding:13px 10px;font-size:17px;font-weight:800;font-family:'Nunito',sans-serif;background:var(--btn);border:2px solid var(--btn-border);border-radius:14px;cursor:pointer;transition:all 0.15s;color:var(--text);text-align:center;max-width:170px}
@@ -100,7 +100,7 @@ const ALL_QUESTIONS = [
   // L1 Nouns - 복수
   { sentence:"one church → two <span class='blank'></span>", sentence2:"", answer:"churches", choices:["churchs","churches","churchies","churches"], type:4, direction:"빈칸에 알맞은 복수형을 고르세요.", reason:"<strong>-ch</strong>로 끝나는 명사 → <strong>-es</strong> 추가 → <strong>churches</strong>" },
   // L2 Pronouns
-  { sentence:"The dogs <span class='blank'></span> cute.", sentence2:"", answer:"are", choices:["is","are","am"], type:4, direction:"빈칸에 알맞은 be동사를 고르세요.", reason:"<strong>The dogs</strong> → They(복수) → <strong>are</strong>" },
+  { sentence:"He <span class='blank'></span> a student. She is a teacher.", sentence2:"", answer:"is", choices:["is","are","am"], type:4, direction:"빈칸에 알맞은 be동사를 고르세요.", reason:"<strong>He</strong>는 3인칭 단수 → <strong>is</strong>" },
   // L3 Be-verbs positive
   { sentence:"<span class='blank'></span> am not a teacher. I'm a student.", sentence2:"", answer:"I", choices:["I","He","She","We"], type:4, direction:"빈칸에 알맞은 말을 고르세요.", reason:"<strong>am</strong>은 오직 <strong>I</strong>에만 써요." },
   // L4 Be-verbs negative
@@ -122,9 +122,9 @@ const ALL_QUESTIONS = [
   // L10 혼합
   { sentence:"Are <span class='blank'></span> your books? (가까이, 여러 개)", sentence2:"→ Yes, they are.", answer:"these", choices:["this","that","these","those"], type:4, direction:"빈칸에 알맞은 말을 고르세요.", reason:"가까이 있는 여러 개 의문문 → <strong>Are these</strong> your books?" },
   // 오류 찾기 유형
-  { sentence:"He am a great singer.", sentence2:"", answer:"am", choices:["He","am","a","singer"], type:4, direction:"다음 문장에서 틀린 것을 고르세요.", reason:"<strong>He</strong>는 단수 → <strong>is</strong>를 써야 해요. am은 I에만 써요." },
+  { sentence:"We isn't students.", sentence2:"", answer:"isn't", choices:["We","isn't","students","are"], type:4, direction:"다음 문장에서 틀린 것을 고르세요.", reason:"<strong>We</strong>는 복수 → 부정은 <strong>aren't</strong>예요. isn't는 단수에만 써요." },
   // 혼합
-  { sentence:"<span class='blank'></span> are Tom's dogs. They're cute.", sentence2:"", answer:"Those", choices:["This","That","These","Those"], type:4, direction:"빈칸에 알맞은 말을 고르세요. (멀리, 여러 마리)", reason:"멀리 있는 여러 개 → <strong>Those</strong>" },
+  { sentence:"<span class='blank'></span> are Tom's dogs. They're cute.", sentence2:"📍 멀리, 여러 마리", answer:"Those", choices:["This","That","These","Those"], type:4, direction:"빈칸에 알맞은 말을 고르세요.", reason:"멀리 있는 여러 개 → <strong>Those</strong>" },
 ];
 
 let questions=[],current=0,score=0,wrongList=[],answered=false;
