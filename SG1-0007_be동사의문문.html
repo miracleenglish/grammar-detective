@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG1-0007 · be동사 의문문</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --card: #ffffff;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --correct-bg: #E8F8F4;
+    --wrong: #E8604C;
+    --wrong-bg: #FDE8E5;
+    --text: #2D2D2D;
+    --text-sub: #6B6B6B;
+    --border: #F0D5B8;
+    --progress-bg: #F0D5B8;
+    --btn-choice: #FFF8F0;
+    --btn-choice-border: #F5C88A;
+    --shadow: 0 2px 12px rgba(245,166,35,0.15);
+    --hl: #D4891A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    background: var(--accent);
+    padding: 12px 20px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .badge {
+    background: #fff;
+    color: var(--accent-dark);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  header h1 { color: #fff; font-size: 16px; font-weight: 800; }
+
+  .progress-wrap { width: 100%; max-width: 480px; padding: 14px 20px 0; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; font-weight: 600; }
+  .progress-bar { width: 100%; height: 8px; background: var(--progress-bg); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 10px; transition: width 0.4s ease; }
+
+  .quiz-card {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border-radius: 20px;
+    margin: 16px 20px;
+    padding: 24px 24px 20px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+
+  .q-direction {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-dark);
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #FFF3E0;
+    border-left: 3px solid var(--accent);
+    padding: 7px 12px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 18px;
+  }
+  .q-label { font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+
+  /* 문장 영역 */
+  .sentence-area {
+    background: #FFF8F0;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .q-sentence {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+  /* 두 번째 줄 (단답 질문일 때) */
+  .q-sentence2 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-sub);
+    margin-top: 8px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .q-sentence .hl {
+    color: var(--hl);
+    font-weight: 900;
+    border-bottom: 2px solid var(--hl);
+    padding-bottom: 1px;
+  }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 60px;
+    border-bottom: 2.5px solid var(--accent);
+    margin: 0 3px;
+    vertical-align: bottom;
+  }
+
+  /* 선택지 */
+  .choices-2 { display: flex; gap: 12px; justify-content: center; margin-bottom: 14px; }
+  .choices-3 { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; }
+  .choices-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+
+  .choice-btn {
+    flex: 1;
+    padding: 13px 10px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    background: var(--btn-choice);
+    border: 2px solid var(--btn-choice-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text);
+    text-align: center;
+  }
+  .choices-2 .choice-btn { font-size: 19px; max-width: 170px; }
+  .choices-3 .choice-btn { font-size: 15px; }
+  .choices-4 .choice-btn { font-size: 14px; max-width: 100%; }
+
+  .choice-btn:hover:not(:disabled) {
+    background: #FFF0D6;
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245,166,35,0.2);
+  }
+  .choice-btn.correct { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+  .choice-btn.wrong   { background: var(--wrong-bg);   border-color: var(--wrong);   color: var(--wrong);   }
+  .choice-btn:disabled { cursor: default; transform: none; }
+
+  /* 피드백 */
+  .feedback { display: none; border-radius: 12px; padding: 12px 14px; margin-bottom: 4px; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--correct-bg); border: 1.5px solid var(--correct); }
+  .feedback.wrong   { background: var(--wrong-bg);   border: 1.5px solid var(--wrong);   }
+  .feedback-title { font-size: 14px; font-weight: 800; margin-bottom: 5px; font-family: 'Noto Sans KR', sans-serif; }
+  .feedback.correct .feedback-title { color: var(--correct); }
+  .feedback.wrong   .feedback-title { color: var(--wrong); }
+  .feedback-reason { font-size: 13px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; }
+  .feedback-reason strong { color: var(--accent-dark); }
+
+  .next-btn {
+    width: calc(100% - 40px); max-width: 480px; padding: 16px;
+    font-size: 16px; font-weight: 800; font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--accent); color: #fff; border: none; border-radius: 14px;
+    cursor: pointer; margin: 0 20px 20px; display: none; transition: background 0.2s;
+  }
+  .next-btn:hover { background: var(--accent-dark); }
+  .next-btn.show { display: block; }
+
+  #result-screen { display: none; width: 100%; max-width: 480px; padding: 20px; }
+  .result-card { background: var(--card); border-radius: 20px; padding: 32px 24px; text-align: center; box-shadow: var(--shadow); border: 1.5px solid var(--border); margin-bottom: 16px; }
+  .star-display { font-size: 40px; margin-bottom: 12px; letter-spacing: 4px; }
+  .score-text { font-size: 14px; color: var(--text-sub); font-family: 'Noto Sans KR', sans-serif; margin-bottom: 4px; }
+  .score-num { font-size: 52px; font-weight: 900; color: var(--accent-dark); line-height: 1; }
+  .score-total { font-size: 16px; color: var(--text-sub); margin-bottom: 20px; }
+  .comment { font-size: 15px; font-weight: 700; color: var(--text); font-family: 'Noto Sans KR', sans-serif; background: var(--bg); border-radius: 12px; padding: 12px 16px; line-height: 1.6; }
+
+  .result-btns { display: flex; flex-direction: column; gap: 10px; }
+  .result-btn { padding: 15px; font-size: 15px; font-weight: 800; font-family: 'Nunito', 'Noto Sans KR', sans-serif; border-radius: 14px; border: none; cursor: pointer; transition: all 0.2s; }
+  .btn-retry-wrong { background: var(--wrong-bg); color: var(--wrong); border: 2px solid var(--wrong); }
+  .btn-retry-wrong:hover { background: #f9d5d0; }
+  .btn-retry-all { background: var(--btn-choice); color: var(--text); border: 2px solid var(--btn-choice-border); }
+  .btn-retry-all:hover { background: #FFF0D6; }
+
+  .wrong-list { background: var(--card); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1.5px solid var(--border); margin-bottom: 16px; }
+  .wrong-list h3 { font-size: 14px; font-weight: 700; color: var(--wrong); margin-bottom: 12px; font-family: 'Noto Sans KR', sans-serif; }
+  .wrong-item { padding: 10px 12px; background: var(--wrong-bg); border-radius: 10px; margin-bottom: 8px; }
+  .wrong-item .w-sentence { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .wrong-item .w-reason { font-size: 13px; color: var(--text-sub); font-family: 'Noto Sans KR', sans-serif; line-height: 1.5; }
+  .wrong-item .w-reason strong { color: var(--correct); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="badge">스타트 영문법 1권 · SG1-0007</span>
+  <h1>be동사 의문문</h1>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-info">
+    <span id="q-counter">1 / 12</span>
+    <span id="score-counter">맞은 개수: 0</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="quiz-card" id="quiz-area">
+  <div class="q-direction" id="q-direction"></div>
+  <div class="q-label">Question <span id="q-num">1</span></div>
+
+  <div class="sentence-area">
+    <div class="q-sentence" id="q-sentence"></div>
+    <div class="q-sentence2" id="q-sentence2"></div>
+  </div>
+
+  <div id="choices"></div>
+
+  <div class="feedback" id="feedback">
+    <div class="feedback-title" id="fb-title"></div>
+    <div class="feedback-reason" id="fb-reason"></div>
+  </div>
+</div>
+
+<button class="next-btn" id="next-btn">다음 문제 →</button>
+<div id="result-screen"></div>
+
+<script>
+const ALL_QUESTIONS = [
+  // ── 유형 1: 의문문 만들기 — Am/Is/Are 고르기 ──
+  {
+    sentence: "<span class='blank'></span> <span class='hl'>you</span> a doctor?",
+    sentence2: "",
+    answer: "Are", choices: ["Am", "Is", "Are"], type: 3,
+    direction: "빈칸에 알맞은 be동사를 고르세요.",
+    reason: "주어가 <strong>you</strong>일 때 의문문은 <strong>Are you ~?</strong>예요. → <strong>Are</strong> you a doctor?"
+  },
+  {
+    sentence: "<span class='blank'></span> <span class='hl'>she</span> a singer?",
+    sentence2: "",
+    answer: "Is", choices: ["Am", "Is", "Are"], type: 3,
+    direction: "빈칸에 알맞은 be동사를 고르세요.",
+    reason: "주어가 <strong>she</strong>(3인칭 단수)일 때 의문문은 <strong>Is she ~?</strong>예요. → <strong>Is</strong> she a singer?"
+  },
+  {
+    sentence: "<span class='blank'></span> <span class='hl'>it</span> a cat?",
+    sentence2: "",
+    answer: "Is", choices: ["Am", "Is", "Are"], type: 3,
+    direction: "빈칸에 알맞은 be동사를 고르세요.",
+    reason: "주어가 <strong>it</strong>(사물·동물 단수)일 때 의문문은 <strong>Is it ~?</strong>예요. → <strong>Is</strong> it a cat?"
+  },
+  {
+    sentence: "<span class='blank'></span> <span class='hl'>they</span> students?",
+    sentence2: "",
+    answer: "Are", choices: ["Am", "Is", "Are"], type: 3,
+    direction: "빈칸에 알맞은 be동사를 고르세요.",
+    reason: "주어가 <strong>they</strong>(복수)일 때 의문문은 <strong>Are they ~?</strong>예요. → <strong>Are</strong> they students?"
+  },
+  {
+    sentence: "<span class='blank'></span> <span class='hl'>I</span> late?",
+    sentence2: "",
+    answer: "Am", choices: ["Am", "Is", "Are"], type: 3,
+    direction: "빈칸에 알맞은 be동사를 고르세요.",
+    reason: "주어가 <strong>I</strong>일 때 의문문은 <strong>Am I ~?</strong>예요. → <strong>Am</strong> I late?"
+  },
+  {
+    sentence: "<span class='blank'></span> <span class='hl'>we</span> a team?",
+    sentence2: "",
+    answer: "Are", choices: ["Am", "Is", "Are"], type: 3,
+    direction: "빈칸에 알맞은 be동사를 고르세요.",
+    reason: "주어가 <strong>we</strong>(복수)일 때 의문문은 <strong>Are we ~?</strong>예요. → <strong>Are</strong> we a team?"
+  },
+  // ── 유형 2: Yes/No 단답 고르기 ──
+  {
+    sentence: "Are you a doctor?",
+    sentence2: "→ Yes, ___ am.",
+    answer: "I", choices: ["I", "you", "we", "they"], type: 4,
+    direction: "대화의 빈칸에 알맞은 말을 고르세요.",
+    reason: "<strong>Are you ~?</strong> 질문에 Yes로 답할 때 → <strong>Yes, I am.</strong> (you → I 로 바뀌어요!)"
+  },
+  {
+    sentence: "Is she a cook?",
+    sentence2: "→ Yes, ___ is.",
+    answer: "she", choices: ["he", "she", "it", "they"], type: 4,
+    direction: "대화의 빈칸에 알맞은 말을 고르세요.",
+    reason: "<strong>Is she ~?</strong> 질문에 Yes로 답할 때 → <strong>Yes, she is.</strong> (주어 she를 그대로 써요)"
+  },
+  {
+    sentence: "Is it a dog?",
+    sentence2: "→ No, ___ isn't.",
+    answer: "it", choices: ["he", "she", "it", "they"], type: 4,
+    direction: "대화의 빈칸에 알맞은 말을 고르세요.",
+    reason: "<strong>Is it ~?</strong> 질문에 No로 답할 때 → <strong>No, it isn't.</strong> (주어 it을 그대로 써요)"
+  },
+  {
+    sentence: "Are they birds?",
+    sentence2: "→ No, ___ aren't.",
+    answer: "they", choices: ["he", "she", "it", "they"], type: 4,
+    direction: "대화의 빈칸에 알맞은 말을 고르세요.",
+    reason: "<strong>Are they ~?</strong> 질문에 No로 답할 때 → <strong>No, they aren't.</strong> (주어 they를 그대로 써요)"
+  },
+  // ── 유형 3: 단답 전체 고르기 (사지선다) ──
+  {
+    sentence: "Are you dancers?",
+    sentence2: "→ Yes, ___.",
+    answer: "we are", choices: ["I am", "we are", "they are", "you are"], type: 4,
+    direction: "대화의 빈칸에 알맞은 단답을 고르세요.",
+    reason: "<strong>Are you ~?</strong> 에서 you는 '너희들'을 뜻해요. Yes로 답할 때 → <strong>Yes, we are.</strong> (you → we 로 바뀌어요!)"
+  },
+  {
+    sentence: "Is he a nurse?",
+    sentence2: "→ No, ___.",
+    answer: "he isn't", choices: ["he isn't", "she isn't", "it isn't", "they aren't"], type: 4,
+    direction: "대화의 빈칸에 알맞은 단답을 고르세요.",
+    reason: "<strong>Is he ~?</strong> 질문에 No로 답할 때 → <strong>No, he isn't.</strong> (주어 he + isn't 써요)"
+  },
+];
+
+let questions = [], current = 0, score = 0, wrongList = [], answered = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz(qs) {
+  questions = qs; current = 0; score = 0; wrongList = []; answered = false;
+  document.getElementById('result-screen').style.display = 'none';
+  document.getElementById('result-screen').innerHTML = '';
+  document.getElementById('quiz-area').style.display = 'block';
+  document.querySelector('.progress-wrap').style.display = 'block';
+  document.getElementById('next-btn').classList.remove('show');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('q-num').textContent = current + 1;
+  document.getElementById('q-counter').textContent = `${current + 1} / ${questions.length}`;
+  document.getElementById('score-counter').textContent = `맞은 개수: ${score}`;
+  document.getElementById('progress-fill').style.width = `${(current / questions.length) * 100}%`;
+  document.getElementById('q-direction').textContent = q.direction;
+  document.getElementById('q-sentence').innerHTML = q.sentence;
+  const s2 = document.getElementById('q-sentence2');
+  s2.textContent = q.sentence2;
+  s2.style.display = q.sentence2 ? 'block' : 'none';
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  document.getElementById('fb-title').textContent = '';
+  document.getElementById('fb-reason').innerHTML = '';
+  document.getElementById('next-btn').classList.remove('show');
+  answered = false;
+
+  const shuffled = shuffle([...q.choices]);
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+  if (q.type === 2) choicesEl.className = 'choices-2';
+  else if (q.type === 3) choicesEl.className = 'choices-3';
+  else choicesEl.className = 'choices-4';
+
+  shuffled.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = () => selectAnswer(c, q, btn);
+    choicesEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(selected, q, btn) {
+  if (answered) return;
+  answered = true;
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback');
+  if (selected === q.answer) {
+    score++;
+    btn.classList.add('correct');
+    fb.className = 'feedback show correct';
+    document.getElementById('fb-title').textContent = '✅ 정답이에요!';
+    document.getElementById('fb-reason').innerHTML = q.reason;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.choice-btn').forEach(b => {
+      if (b.textContent === q.answer) b.classList.add('correct');
+    });
+    fb.className = 'feedback show wrong';
+    document.getElementById('fb-title').textContent = `❌ 오답이에요. 정답은 "${q.answer}"예요.`;
+    document.getElementById('fb-reason').innerHTML = q.reason;
+    wrongList.push(q);
+  }
+
+  document.getElementById('score-counter').textContent = `맞은 개수: ${score}`;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.textContent = current === questions.length - 1 ? '결과 보기 🏁' : '다음 문제 →';
+  nextBtn.classList.add('show');
+}
+
+document.getElementById('next-btn').onclick = () => {
+  if (current === questions.length - 1) showResult();
+  else { current++; renderQuestion(); }
+};
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.querySelector('.progress-wrap').style.display = 'none';
+  document.getElementById('next-btn').classList.remove('show');
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  let stars = '⭐';
+  let comment = '조금 더 연습해 볼까요? 오답 다시 풀기로 도전해봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; comment = 'be동사 의문문 완벽 마스터! 정말 잘했어요! 🎉'; }
+  else if (pct >= 60) { stars = '⭐⭐'; comment = '잘 하고 있어요! 오답을 다시 풀어서 완성해봐요. 😊'; }
+
+  let wrongHTML = '';
+  if (wrongList.length > 0) {
+    wrongHTML = `<div class="wrong-list">
+      <h3>❌ 틀린 문제 복습 (${wrongList.length}개)</h3>
+      ${wrongList.map(q => `
+        <div class="wrong-item">
+          <div class="w-sentence">${q.sentence.replace(/<[^>]+>/g, '')} ${q.sentence2.replace('___', `<strong>${q.answer}</strong>`)}</div>
+          <div class="w-reason">${q.reason}</div>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  document.getElementById('result-screen').style.display = 'block';
+  document.getElementById('result-screen').innerHTML = `
+    <div class="result-card">
+      <div class="star-display">${stars}</div>
+      <div class="score-text">내 점수</div>
+      <div class="score-num">${score}</div>
+      <div class="score-total">/ ${total} 문제</div>
+      <div class="comment">${comment}</div>
+    </div>
+    ${wrongHTML}
+    <div class="result-btns">
+      ${wrongList.length > 0 ? `<button class="result-btn btn-retry-wrong" id="btn-retry-wrong">❌ 오답만 다시 풀기 (${wrongList.length}문제)</button>` : ''}
+      <button class="result-btn btn-retry-all" id="btn-retry-all">🔄 전체 다시 풀기</button>
+    </div>
+  `;
+
+  if (wrongList.length > 0) {
+    document.getElementById('btn-retry-wrong').onclick = () => startQuiz(shuffle([...wrongList]));
+  }
+  document.getElementById('btn-retry-all').onclick = () => startQuiz(shuffle([...ALL_QUESTIONS]));
+}
+
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

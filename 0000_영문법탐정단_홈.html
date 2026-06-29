@@ -3,620 +3,524 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>영문법 탐정단 | 미라클 영어 스터디</title>
+<title>영문법 탐정단 🔍</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap');
-  :root{
-    --navy:#1A2A3A;--navy2:#2C4A6A;
-    --sky:#4BA3E3;--sky-light:#E8F4FD;--sky-dark:#2980C4;
-    --mint:#3DBFA0;--mint-light:#E6F7F4;
-    --coral:#F0614A;--coral-light:#FEF0EE;
-    --gold:#C9960A;--gold-light:#FDF6DC;
-    --teal:#1A8FA0;--teal-light:#E6F5F7;--teal-dark:#136E7C;
-    --red:#C0392B;--red-light:#FDECEA;
-    --green:#2E9E5B;--green-light:#E8F7EF;--green-dark:#1E7A44;
-    --orange:#E8720C;--orange-light:#FEF0E6;
-    --indigo:#3D5A9E;--indigo-light:#EBF0FB;
-    --purple:#7C5CBF;--purple-light:#F0ECF9;--purple-dark:#5C3EA0;
-    --gt:#7C5CBF;--gt-light:#F0EBFD;--gt-dark:#5C3EA0;
-    --bg:#F4F7FB;--card:#FFFFFF;--text:#1A2A3A;--muted:#7A8FA0;--border:#D6E8F5;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Nunito','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+:root {
+  --bg: #F8F6F2;
+  --white: #ffffff;
+  --text: #1E1E2E;
+  --text-sub: #6B6B7B;
+  --border: #E8E4DC;
 
-  /* ── 헤더 ── */
-  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:white;padding:28px 20px 24px;text-align:center;}
-  header .brand{font-size:12px;letter-spacing:2px;opacity:.6;margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;}
-  header h1{font-size:28px;font-weight:900;margin-bottom:6px;}
-  header .tagline{font-size:14px;opacity:.8;font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
-  .stats-row{display:flex;justify-content:center;gap:20px;margin-top:18px;}
-  .stat{background:rgba(255,255,255,.12);border-radius:12px;padding:8px 18px;text-align:center;}
-  .stat .n{font-size:22px;font-weight:900;}
-  .stat .l{font-size:11px;opacity:.7;font-family:'Noto Sans KR',sans-serif;margin-top:1px;}
+  /* 문법 함정 탈출 */
+  --gv: #EBF5FD; --gv-acc: #3A9AD9;
+  --gq: #E6F5F7; --gq-acc: #2AABB8;
+  --gt: #F0EBFD; --gt-acc: #7C5CBF;
+  --gx: #FDF6DC; --gx-acc: #C8A600;
+  --gtest: #FFF3F0; --gtest-acc: #E8604C;
 
-  /* ── 안내 배너 ── */
-  .guide-banner{max-width:720px;margin:18px auto 0;padding:0 16px;}
-  .guide-inner{background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);font-size:13px;font-family:'Noto Sans KR',sans-serif;color:var(--text);line-height:1.6;}
-  .guide-inner .gi{font-size:22px;flex-shrink:0;}
+  /* 스타트 영문법 */
+  --sg: #FEF0E6; --sg-acc: #F5A623; --sg-dark: #D4891A;
 
-  /* ── 섹션 ── */
-  .section{max-width:720px;margin:0 auto;padding:20px 16px 0;}
-  .section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-  .section-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-  .section-title{font-size:18px;font-weight:900;}
-  .section-sub{font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;margin-top:1px;}
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.10);
+  --radius: 16px;
+}
 
-  /* ── 카드 그리드 ── */
-  .card-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito','Noto Sans KR',sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* ── 영역별 카드 바탕색 ── */
-  .gv-card{background:#EBF5FD!important;}
-  .gq-card{background:#E6F5F7!important;}
-  .gt-card{background:#F0EBFD!important;}
-  .challenge-card{background:#FDF6DC!important;}
-  .test-card{background:#FFF3F0!important;}
+/* ── 헤더 ── */
+.site-header {
+  background: var(--text);
+  padding: 20px 24px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon { font-size: 26px; }
+.logo-text { font-size: 20px; font-weight: 900; color: #fff; letter-spacing: -0.5px; }
+.logo-sub { font-size: 12px; color: rgba(255,255,255,0.55); font-family: 'Noto Sans KR',sans-serif; font-weight: 500; margin-top: 1px; }
+.header-stats { display: flex; gap: 16px; }
+.stat-item { text-align: center; }
+.stat-num { font-size: 18px; font-weight: 900; color: var(--sg-acc); line-height: 1; }
+.stat-label { font-size: 10px; color: rgba(255,255,255,0.5); font-family: 'Noto Sans KR',sans-serif; }
 
-  /* ── 앱 카드 ── */
-  .app-card{background:white;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);text-decoration:none;color:var(--text);transition:all .15s;border:1.5px solid transparent;}
-  .app-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1);}
-  .app-num{font-size:11px;font-weight:800;color:var(--muted);min-width:32px;text-align:center;font-family:'Nunito',sans-serif;flex-shrink:0;}
-  .app-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;font-weight:900;font-family:'Nunito',sans-serif;color:white;}
-  .app-info{flex:1;min-width:0;}
-  .app-name{font-size:15px;font-weight:800;margin-bottom:2px;}
-  .app-desc{font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .app-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;}
+/* ── 상위 탭 ── */
+.top-tabs {
+  display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
+  background: var(--white); border-bottom: 2px solid var(--border);
+  padding: 0 16px;
+}
+.top-tabs::-webkit-scrollbar { display: none; }
+.top-tab {
+  padding: 14px 18px; font-size: 14px; font-weight: 700;
+  font-family: 'Noto Sans KR',sans-serif; color: var(--text-sub);
+  border: none; background: none; cursor: pointer; white-space: nowrap;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: all 0.2s;
+}
+.top-tab:hover { color: var(--text); }
+.top-tab.active { color: var(--sg-dark); border-bottom-color: var(--sg-acc); }
+.top-tab.active.gv { color: var(--gv-acc); border-bottom-color: var(--gv-acc); }
 
-  /* ── 서브그룹 (C형/도전/테스트) ── */
-  .subgroup{background:white;border-radius:16px;padding:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
-  .subgroup-title{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);font-family:'Noto Sans KR',sans-serif;}
-  .subgroup .app-card{box-shadow:none;border:1.5px solid var(--border);margin-bottom:8px;}
-  .subgroup .app-card:last-child{margin-bottom:0;}
+/* ── 패널 ── */
+.tab-panel { display: none; padding: 20px 16px 40px; }
+.tab-panel.active { display: block; }
 
-  /* ── 색상 테마 ── */
-  /* GV */
-  .gv-color{background:linear-gradient(135deg,var(--sky-dark),#1A5F8A);}
-  .gv-a-color{background:linear-gradient(135deg,#2980C4,#1A5F8A);}
-  .gv-b-color{background:linear-gradient(135deg,#3DBFA0,#1E7A44);}
-  .gv-c-color{background:linear-gradient(135deg,#7C5CBF,#4A2E8A);}
-  .gv-d-color{background:linear-gradient(135deg,#C9960A,#8B6200);}
-  .gv-e-color{background:linear-gradient(135deg,#3D5A9E,#1E3070);}
-  .gv-border:hover{border-color:var(--sky);}
-  /* GQ L1 */
-  .gq1q-color{background:linear-gradient(135deg,var(--teal),var(--teal-dark));}
-  .gq1n-color{background:linear-gradient(135deg,var(--red),#7A1E14);}
-  .gq1c-color{background:linear-gradient(135deg,var(--purple),#4A2E8A);}
-  /* GQ L2 */
-  .gq2q-color{background:linear-gradient(135deg,var(--orange),#A04500);}
-  .gq2n-color{background:linear-gradient(135deg,#7B3F00,#4A2500);}
-  .gq2c-color{background:linear-gradient(135deg,#4A6080,#2C3E50);}
-  /* GQ L3 */
-  .gq3q-color{background:linear-gradient(135deg,var(--green),var(--green-dark));}
-  .gq3n-color{background:linear-gradient(135deg,var(--teal),var(--teal-dark));}
-  .gq3c-color{background:linear-gradient(135deg,#2C6E49,#1B4332);}
-  /* GQ L4 */
-  .gq4q-color{background:linear-gradient(135deg,var(--indigo),#1E3070);}
-  .gq4n-color{background:linear-gradient(135deg,#5C6E8A,#2C3E50);}
-  .gq4c-color{background:linear-gradient(135deg,#2C3E6B,#1A2847);}
-  /* 통합/테스트 */
-  .challenge-color{background:linear-gradient(135deg,var(--navy),var(--navy2));}
-  .test-color{background:linear-gradient(135deg,#8B4513,#5C2A00);}
-  /* GT */
-  .gt-a-color{background:linear-gradient(135deg,#7C5CBF,#5C3EA0);}
-  .gt-b-color{background:linear-gradient(135deg,#9B6DD6,#7C5CBF);}
-  .gt-c-color{background:linear-gradient(135deg,#5C3EA0,#3D2070);}
-  .gt-border:hover{border-color:var(--gt);}
-  /* GT 탭 */
-  .tab-btn.t-gt{border-color:var(--gt-dark);}
-  .tab-btn.t-gt:hover,.tab-btn.t-gt.active{background:var(--gt-dark);border-color:var(--gt-dark);}
-  .tab-btn.t-gt.active .tb-name,.tab-btn.t-gt.active .tb-range,.tab-btn.t-gt:hover .tb-name,.tab-btn.t-gt:hover .tb-range{color:white;}
-  .badge-GT{background:#EDE7FF;color:#5C3EA0;}
+/* ── 하위 탭 (SG 1권/2권 등) ── */
+.sub-tabs {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.sub-tab {
+  padding: 8px 18px; font-size: 13px; font-weight: 700;
+  font-family: 'Noto Sans KR',sans-serif;
+  border-radius: 20px; border: 2px solid var(--border);
+  background: var(--white); color: var(--text-sub); cursor: pointer;
+  transition: all 0.2s;
+}
+.sub-tab:hover { border-color: var(--sg-acc); color: var(--sg-dark); }
+.sub-tab.active { background: var(--sg-acc); border-color: var(--sg-acc); color: #fff; }
 
-  /* ── 배지 색상 ── */
-  .badge-A{background:var(--sky-light);color:var(--sky-dark);}
-  .badge-B{background:var(--mint-light);color:var(--green-dark);}
-  .badge-C{background:var(--purple-light);color:#5E40A0;}
-  .badge-D{background:var(--gold-light);color:var(--gold);}
-  .badge-E{background:#F0F5FF;color:#3D5A9E;}
-  .badge-Q{background:var(--sky-light);color:var(--sky-dark);}
-  .badge-N{background:var(--red-light);color:#7A1E14;}
-  .badge-MIX{background:var(--purple-light);color:#5E40A0;}
-  .badge-X{background:var(--gold-light);color:var(--gold);}
-  .badge-T{background:var(--coral-light);color:var(--coral);}
+/* ── 유닛 구분 헤더 ── */
+.unit-label {
+  font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text-sub);
+  margin: 24px 0 10px; padding-left: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.unit-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
 
-  /* ── 섹션 구분선 ── */
-  .divider{max-width:720px;margin:4px auto 0;padding:0 16px;}
-  .divider hr{border:none;border-top:1.5px dashed var(--border);}
+/* ── 카드 그리드 ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
 
+/* ── 앱 카드 ── */
+.app-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px 14px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all 0.18s;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.app-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+}
+.app-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
 
-  /* ── 상위탭 (시리즈 선택) ── */
-  .series-wrap{max-width:720px;margin:20px auto 0;padding:0 16px;}
-  .series-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-  .series-bar::-webkit-scrollbar{display:none;}
-  .series-btn{
-    border:2.5px solid var(--border);background:white;border-radius:16px;
-    padding:12px 16px;cursor:pointer;transition:all .2s;
-    font-family:'Noto Sans KR',sans-serif;text-align:center;
-    flex-shrink:0;min-width:100px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-  }
-  .series-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.1);}
-  .series-btn .sb-icon{font-size:20px;margin-bottom:4px;}
-  .series-btn .sb-name{font-size:12px;font-weight:800;color:var(--text);display:block;white-space:nowrap;}
-  .series-btn .sb-sub{font-size:10px;color:var(--muted);display:block;margin-top:2px;white-space:nowrap;}
-  /* 활성 상위탭 */
-  .series-btn.s-trap{border-color:#1A2A3A;}
-  .series-btn.s-trap.active,.series-btn.s-trap:hover{background:var(--navy);border-color:var(--navy);}
-  .series-btn.s-trap.active .sb-name,.series-btn.s-trap.active .sb-sub,
-  .series-btn.s-trap:hover .sb-name,.series-btn.s-trap:hover .sb-sub{color:white;}
-  /* 준비중 버튼 */
-  .series-btn.s-coming{opacity:.5;cursor:not-allowed;background:#F0F4F8;}
-  .series-btn.s-coming:hover{transform:none;box-shadow:0 2px 8px rgba(0,0,0,.06);}
-  .series-btn.s-coming .sb-name{color:var(--muted);}
+/* 카드 색상별 */
+.card-sg  { background: var(--sg);  } .card-sg::before  { background: var(--sg-acc); }
+.card-sg:hover { box-shadow: 0 6px 24px rgba(245,166,35,0.25); }
+.card-gv  { background: var(--gv);  } .card-gv::before  { background: var(--gv-acc); }
+.card-gq  { background: var(--gq);  } .card-gq::before  { background: var(--gq-acc); }
+.card-gt  { background: var(--gt);  } .card-gt::before  { background: var(--gt-acc); }
+.card-gx  { background: var(--gx);  } .card-gx::before  { background: var(--gx-acc); }
+.card-gtest{ background: var(--gtest); } .card-gtest::before { background: var(--gtest-acc); }
 
-  /* ── 하위탭 영역 (기존 tab-wrap) ── */
-  .tab-wrap{max-width:720px;margin:20px auto 0;padding:0 16px;position:relative;}
-  .tab-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-  .tab-bar::-webkit-scrollbar{display:none;}
-  /* 오른쪽 그라데이션 — 더 있다는 힌트 */
-  .tab-wrap::after{content:'';position:absolute;right:0;top:0;bottom:6px;width:40px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;border-radius:0 16px 16px 0;}
-  .tab-btn{
-    background:white;border:2px solid var(--border);border-radius:14px;
-    padding:10px 16px;cursor:pointer;
-    transition:all .2s;font-family:'Noto Sans KR',sans-serif;
-    text-align:center;flex-shrink:0;min-width:110px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-  }
-  .tab-btn:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.1);}
-  .tab-btn .tb-icon{font-size:18px;margin-bottom:3px;}
-  .tab-btn .tb-name{font-size:12px;font-weight:800;color:var(--text);display:block;margin-bottom:2px;white-space:nowrap;}
-  .tab-btn .tb-range{font-size:10px;font-weight:700;color:var(--muted);display:block;white-space:nowrap;}
-  /* 전체 탭 */
-  .tab-btn.t-all{border-color:var(--navy);}
-  .tab-btn.t-all:hover,.tab-btn.t-all.active{background:var(--navy);border-color:var(--navy);}
-  .tab-btn.t-all.active .tb-name,.tab-btn.t-all.active .tb-range,.tab-btn.t-all:hover .tb-name,.tab-btn.t-all:hover .tb-range{color:white;}
-  /* GV 탭 */
-  .tab-btn.t-gv{border-color:var(--sky-dark);}
-  .tab-btn.t-gv:hover,.tab-btn.t-gv.active{background:var(--sky-dark);border-color:var(--sky-dark);}
-  .tab-btn.t-gv.active .tb-name,.tab-btn.t-gv.active .tb-range,.tab-btn.t-gv:hover .tb-name,.tab-btn.t-gv:hover .tb-range{color:white;}
-  /* GQ 탭 */
-  .tab-btn.t-gq{border-color:var(--teal-dark);}
-  .tab-btn.t-gq:hover,.tab-btn.t-gq.active{background:var(--teal-dark);border-color:var(--teal-dark);}
-  .tab-btn.t-gq.active .tb-name,.tab-btn.t-gq.active .tb-range,.tab-btn.t-gq:hover .tb-name,.tab-btn.t-gq:hover .tb-range{color:white;}
-  .tab-section{display:none;}
-  .tab-section.show{display:block;}
-  /* ── 푸터 ── */
-  footer{text-align:center;padding:28px 16px 40px;font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;line-height:1.8;}
+.card-num {
+  font-size: 10px; font-weight: 800; color: var(--text-sub);
+  letter-spacing: 0.5px; margin-bottom: 6px; font-family: 'Nunito',sans-serif;
+}
+.card-title {
+  font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.3;
+  margin-bottom: 4px; font-family: 'Noto Sans KR',sans-serif;
+}
+.card-desc {
+  font-size: 11px; color: var(--text-sub); font-family: 'Noto Sans KR',sans-serif;
+  line-height: 1.4;
+}
+.card-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 10px; margin-top: 8px;
+  font-family: 'Nunito',sans-serif;
+}
+.badge-a { background: #DBEAFE; color: #1D6FAE; }
+.badge-b { background: #D1FAE5; color: #0D7A4E; }
+.badge-c { background: #EDE9FE; color: #5B21B6; }
+.badge-test { background: var(--gtest); color: var(--gtest-acc); }
+.badge-x { background: var(--gx); color: var(--gx-acc); }
+
+/* ── 준비중 카드 ── */
+.app-card.coming-soon {
+  opacity: 0.45; cursor: default; pointer-events: none;
+}
+
+/* ── 문법 함정 탈출 패널 내 하위탭 ── */
+.sub-tab.active-gv { background: var(--gv-acc); border-color: var(--gv-acc); color: #fff; }
+.sub-tab.active-gq { background: var(--gq-acc); border-color: var(--gq-acc); color: #fff; }
+.sub-tab.active-gt { background: var(--gt-acc); border-color: var(--gt-acc); color: #fff; }
+
+/* ── 빈 상태 ── */
+.empty-state {
+  text-align: center; padding: 48px 24px;
+  color: var(--text-sub); font-family: 'Noto Sans KR',sans-serif;
+}
+.empty-state .e-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; font-weight: 600; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">미라클 영어 스터디</div>
-  <h1>🔍 영문법 탐정단</h1>
-  <div class="tagline">단계별로 차근차근 · 탭하고 선택하고 완성!</div>
-  <div class="stats-row">
-    <div class="stat"><div class="n">3</div><div class="l">영역</div></div>
-    <div class="stat"><div class="n">40</div><div class="l">앱</div></div>
-    <div class="stat"><div class="n">7</div><div class="l">테스트</div></div>
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-icon">🔍</span>
+    <div>
+      <div class="logo-text">영문법 탐정단</div>
+      <div class="logo-sub">Grammar Detective</div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-item">
+      <div class="stat-num">28</div>
+      <div class="stat-label">SG1 앱</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">39</div>
+      <div class="stat-label">GV·GQ·GT</div>
+    </div>
   </div>
 </header>
 
-<div class="guide-banner">
-  <div class="guide-inner">
-    <span class="gi">💡</span>
-    <span>A형→B형→C형 순서로 풀어봐요. 통합 도전과 실전 테스트는 마지막에!</span>
-  </div>
+<!-- 상위 탭 -->
+<div class="top-tabs">
+  <button class="top-tab active" onclick="showTopTab('sg', this)">스타트 영문법</button>
+  <button class="top-tab gv" onclick="showTopTab('gv', this)">문법 함정 탈출</button>
+  <button class="top-tab" onclick="showTopTab('ug', this)">업 영문법</button>
+  <button class="top-tab" onclick="showTopTab('jg', this)">점프 영문법</button>
 </div>
 
-<!-- 상위탭: 시리즈 선택 -->
-<div class="series-wrap">
-  <div class="series-bar">
-    <button class="series-btn s-trap active" onclick="showSeries('trap', this)">
-      <div class="sb-icon">🪤</div>
-      <span class="sb-name">문법 함정 탈출</span>
-      <span class="sb-sub">GV · GQ · GT</span>
-    </button>
-    <button class="series-btn s-coming" disabled title="준비중">
-      <div class="sb-icon">📗</div>
-      <span class="sb-name">스타트 영문법</span>
-      <span class="sb-sub">준비중</span>
-    </button>
-    <button class="series-btn s-coming" disabled title="준비중">
-      <div class="sb-icon">📘</div>
-      <span class="sb-name">업 영문법</span>
-      <span class="sb-sub">준비중</span>
-    </button>
-    <button class="series-btn s-coming" disabled title="준비중">
-      <div class="sb-icon">📙</div>
-      <span class="sb-name">점프 영문법</span>
-      <span class="sb-sub">준비중</span>
-    </button>
-    <button class="series-btn s-coming" disabled title="준비중">
-      <div class="sb-icon">📕</div>
-      <span class="sb-name">코어 영문법</span>
-      <span class="sb-sub">준비중</span>
-    </button>
-    <button class="series-btn s-coming" disabled title="준비중">
-      <div class="sb-icon">🏆</div>
-      <span class="sb-name">마스터 영문법</span>
-      <span class="sb-sub">준비중</span>
-    </button>
+<!-- ════════════════════════════════
+     스타트 영문법 패널
+════════════════════════════════ -->
+<div class="tab-panel active" id="panel-sg">
+  <!-- 하위탭 -->
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="showSubTab('sg1', this)">1권</button>
+    <button class="sub-tab" onclick="showSubTab('sg2', this)">2권 (준비중)</button>
+    <button class="sub-tab" onclick="showSubTab('sg3', this)">3권 (준비중)</button>
   </div>
-</div>
 
-<!-- 하위탭: 문법 함정 탈출 영역 선택 -->
-<div id="series-trap">
-<div class="tab-wrap" style="margin-top:12px;">
-  <div class="tab-bar">
-    <button class="tab-btn t-all active" onclick="showTab('all', this)">
-      <div class="tb-icon">🔍</div>
-      <span class="tb-name">전체</span>
-      <span class="tb-range">0001 ~ 0039</span>
-    </button>
-    <button class="tab-btn t-gv" onclick="showTab('gv', this)">
-      <div class="tb-icon">🔵</div>
-      <span class="tb-name">동사편 GV</span>
-      <span class="tb-range">0001 ~ 0017</span>
-    </button>
-    <button class="tab-btn t-gq" onclick="showTab('gq', this)">
-      <div class="tb-icon">🟢</div>
-      <span class="tb-name">의문문·부정문 GQ</span>
-      <span class="tb-range">0018 ~ 0033</span>
-    </button>
-    <button class="tab-btn t-gt" onclick="showTab('gt', this)">
-      <div class="tb-icon">🟣</div>
-      <span class="tb-name">시제편 GT</span>
-      <span class="tb-range">0034 ~ 0039</span>
-    </button>
+  <!-- SG1 콘텐츠 -->
+  <div id="subtab-sg1">
+
+    <!-- Unit 1 -->
+    <div class="unit-label">Unit 1 — Nouns &amp; Pronouns</div>
+    <div class="card-grid">
+      <a class="app-card card-sg" href="SG1-0001_a_an고르기.html">
+        <div class="card-num">SG1-01</div>
+        <div class="card-title">a / an 고르기</div>
+        <div class="card-desc">모음·자음 소리 구별</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0002_단수복수변환.html">
+        <div class="card-num">SG1-02</div>
+        <div class="card-title">단수 복수 변환</div>
+        <div class="card-desc">~s / ~es / ~ies 규칙</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0003_인칭대명사고르기.html">
+        <div class="card-num">SG1-03</div>
+        <div class="card-title">인칭대명사 고르기</div>
+        <div class="card-desc">He / She / It / They</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+    </div>
+
+    <!-- Unit 2 -->
+    <div class="unit-label">Unit 2 — Be-Verbs: Am / Are / Is</div>
+    <div class="card-grid">
+      <a class="app-card card-sg" href="SG1-0004_be동사긍정문.html">
+        <div class="card-num">SG1-04</div>
+        <div class="card-title">be동사 긍정문</div>
+        <div class="card-desc">am / is / are 고르기</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0005_be동사부정문.html">
+        <div class="card-num">SG1-05</div>
+        <div class="card-title">be동사 부정문</div>
+        <div class="card-desc">isn't / aren't</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0006_축약형변환.html">
+        <div class="card-num">SG1-06</div>
+        <div class="card-title">축약형 변환</div>
+        <div class="card-desc">I'm / She's / They're 등</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0007_be동사의문문.html">
+        <div class="card-num">SG1-07</div>
+        <div class="card-title">be동사 의문문</div>
+        <div class="card-desc">Am / Is / Are …? + 단답</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0008_be동사What의문문.html">
+        <div class="card-num">SG1-08</div>
+        <div class="card-title">What + Be?</div>
+        <div class="card-desc">What is / are?</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0009_be동사문장점검.html">
+        <div class="card-num">SG1-09</div>
+        <div class="card-title">문장 점검 ①</div>
+        <div class="card-desc">be동사 오류 찾기</div>
+        <span class="card-badge badge-c">C형</span>
+      </a>
+    </div>
+
+    <!-- Unit 3 -->
+    <div class="unit-label">Unit 3 — Demonstratives &amp; Others</div>
+    <div class="card-grid">
+      <a class="app-card card-sg" href="SG1-0010_This_That고르기.html">
+        <div class="card-num">SG1-10</div>
+        <div class="card-title">This / That 고르기</div>
+        <div class="card-desc">가까이 vs 멀리</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0011_These_Those고르기.html">
+        <div class="card-num">SG1-11</div>
+        <div class="card-title">These / Those 고르기</div>
+        <div class="card-desc">가까이 vs 멀리 · 복수</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0012_소유격고르기.html">
+        <div class="card-num">SG1-12</div>
+        <div class="card-title">소유격 ①</div>
+        <div class="card-desc">my / your / his / her 등</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0013_관사고르기.html">
+        <div class="card-num">SG1-13</div>
+        <div class="card-title">관사 고르기</div>
+        <div class="card-desc">a / an / the</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0014_혼합복습1.html">
+        <div class="card-num">SG1-14</div>
+        <div class="card-title">혼합 복습 ①</div>
+        <div class="card-desc">L1~L10 전체 혼합</div>
+        <span class="card-badge badge-c">C형</span>
+      </a>
+    </div>
+
+    <!-- Unit 4 -->
+    <div class="unit-label">Unit 4 — More on Be-Verbs</div>
+    <div class="card-grid">
+      <a class="app-card card-sg" href="SG1-0015_전치사문제.html">
+        <div class="card-num">SG1-15</div>
+        <div class="card-title">전치사 고르기</div>
+        <div class="card-desc">in / on / under</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0016_형용사표현.html">
+        <div class="card-num">SG1-16</div>
+        <div class="card-title">형용사 표현</div>
+        <div class="card-desc">색깔 · 모양 · 크기</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0017_명사대명사전환.html">
+        <div class="card-num">SG1-17</div>
+        <div class="card-title">명사 → 대명사</div>
+        <div class="card-desc">Noun → Pronoun 전환</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0018_문장점검2.html">
+        <div class="card-num">SG1-18</div>
+        <div class="card-title">문장 점검 ②</div>
+        <div class="card-desc">전치사·관사·형용사 오류</div>
+        <span class="card-badge badge-c">C형</span>
+      </a>
+    </div>
+
+    <!-- Unit 5 -->
+    <div class="unit-label">Unit 5 — Have / Has</div>
+    <div class="card-grid">
+      <a class="app-card card-sg" href="SG1-0019_have_has고르기.html">
+        <div class="card-num">SG1-19</div>
+        <div class="card-title">have / has 고르기</div>
+        <div class="card-desc">주어에 따른 구별</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0020_부정have고르기.html">
+        <div class="card-num">SG1-20</div>
+        <div class="card-title">don't / doesn't have</div>
+        <div class="card-desc">부정문 고르기</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0021_Do_Does의문문.html">
+        <div class="card-num">SG1-21</div>
+        <div class="card-title">Do / Does + have?</div>
+        <div class="card-desc">의문문 + 단답</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0022_소유격2.html">
+        <div class="card-num">SG1-22</div>
+        <div class="card-title">소유격 ②</div>
+        <div class="card-desc">have/has ↔ 소유격 전환</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0023_혼합복습2.html">
+        <div class="card-num">SG1-23</div>
+        <div class="card-title">혼합 복습 ②</div>
+        <div class="card-desc">be동사 vs have/has</div>
+        <span class="card-badge badge-c">C형</span>
+      </a>
+    </div>
+
+    <!-- Unit 6 -->
+    <div class="unit-label">Unit 6 — Helping Verbs &amp; Questions</div>
+    <div class="card-grid">
+      <a class="app-card card-sg" href="SG1-0024_can_cant고르기.html">
+        <div class="card-num">SG1-24</div>
+        <div class="card-title">can / can't 고르기</div>
+        <div class="card-desc">~할 수 있다 / 없다</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0025_Can의문문.html">
+        <div class="card-num">SG1-25</div>
+        <div class="card-title">Can 의문문</div>
+        <div class="card-desc">Can ~? + 단답</div>
+        <span class="card-badge badge-a">A형</span>
+      </a>
+      <a class="app-card card-sg" href="SG1-0026_What_How_Be의문문.html">
+        <div class="card-num">SG1-26</div>
+        <div class="card-title">What / How + Be?</div>
+        <div class="card-desc">What color / How old / How are</div>
+        <span class="card-badge badge-b">B형</span>
+      </a>
+    </div>
+
+    <!-- 테스트 -->
+    <div class="unit-label">실전 테스트</div>
+    <div class="card-grid">
+      <a class="app-card card-gtest" href="SG1-TEST1_실전테스트1.html">
+        <div class="card-num">TEST 1</div>
+        <div class="card-title">실전 테스트 1 📝</div>
+        <div class="card-desc">L1~L10 범위 · 15문제</div>
+        <span class="card-badge badge-test">TEST</span>
+      </a>
+      <a class="app-card card-gtest" href="SG1-TEST2_실전테스트2.html">
+        <div class="card-num">TEST 2</div>
+        <div class="card-title">실전 테스트 2 📝</div>
+        <div class="card-desc">L11~L20 범위 · 15문제</div>
+        <span class="card-badge badge-test">TEST</span>
+      </a>
+    </div>
+
+  </div><!-- /subtab-sg1 -->
+
+  <!-- SG2, SG3 준비중 -->
+  <div id="subtab-sg2" style="display:none">
+    <div class="empty-state">
+      <div class="e-icon">🔧</div>
+      <p>스타트 영문법 2권은 준비 중이에요!</p>
+    </div>
   </div>
-</div>
-</div>
-<div class="tab-section show" id="tab-gv">
-<div class="section" style="margin-top:24px;">
-  <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,var(--sky-dark),#1A5F8A);">🔡</div>
-    <div>
-      <div class="section-title">GV 영역 — 동사편</div>
-      <div class="section-sub">be동사 vs 일반동사 · 현재 + 과거 시제</div>
+  <div id="subtab-sg3" style="display:none">
+    <div class="empty-state">
+      <div class="e-icon">🔧</div>
+      <p>스타트 영문법 3권은 준비 중이에요!</p>
+    </div>
+  </div>
+</div><!-- /panel-sg -->
+
+
+<!-- ════════════════════════════════
+     문법 함정 탈출 패널
+════════════════════════════════ -->
+<div class="tab-panel" id="panel-gv">
+  <div class="sub-tabs">
+    <button class="sub-tab active-gv active" onclick="showGvTab('gvtab', this)">GV 동사편</button>
+    <button class="sub-tab" onclick="showGvTab('gqtab', this)">GQ 의문문편</button>
+    <button class="sub-tab" onclick="showGvTab('gttab', this)">GT 시제편</button>
+  </div>
+
+  <div id="gvtab">
+    <div class="unit-label">GV — 동사편 (0001~0017)</div>
+    <div class="card-grid">
+      <div class="app-card card-gv"><div class="card-num">GV-L1-A</div><div class="card-title">동사 1단계 A형</div><div class="card-desc">기본 동사 이지선다</div><span class="card-badge badge-a">A형</span></div>
+      <div class="app-card card-gv"><div class="card-num">GV-L1-B</div><div class="card-title">동사 1단계 B형</div><div class="card-desc">혼합 응용</div><span class="card-badge badge-b">B형</span></div>
+      <div class="app-card card-gv"><div class="card-num">GV-L2-A</div><div class="card-title">동사 2단계 A형</div><div class="card-desc">3인칭 단수 현재</div><span class="card-badge badge-a">A형</span></div>
+      <div class="app-card card-gv"><div class="card-num">GV-L2-B</div><div class="card-title">동사 2단계 B형</div><div class="card-desc">혼합 응용</div><span class="card-badge badge-b">B형</span></div>
+      <div class="app-card card-gx"><div class="card-num">GV-X</div><div class="card-title">동사 통합 도전 🏆</div><div class="card-desc">레벨 선택형</div><span class="card-badge badge-x">통합</span></div>
+      <div class="app-card card-gtest"><div class="card-num">GV-TEST</div><div class="card-title">동사 실전 테스트 📝</div><div class="card-desc">15문제 힌트 없음</div><span class="card-badge badge-test">TEST</span></div>
     </div>
   </div>
 
-  <!-- 1단계 -->
-  <div style="font-size:12px;font-weight:700;color:var(--sky-dark);margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;">📌 1단계 — 현재 시제</div>
-  <div class="card-grid">
-    <a class="app-card gv-card gv-border" href="0001_동사1단계A형_GV-L1-A.html">
-      <div class="app-num">0001</div><div class="app-icon gv-a-color">A</div>
-      <div class="app-info"><div class="app-name">동사 1단계 A형</div><div class="app-desc">동사 찾기 + be동사/일반동사 분류 탭</div></div>
-      <span class="app-badge badge-A">GV-L1-A</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0002_동사1단계B형_GV-L1-B.html">
-      <div class="app-num">0002</div><div class="app-icon gv-b-color">B</div>
-      <div class="app-info"><div class="app-name">동사 1단계 B형</div><div class="app-desc">be동사/일반동사 · 4지선다</div></div>
-      <span class="app-badge badge-B">GV-L1-B</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0003_동사1단계C형_GV-L1-C.html">
-      <div class="app-num">0003</div><div class="app-icon gv-c-color">C</div>
-      <div class="app-info"><div class="app-name">동사 1단계 C형</div><div class="app-desc">be동사/일반동사 · 복수 선택</div></div>
-      <span class="app-badge badge-C">GV-L1-C</span>
-    </a>
-  </div>
-
-  <!-- D형 묶음 -->
-  <div class="subgroup" style="margin-bottom:10px;">
-    <div class="subgroup-title">📐 D형 — 3인칭 단수 동사 형태 (6세트)</div>
-    <a class="app-card gv-card gv-border" href="0004_동사1단계D형_GV-L1-D.html">
-      <div class="app-num">0004</div><div class="app-icon gv-d-color" style="font-size:13px;">D-1</div>
-      <div class="app-info"><div class="app-name">D형 1세트</div><div class="app-desc">쌍 출제 + 문장 완성형</div></div>
-      <span class="app-badge badge-D">GV-L1-D</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0005_동사1단계D형-2_GV-L1-D2.html">
-      <div class="app-num">0005</div><div class="app-icon gv-d-color" style="font-size:13px;">D-2</div>
-      <div class="app-info"><div class="app-name">D형 2세트</div><div class="app-desc">3인칭 단수 동일 난이도 2회차</div></div>
-      <span class="app-badge badge-D">GV-L1-D2</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0006_동사1단계D형-3_GV-L1-D3.html">
-      <div class="app-num">0006</div><div class="app-icon gv-d-color" style="font-size:13px;">D-3</div>
-      <div class="app-info"><div class="app-name">D형 3세트</div><div class="app-desc">goes / has / fixes 철자 변화</div></div>
-      <span class="app-badge badge-D">GV-L1-D3</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0007_동사1단계D형-4_GV-L1-D4.html">
-      <div class="app-num">0007</div><div class="app-icon gv-d-color" style="font-size:13px;">D-4</div>
-      <div class="app-info"><div class="app-name">D형 4세트</div><div class="app-desc">flies / passes / carries 철자 변화</div></div>
-      <span class="app-badge badge-D">GV-L1-D4</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0008_동사1단계D형-5_GV-L1-D5.html">
-      <div class="app-num">0008</div><div class="app-icon gv-d-color" style="font-size:13px;">D-5</div>
-      <div class="app-info"><div class="app-name">D형 5세트</div><div class="app-desc">혼합 복습 · 초등 수준</div></div>
-      <span class="app-badge badge-D">GV-L1-D5</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0009_동사1단계D형-6_GV-L1-D6.html">
-      <div class="app-num">0009</div><div class="app-icon gv-d-color" style="font-size:13px;">D-6</div>
-      <div class="app-info"><div class="app-name">D형 6세트</div><div class="app-desc">Everyone/Each/Both 등 특수 주어 · 중학 수준</div></div>
-      <span class="app-badge badge-D">GV-L1-D6</span>
-    </a>
-  </div>
-
-  <div class="card-grid">
-    <a class="app-card gv-card gv-border" href="0010_동사1단계E형_GV-L1-E.html">
-      <div class="app-num">0010</div><div class="app-icon gv-e-color">E</div>
-      <div class="app-info"><div class="app-name">동사 1단계 E형</div><div class="app-desc">역방향 · 동사 보고 알맞은 주어 고르기</div></div>
-      <span class="app-badge badge-E">GV-L1-E</span>
-    </a>
-  </div>
-
-  <!-- 2단계 -->
-  <div style="font-size:12px;font-weight:700;color:var(--sky-dark);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">📌 2단계 — 현재 + 과거 시제</div>
-  <div class="card-grid">
-    <a class="app-card gv-card gv-border" href="0011_동사2단계A형_GV-L2-A.html">
-      <div class="app-num">0011</div><div class="app-icon gv-a-color">A</div>
-      <div class="app-info"><div class="app-name">동사 2단계 A형</div><div class="app-desc">현재+과거 동사 찾기 + 분류 탭</div></div>
-      <span class="app-badge badge-A">GV-L2-A</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0012_동사2단계B형_GV-L2-B.html">
-      <div class="app-num">0012</div><div class="app-icon gv-b-color">B</div>
-      <div class="app-info"><div class="app-name">동사 2단계 B형</div><div class="app-desc">3단계 분석 · 동사 찾기 → 종류 → 시제</div></div>
-      <span class="app-badge badge-B">GV-L2-B</span>
-    </a>
-    <a class="app-card gv-card gv-border" href="0013_동사2단계C형_GV-L2-C.html">
-      <div class="app-num">0013</div><div class="app-icon gv-c-color">C</div>
-      <div class="app-info"><div class="app-name">동사 2단계 C형</div><div class="app-desc">현재+과거 · 복수 선택 + 동사 정보</div></div>
-      <span class="app-badge badge-C">GV-L2-C</span>
-    </a>
-  </div>
-
-  <!-- 통합도전 + 실전테스트 -->
-  <div style="font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">🏆 통합 도전 + 실전 테스트</div>
-  <div class="card-grid">
-    <a class="app-card challenge-card" href="0014_동사통합도전_GV-X.html" style="border-color:var(--gold);">
-      <div class="app-num">0014</div><div class="app-icon challenge-color">🏆</div>
-      <div class="app-info"><div class="app-name">동사편 통합 도전</div><div class="app-desc">레벨1~4 · A·B·C형 전체 혼합 · 랜덤 출제</div></div>
-      <span class="app-badge badge-X">GV-X</span>
-    </a>
-  </div>
-  <div class="subgroup">
-    <div class="subgroup-title">📝 실전 테스트 (힌트 없이 풀기)</div>
-    <a class="app-card test-card" href="0015_동사실전테스트1_GV-TEST1.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0015</div><div class="app-icon test-color" style="font-size:13px;">T1</div>
-      <div class="app-info"><div class="app-name">동사 실전 테스트 1</div><div class="app-desc">be동사/일반동사 구분 · 기본 난이도</div></div>
-      <span class="app-badge badge-T">GV-TEST1</span>
-    </a>
-    <a class="app-card test-card" href="0016_동사실전테스트2_GV-TEST2.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0016</div><div class="app-icon test-color" style="font-size:13px;">T2</div>
-      <div class="app-info"><div class="app-name">동사 실전 테스트 2</div><div class="app-desc">철자 변화 · 어법 오류 · 중간 난이도</div></div>
-      <span class="app-badge badge-T">GV-TEST2</span>
-    </a>
-    <a class="app-card test-card" href="0017_동사실전테스트3_GV-TEST3.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0017</div><div class="app-icon test-color" style="font-size:13px;">T3</div>
-      <div class="app-info"><div class="app-name">동사 실전 테스트 3</div><div class="app-desc">복잡한 주어 · 대화형 · 심화 난이도</div></div>
-      <span class="app-badge badge-T">GV-TEST3</span>
-    </a>
-  </div>
-</div>
-</div><!-- /tab-gv -->
-
-<div class="divider tab-section show" id="div-gv" style="margin-top:20px;"><hr></div>
-
-
-<!-- GQ -->
-<div class="tab-section show" id="tab-gq">
-<div class="section" style="margin-top:20px;">
-  <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,var(--teal),var(--teal-dark));">❓</div>
-    <div>
-      <div class="section-title">GQ 영역 — 의문문·부정문편</div>
-      <div class="section-sub">Am/Is/Are · Was/Were · Do/Does · Did · 의문문 + 부정문</div>
+  <div id="gqtab" style="display:none">
+    <div class="unit-label">GQ — 의문문·부정문편 (0018~0033)</div>
+    <div class="card-grid">
+      <div class="app-card card-gq"><div class="card-num">GQ-L1-A</div><div class="card-title">의문문 1단계 A형</div><div class="card-desc">Do/Does 의문문</div><span class="card-badge badge-a">A형</span></div>
+      <div class="app-card card-gq"><div class="card-num">GQ-L1-B</div><div class="card-title">의문문 1단계 B형</div><div class="card-desc">혼합 응용</div><span class="card-badge badge-b">B형</span></div>
+      <div class="app-card card-gx"><div class="card-num">GQ-X</div><div class="card-title">의문문 통합 도전 🏆</div><div class="card-desc">레벨 선택형</div><span class="card-badge badge-x">통합</span></div>
+      <div class="app-card card-gtest"><div class="card-num">GQ-TEST</div><div class="card-title">의문문 실전 테스트 📝</div><div class="card-desc">15문제 힌트 없음</div><span class="card-badge badge-test">TEST</span></div>
     </div>
   </div>
 
-  <!-- L1 be동사 현재 -->
-  <div style="font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;">📌 1단계 — be동사 현재 (Am / Is / Are)</div>
-  <div class="card-grid">
-    <a class="app-card gq-card" href="0018_href="0018_의문문1단계A형_GQ-L1-A.html" style="border-color:var(--teal);">
-      <div class="app-num">0018</div><div class="app-icon gq1q-color">A</div>
-      <div class="app-info"><div class="app-name">be동사 현재 의문문</div><div class="app-desc">Am/Is/Are · 평서문 → 의문문 변환</div></div>
-      <span class="app-badge badge-Q">GQ-L1-A</span>
-    </a>
-    <a class="app-card gq-card" href="0019_href="0019_의문문1단계B형_GQ-L1-B.html" style="border-color:var(--red);">
-      <div class="app-num">0019</div><div class="app-icon gq1n-color">B</div>
-      <div class="app-info"><div class="app-name">be동사 현재 부정문</div><div class="app-desc">am not / isn't / aren't · 부정문 변환</div></div>
-      <span class="app-badge badge-N">GQ-L1-B</span>
-    </a>
-    <a class="app-card gq-card" href="0020_href="0020_의문문1단계C형_GQ-L1-C.html" style="border-color:var(--purple);">
-      <div class="app-num">0020</div><div class="app-icon gq1c-color">C</div>
-      <div class="app-info"><div class="app-name">be동사 현재 혼합</div><div class="app-desc">의문문 + 부정문 혼합 · 어법 오류 찾기</div></div>
-      <span class="app-badge badge-MIX">GQ-L1-C</span>
-    </a>
-  </div>
-
-  <!-- L2 be동사 과거 -->
-  <div style="font-size:12px;font-weight:700;color:var(--orange);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">📌 2단계 — be동사 과거 (Was / Were)</div>
-  <div class="card-grid">
-    <a class="app-card gq-card" href="0021_href="0021_의문문2단계A형_GQ-L2-A.html" style="border-color:var(--orange);">
-      <div class="app-num">0021</div><div class="app-icon gq2q-color">A</div>
-      <div class="app-info"><div class="app-name">be동사 과거 의문문</div><div class="app-desc">Was/Were · 현재↔과거 비교표 포함</div></div>
-      <span class="app-badge badge-Q">GQ-L2-A</span>
-    </a>
-    <a class="app-card gq-card" href="0022_href="0022_의문문2단계B형_GQ-L2-B.html" style="border-color:#7B3F00;">
-      <div class="app-num">0022</div><div class="app-icon gq2n-color">B</div>
-      <div class="app-info"><div class="app-name">be동사 과거 부정문</div><div class="app-desc">wasn't / weren't · 대답형 문제 포함</div></div>
-      <span class="app-badge badge-N">GQ-L2-B</span>
-    </a>
-    <a class="app-card gq-card" href="0023_href="0023_의문문2단계C형_GQ-L2-C.html" style="border-color:#4A6080;">
-      <div class="app-num">0023</div><div class="app-icon gq2c-color">C</div>
-      <div class="app-info"><div class="app-name">be동사 과거 혼합</div><div class="app-desc">Was/Were 의문문 + wasn't/weren't 부정문</div></div>
-      <span class="app-badge badge-MIX">GQ-L2-C</span>
-    </a>
-  </div>
-
-  <!-- L3 일반동사 현재 -->
-  <div style="font-size:12px;font-weight:700;color:var(--green-dark);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">📌 3단계 — 일반동사 현재 (Do / Does)</div>
-  <div class="card-grid">
-    <a class="app-card gq-card" href="0024_href="0024_의문문3단계A형_GQ-L3-A.html" style="border-color:var(--green);">
-      <div class="app-num">0024</div><div class="app-icon gq3q-color">A</div>
-      <div class="app-info"><div class="app-name">일반동사 현재 의문문</div><div class="app-desc">Do/Does + 동사원형 · 원형 변환 강조</div></div>
-      <span class="app-badge badge-Q">GQ-L3-A</span>
-    </a>
-    <a class="app-card gq-card" href="0025_href="0025_의문문3단계B형_GQ-L3-B.html" style="border-color:var(--teal);">
-      <div class="app-num">0025</div><div class="app-icon gq3n-color">B</div>
-      <div class="app-info"><div class="app-name">일반동사 현재 부정문</div><div class="app-desc">don't / doesn't + 동사원형</div></div>
-      <span class="app-badge badge-N">GQ-L3-B</span>
-    </a>
-    <a class="app-card gq-card" href="0026_href="0026_의문문3단계C형_GQ-L3-C.html" style="border-color:#2C6E49;">
-      <div class="app-num">0026</div><div class="app-icon gq3c-color">C</div>
-      <div class="app-info"><div class="app-name">일반동사 현재 혼합</div><div class="app-desc">Do/Does 의문문 + don't/doesn't 부정문</div></div>
-      <span class="app-badge badge-MIX">GQ-L3-C</span>
-    </a>
-  </div>
-
-  <!-- L4 일반동사 과거 -->
-  <div style="font-size:12px;font-weight:700;color:var(--indigo);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">📌 4단계 — 일반동사 과거 (Did)</div>
-  <div class="card-grid">
-    <a class="app-card gq-card" href="0027_href="0027_의문문4단계A형_GQ-L4-A.html" style="border-color:var(--indigo);">
-      <div class="app-num">0027</div><div class="app-icon gq4q-color">A</div>
-      <div class="app-info"><div class="app-name">일반동사 과거 의문문</div><div class="app-desc">Did + 동사원형 · 불규칙 과거형 포함</div></div>
-      <span class="app-badge badge-Q">GQ-L4-A</span>
-    </a>
-    <a class="app-card gq-card" href="0028_href="0028_의문문4단계B형_GQ-L4-B.html" style="border-color:#5C6E8A;">
-      <div class="app-num">0028</div><div class="app-icon gq4n-color">B</div>
-      <div class="app-info"><div class="app-name">일반동사 과거 부정문</div><div class="app-desc">didn't + 동사원형 · 불규칙 과거형 포함</div></div>
-      <span class="app-badge badge-N">GQ-L4-B</span>
-    </a>
-    <a class="app-card gq-card" href="0029_href="0029_의문문4단계C형_GQ-L4-C.html" style="border-color:#2C3E6B;">
-      <div class="app-num">0029</div><div class="app-icon gq4c-color">C</div>
-      <div class="app-info"><div class="app-name">일반동사 과거 혼합</div><div class="app-desc">Did 의문문 + didn't 부정문</div></div>
-      <span class="app-badge badge-MIX">GQ-L4-C</span>
-    </a>
-  </div>
-
-  <!-- GQ 통합도전 + 실전테스트 -->
-  <div style="font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">🏆 통합 도전 + 실전 테스트</div>
-  <div class="card-grid">
-    <a class="app-card challenge-card" href="0030_의문부정통합도전_GQ-X.html" style="border-color:var(--gold);">
-      <div class="app-num">0030</div><div class="app-icon challenge-color">🏆</div>
-      <div class="app-info"><div class="app-name">의문문·부정문 통합 도전</div><div class="app-desc">레벨1~4 · be동사+일반동사 현재+과거 전체 혼합</div></div>
-      <span class="app-badge badge-X">GQ-X</span>
-    </a>
-  </div>
-  <div class="subgroup" style="margin-bottom:0;">
-    <div class="subgroup-title">📝 실전 테스트 (힌트 없이 풀기)</div>
-    <a class="app-card test-card" href="0031_의문부정실전테스트1_GQ-TEST1.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0031</div><div class="app-icon test-color" style="font-size:13px;">T1</div>
-      <div class="app-info"><div class="app-name">의문문·부정문 테스트 1</div><div class="app-desc">be동사 현재 의문문 + 부정문 · 기본</div></div>
-      <span class="app-badge badge-T">GQ-TEST1</span>
-    </a>
-    <a class="app-card test-card" href="0032_의문부정실전테스트2_GQ-TEST2.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0032</div><div class="app-icon test-color" style="font-size:13px;">T2</div>
-      <div class="app-info"><div class="app-name">의문문·부정문 테스트 2</div><div class="app-desc">일반동사 현재 Do/Does · 중간</div></div>
-      <span class="app-badge badge-T">GQ-TEST2</span>
-    </a>
-    <a class="app-card test-card" href="0033_의문부정실전테스트3_GQ-TEST3.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0033</div><div class="app-icon test-color" style="font-size:13px;">T3</div>
-      <div class="app-info"><div class="app-name">의문문·부정문 테스트 3</div><div class="app-desc">현재+과거 전체 혼합 · 심화</div></div>
-      <span class="app-badge badge-T">GQ-TEST3</span>
-    </a>
-  </div>
-</div>
-</div><!-- /tab-gq -->
-
-<div class="divider tab-section show" id="div-gq" style="margin-top:20px;"><hr></div>
-
-<!-- GT -->
-<div class="tab-section show" id="tab-gt">
-<div class="section" style="margin-top:20px;">
-  <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,var(--gt),var(--gt-dark));">⏰</div>
-    <div>
-      <div class="section-title">GT 영역 — 시제편</div>
-      <div class="section-sub">현재시제 vs 현재진행형 · be동사+ing 판별 · -ing 함정 탈출</div>
+  <div id="gttab" style="display:none">
+    <div class="unit-label">GT — 시제편 (0034~0039)</div>
+    <div class="card-grid">
+      <div class="app-card card-gt"><div class="card-num">GT-L1-A</div><div class="card-title">시제 1단계 A형</div><div class="card-desc">현재 vs 현재진행</div><span class="card-badge badge-a">A형</span></div>
+      <div class="app-card card-gt"><div class="card-num">GT-L1-B</div><div class="card-title">시제 1단계 B형</div><div class="card-desc">혼합 응용</div><span class="card-badge badge-b">B형</span></div>
+      <div class="app-card card-gx"><div class="card-num">GT-X</div><div class="card-title">시제 통합 도전 🏆</div><div class="card-desc">레벨 선택형</div><span class="card-badge badge-x">통합</span></div>
+      <div class="app-card card-gtest"><div class="card-num">GT-TEST</div><div class="card-title">시제 실전 테스트 📝</div><div class="card-desc">15문제 힌트 없음</div><span class="card-badge badge-test">TEST</span></div>
     </div>
   </div>
+</div><!-- /panel-gv -->
 
-  <!-- 1단계 -->
-  <div style="font-size:12px;font-weight:700;color:var(--gt-dark);margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;">📌 1단계 — 현재시제 vs 현재진행형</div>
-  <div class="card-grid">
-    <a class="app-card gt-card gt-border" href="0034_시제1단계A형_GT-L1-A.html" style="border-color:var(--gt);">
-      <div class="app-num">0034</div><div class="app-icon gt-a-color">A</div>
-      <div class="app-info"><div class="app-name">진짜 현재진행형 찾기</div><div class="app-desc">be동사+ing 구별 · 이지선다 · 변환 박스</div></div>
-      <span class="app-badge badge-GT">GT-L1-A</span>
-    </a>
-    <a class="app-card gt-card gt-border" href="0035_시제1단계B형_GT-L1-B.html" style="border-color:var(--gt);">
-      <div class="app-num">0035</div><div class="app-icon gt-b-color">B</div>
-      <div class="app-info"><div class="app-name">시간 표현으로 시제 고르기</div><div class="app-desc">now/every day 등 시간 표현 단서 활용</div></div>
-      <span class="app-badge badge-GT">GT-L1-B</span>
-    </a>
-    <a class="app-card gt-card gt-border" href="0036_시제1단계C형_GT-L1-C.html" style="border-color:var(--gt);">
-      <div class="app-num">0036</div><div class="app-icon gt-c-color">C</div>
-      <div class="app-info"><div class="app-name">현재시제 vs 현재진행형 혼합</div><div class="app-desc">두 가지 판단 기준 혼합 · 12문제</div></div>
-      <span class="app-badge badge-GT">GT-L1-C</span>
-    </a>
-  </div>
-
-  <!-- 2단계 -->
-  <div style="font-size:12px;font-weight:700;color:var(--gt-dark);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">📌 2단계 — -ing 함정 탈출</div>
-  <div class="card-grid">
-    <a class="app-card gt-card gt-border" href="0037_시제2단계A형_GT-L2-A.html" style="border-color:var(--gt);">
-      <div class="app-num">0037</div><div class="app-icon gt-a-color">A</div>
-      <div class="app-info"><div class="app-name">-ing 함정 탈출</div><div class="app-desc">-ing로 끝나는 형용사·명사 구별 · 12문제</div></div>
-      <span class="app-badge badge-GT">GT-L2-A</span>
-    </a>
-  </div>
-
-  <!-- 통합도전 + 실전테스트 -->
-  <div style="font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 8px;font-family:'Noto Sans KR',sans-serif;">🏆 통합 도전 + 실전 테스트</div>
-  <div class="card-grid">
-    <a class="app-card challenge-card" href="0038_시제통합도전_GT-X.html" style="border-color:var(--gold);">
-      <div class="app-num">0038</div><div class="app-icon challenge-color">🏆</div>
-      <div class="app-info"><div class="app-name">시제편 통합 도전</div><div class="app-desc">레벨1~4 · 각 10문제 · be동사+ing·시간표현·함정</div></div>
-      <span class="app-badge badge-X">GT-X</span>
-    </a>
-  </div>
-  <div class="subgroup" style="margin-bottom:0;">
-    <div class="subgroup-title">📝 실전 테스트 (힌트 없이 풀기)</div>
-    <a class="app-card test-card" href="0039_시제실전테스트1_GT-TEST1.html" style="border-color:#D6E8F5;">
-      <div class="app-num">0039</div><div class="app-icon test-color" style="font-size:13px;">T1</div>
-      <div class="app-info"><div class="app-name">시제편 실전 테스트 1</div><div class="app-desc">현재시제 vs 현재진행형 · 기본 15문제</div></div>
-      <span class="app-badge badge-T">GT-TEST1</span>
-    </a>
-  </div>
+<!-- 업/점프 준비중 -->
+<div class="tab-panel" id="panel-ug">
+  <div class="empty-state"><div class="e-icon">🔧</div><p>업 영문법은 준비 중이에요!</p></div>
 </div>
-</div><!-- /tab-gt -->
-
-<footer>
-  미라클 영어 스터디 · 영문법 탐정단
-</footer>
-
+<div class="tab-panel" id="panel-jg">
+  <div class="empty-state"><div class="e-icon">🔧</div><p>점프 영문법은 준비 중이에요!</p></div>
+</div>
 
 <script>
-// 상위탭: 시리즈 선택
-function showSeries(series, btn) {
-  document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
+function showTopTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.top-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
   btn.classList.add('active');
-  // 현재는 문법 함정 탈출만 있으므로 series-trap만 처리
-  const seriesEl = document.getElementById('series-trap');
-  if(series === 'trap') {
-    seriesEl.style.display = 'block';
-    // 하위탭도 전체로 초기화
-    showTab('all', document.querySelector('.tab-btn.t-all'));
-  }
 }
 
-// 하위탭: 영역 선택
-function showTab(tab, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const sections = {
-    gv:  ['tab-gv', 'div-gv'],
-    gq:  ['tab-gq', 'div-gq'],
-    gt:  ['tab-gt'],
-    all: ['tab-gv', 'div-gv', 'tab-gq', 'div-gq', 'tab-gt']
-  };
-  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('show'));
-  const toShow = sections[tab] || sections['all'];
-  toShow.forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.classList.add('show');
+function showSubTab(id, btn) {
+  // SG 하위탭
+  ['sg1','sg2','sg3'].forEach(t => {
+    const el = document.getElementById('subtab-' + t);
+    if (el) el.style.display = 'none';
   });
-  window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('#panel-sg .sub-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('subtab-' + id).style.display = 'block';
+  btn.classList.add('active');
+}
+
+function showGvTab(id, btn) {
+  ['gvtab','gqtab','gttab'].forEach(t => {
+    document.getElementById(t).style.display = 'none';
+  });
+  document.querySelectorAll('#panel-gv .sub-tab').forEach(b => {
+    b.classList.remove('active');
+  });
+  document.getElementById(id).style.display = 'block';
+  btn.classList.add('active');
 }
 </script>
 </body>
