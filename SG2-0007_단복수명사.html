@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG2-0007 | 단수·복수 명사</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --card: #ffffff;
+    --text: #333333;
+    --light-text: #777777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 14px 20px 10px;
+    text-align: center;
+  }
+  .header .series { font-size: 11px; opacity: 0.85; letter-spacing: 1px; margin-bottom: 2px; }
+  .header h1 { font-size: 18px; font-weight: 900; }
+  .header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    background: #5BAD6F;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .progress-wrap { background: #f0d9c8; height: 8px; width: 100%; }
+  .progress-bar { height: 8px; background: var(--accent); transition: width 0.4s ease; border-radius: 0 4px 4px 0; }
+  .progress-info { text-align: center; font-size: 12px; color: var(--light-text); padding: 5px; }
+  .quiz-wrap { max-width: 540px; margin: 0 auto; padding: 16px 16px 0; }
+  .instruction {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+    margin-bottom: 14px;
+  }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent-dark); margin-bottom: 8px; }
+  .q-sentence {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .q-sentence .arrow-line {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .q-translation {
+    font-size: 15px;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .hl { color: var(--accent-dark); border-bottom: 2.5px solid var(--accent-dark); font-weight: 800; padding-bottom: 1px; }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+  .opt-btn {
+    border: 2.5px solid #e0cabb;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fff0e0; transform: translateY(-1px); }
+  .opt-btn.correct { background: #e8f8f3; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.correct { background: #e8f8f3; border-left: 4px solid var(--correct); display: block; }
+  .feedback.wrong { background: #fdecea; border-left: 4px solid var(--wrong); display: block; }
+  .feedback .fb-title { font-weight: 800; margin-bottom: 4px; word-break: keep-all; line-height: 1.5; }
+  .feedback .fb-reason { color: #555; margin-top: 4px; font-size: 12px; word-break: keep-all; }
+
+  .next-btn {
+    display: none;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--accent-dark);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+  }
+  .next-btn:hover { background: #b87516; }
+
+  .result-screen {
+    max-width: 540px;
+    margin: 20px auto;
+    padding: 0 16px;
+    display: none;
+    text-align: center;
+  }
+  .result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .star-display { font-size: 40px; margin-bottom: 10px; }
+  .result-score { font-size: 36px; font-weight: 900; color: var(--accent-dark); }
+  .result-msg { font-size: 15px; color: var(--light-text); margin: 8px 0 20px; }
+  .wrong-list {
+    text-align: left;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .wrong-list h3 { font-size: 13px; color: var(--wrong); margin-bottom: 10px; font-weight: 800; }
+  .wrong-item { font-size: 13px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0e0d0; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wrong-item .wi-wrong { color: var(--wrong); font-weight: 700; }
+  .wrong-item .wi-right { color: var(--correct); font-weight: 700; }
+  .wrong-item .wi-reason { color: #666; font-size: 12px; margin-top: 2px; word-break: keep-all; }
+
+  .action-btns { display: flex; gap: 10px; }
+  .retry-wrong-btn, .retry-all-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .retry-wrong-btn { background: var(--wrong); color: white; }
+  .retry-all-btn { background: var(--accent-dark); color: white; }
+  .retry-wrong-btn:hover { background: #c94030; }
+  .retry-all-btn:hover { background: #b87516; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="series">🔍 영문법 탐정단 · 스타트 영문법 2권</div>
+  <h1>단수 · 복수 명사</h1>
+  <div class="sub">Lesson 5 — Singular and Plural Nouns</div>
+  <span class="badge">B형</span>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-info" id="progressInfo">1 / 12</div>
+
+<div class="quiz-wrap" id="quizWrap">
+  <div class="instruction" id="instruction">📌 알맞은 복수형을 골라요!</div>
+  <div class="question-card" id="questionCard"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+</div>
+
+<div class="result-screen" id="resultScreen">
+  <div class="result-card">
+    <div class="star-display" id="starDisplay"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="wrong-list" id="wrongList" style="display:none">
+      <h3>❌ 틀린 문제 복습</h3>
+      <div id="wrongItems"></div>
+    </div>
+    <div class="action-btns">
+      <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()" style="display:none">오답만 다시 풀기</button>
+      <button class="retry-all-btn" onclick="retryAll()">전체 다시 풀기 🔄</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // ── ~s 규칙 ──
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~s)",
+    display: 'I see <span class="hl">a book</span>.<br><span class="arrow-line">→ I see two _____.</span>',
+    translation: "나는 책 한 권을 봐요.<br>→ 나는 책 <strong>두 권</strong>을 봐요.",
+    options: ["books", "bookes", "bookies", "bookvs"],
+    answer: "books",
+    feedback_correct: "✅ 정답! book → books (-s를 붙여요)",
+    feedback_wrong: "❌ book의 복수형은 books예요!",
+    reason: "대부분의 명사 → 끝에 -s만 붙여요 (book→books, apple→apples)"
+  },
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~s)",
+    display: 'I see <span class="hl">an apple</span>.<br><span class="arrow-line">→ I see four _____.</span>',
+    translation: "나는 사과 한 개를 봐요.<br>→ 나는 사과 <strong>네 개</strong>를 봐요.",
+    options: ["apples", "applees", "applies", "appleves"],
+    answer: "apples",
+    feedback_correct: "✅ 정답! apple → apples (-s를 붙여요)",
+    feedback_wrong: "❌ apple의 복수형은 apples예요!",
+    reason: "-e로 끝나는 명사도 -s만 붙여요 (apple→apples)"
+  },
+
+  // ── ~es 규칙 ──
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~es)",
+    display: 'I see <span class="hl">a watch</span>.<br><span class="arrow-line">→ I see three _____.</span>',
+    translation: "나는 시계 한 개를 봐요.<br>→ 나는 시계 <strong>세 개</strong>를 봐요.",
+    options: ["watchs", "watches", "watchies", "watchves"],
+    answer: "watches",
+    feedback_correct: "✅ 정답! watch → watches (-es를 붙여요)",
+    feedback_wrong: "❌ watch의 복수형은 watches예요!",
+    reason: "-ch/-sh/-x/-s/-o로 끝나는 명사 → -es 붙여요 (watch→watches, box→boxes)"
+  },
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~es)",
+    display: 'I see <span class="hl">a box</span>.<br><span class="arrow-line">→ I see five _____.</span>',
+    translation: "나는 상자 한 개를 봐요.<br>→ 나는 상자 <strong>다섯 개</strong>를 봐요.",
+    options: ["boxs", "boxies", "boxes", "boxves"],
+    answer: "boxes",
+    feedback_correct: "✅ 정답! box → boxes (-es를 붙여요)",
+    feedback_wrong: "❌ box의 복수형은 boxes예요!",
+    reason: "-x로 끝나는 명사 → -es 붙여요 (box→boxes, dish→dishes)"
+  },
+
+  // ── ~ves 규칙 ──
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~ves)",
+    display: 'I see <span class="hl">a leaf</span>.<br><span class="arrow-line">→ I see four _____.</span>',
+    translation: "나는 나뭇잎 한 장을 봐요.<br>→ 나는 나뭇잎 <strong>네 장</strong>을 봐요.",
+    options: ["leafs", "leafes", "leaves", "leafies"],
+    answer: "leaves",
+    feedback_correct: "✅ 정답! leaf → leaves (-f를 -ves로 바꿔요)",
+    feedback_wrong: "❌ leaf의 복수형은 leaves예요!",
+    reason: "-f/-fe로 끝나는 명사 → -f를 없애고 -ves 붙여요 (leaf→leaves, knife→knives)"
+  },
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~ves)",
+    display: 'I see <span class="hl">a knife</span>.<br><span class="arrow-line">→ I see six _____.</span>',
+    translation: "나는 칼 한 개를 봐요.<br>→ 나는 칼 <strong>여섯 개</strong>를 봐요.",
+    options: ["knifes", "knifees", "knifes", "knives"],
+    answer: "knives",
+    feedback_correct: "✅ 정답! knife → knives (-fe를 -ves로 바꿔요)",
+    feedback_wrong: "❌ knife의 복수형은 knives예요!",
+    reason: "-fe로 끝나는 명사 → -fe를 없애고 -ves 붙여요 (knife→knives)"
+  },
+
+  // ── ~ies 규칙 ──
+  {
+    instruction: "📌 단수 → 복수로 바꿔요! (~ies)",
+    display: 'I see <span class="hl">a baby</span>.<br><span class="arrow-line">→ I see two _____.</span>',
+    translation: "나는 아기 한 명을 봐요.<br>→ 나는 아기 <strong>두 명</strong>을 봐요.",
+    options: ["babys", "babyies", "babies", "babyes"],
+    answer: "babies",
+    feedback_correct: "✅ 정답! baby → babies (-y를 없애고 -ies 붙여요)",
+    feedback_wrong: "❌ baby의 복수형은 babies예요!",
+    reason: "자음+y로 끝나는 명사 → -y를 없애고 -ies 붙여요 (baby→babies, city→cities)"
+  },
+  {
+    instruction: "📌 복수 → 단수로 바꿔요!",
+    display: 'I see three <span class="hl">cities</span>.<br><span class="arrow-line">→ I see one _____.</span>',
+    translation: "나는 도시 세 개를 봐요.<br>→ 나는 도시 <strong>한 개</strong>를 봐요.",
+    options: ["citys", "city", "cityes", "citives"],
+    answer: "city",
+    feedback_correct: "✅ 정답! cities → city (-ies를 없애고 -y로 돌아와요)",
+    feedback_wrong: "❌ cities의 단수형은 city예요!",
+    reason: "cities → city (-ies → -y로 돌아와요)"
+  },
+
+  // ── 불규칙 복수 ──
+  {
+    instruction: "📌 알맞은 복수형을 골라요! (불규칙)",
+    display: 'I see <span class="hl">a child</span>.<br><span class="arrow-line">→ I see three _____.</span>',
+    translation: "나는 아이 한 명을 봐요.<br>→ 나는 아이 <strong>세 명</strong>을 봐요.",
+    options: ["childs", "childes", "children", "childies"],
+    answer: "children",
+    feedback_correct: "✅ 정답! child → children (불규칙 복수형이에요!)",
+    feedback_wrong: "❌ child의 복수형은 children이에요! 규칙이 없는 불규칙 복수예요.",
+    reason: "불규칙 복수: child→children / man→men / foot→feet / mouse→mice"
+  },
+  {
+    instruction: "📌 알맞은 복수형을 골라요! (불규칙)",
+    display: 'I see <span class="hl">a mouse</span>.<br><span class="arrow-line">→ I see four _____.</span>',
+    translation: "나는 쥐 한 마리를 봐요.<br>→ 나는 쥐 <strong>네 마리</strong>를 봐요.",
+    options: ["mouses", "mousies", "mices", "mice"],
+    answer: "mice",
+    feedback_correct: "✅ 정답! mouse → mice (불규칙 복수형이에요!)",
+    feedback_wrong: "❌ mouse의 복수형은 mice예요! 불규칙 복수라 외워야 해요.",
+    reason: "불규칙 복수: mouse→mice / foot→feet / man→men / child→children"
+  },
+
+  // ── 문장 안에서 올바른 복수형 고르기 ──
+  {
+    instruction: "📌 문장에 알맞은 복수형을 골라요!",
+    display: 'I see six <span class="hl">foot</span>.<br><span class="arrow-line">→ 올바른 복수형은?</span>',
+    translation: "나는 발 한 개를 봐요.<br>→ 발 여섯 개의 올바른 복수형은?",
+    options: ["foots", "feets", "feet", "footies"],
+    answer: "feet",
+    feedback_correct: "✅ 정답! foot → feet (불규칙 복수형이에요!)",
+    feedback_wrong: "❌ foot의 복수형은 feet이에요!",
+    reason: "불규칙 복수: foot→feet / man→men / mouse→mice / child→children"
+  },
+  {
+    instruction: "📌 문장에 알맞은 복수형을 골라요!",
+    display: 'I see two <span class="hl">dish</span>.<br><span class="arrow-line">→ 올바른 복수형은?</span>',
+    translation: "나는 접시 한 개를 봐요.<br>→ 접시 두 개의 올바른 복수형은?",
+    options: ["dishs", "dishes", "dishies", "dishves"],
+    answer: "dishes",
+    feedback_correct: "✅ 정답! dish → dishes (-sh로 끝나니까 -es를 붙여요)",
+    feedback_wrong: "❌ dish의 복수형은 dishes예요!",
+    reason: "-ch/-sh/-x/-s로 끝나는 명사 → -es 붙여요 (dish→dishes)"
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongQuestions = [];
+let answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(qList) {
+  questions = shuffle(qList);
+  currentIndex = 0;
+  score = 0;
+  wrongQuestions = [];
+  answered = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizWrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  const total = questions.length;
+  const pct = (currentIndex / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressInfo').textContent = (currentIndex + 1) + ' / ' + total;
+  document.getElementById('instruction').innerHTML = q.instruction;
+
+  const isLast = (currentIndex === total - 1);
+  document.getElementById('nextBtn').textContent = isLast ? '결과 보기 🏁' : '다음 문제 →';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  const shuffledOpts = shuffle(q.options);
+
+  let html = `<div class="q-num">문제 ${currentIndex + 1} / ${total}</div>`;
+  html += `<div class="q-sentence">${q.display}</div>`;
+  html += `<div class="q-translation">${q.translation}</div>`;
+  html += `<div class="options" id="optionsDiv">`;
+  shuffledOpts.forEach(opt => {
+    html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+  });
+  html += `</div>`;
+  html += `<div class="feedback" id="feedback"></div>`;
+
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function selectAnswer(btn, selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback');
+  if (selected === q.answer) {
+    btn.classList.add('correct');
+    score++;
+    fb.className = 'feedback correct';
+    fb.innerHTML = `<div class="fb-title">${q.feedback_correct}</div>
+      <div class="fb-reason">💡 ${q.reason}</div>`;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => { if (b.textContent === q.answer) b.classList.add('correct'); });
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `<div class="fb-title">${q.feedback_wrong}</div>
+      <div class="fb-reason">✅ 정답: <strong>${q.answer}</strong><br>💡 ${q.reason}</div>`;
+    wrongQuestions.push(q);
+  }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizWrap').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let stars = '⭐';
+  let msg = '조금 더 연습해 봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = '완벽해요! 복수형 마스터! 🎉'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = '잘했어요! 조금만 더 연습해요! 😊'; }
+
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('resultScore').textContent = score + ' / ' + total + ' (' + pct + '%)';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressInfo').textContent = total + ' / ' + total;
+
+  if (wrongQuestions.length > 0) {
+    document.getElementById('wrongList').style.display = 'block';
+    document.getElementById('retryWrongBtn').style.display = 'block';
+    let wHtml = '';
+    wrongQuestions.forEach(q => {
+      const plain = q.display.replace(/<[^>]+>/g, '');
+      wHtml += `<div class="wrong-item">
+        <div class="wi-wrong">❌ ${plain}</div>
+        <div class="wi-right">✅ 정답: ${q.answer}</div>
+        <div class="wi-reason">💡 ${q.reason}</div>
+      </div>`;
+    });
+    document.getElementById('wrongItems').innerHTML = wHtml;
+  } else {
+    document.getElementById('wrongList').style.display = 'none';
+    document.getElementById('retryWrongBtn').style.display = 'none';
+  }
+}
+
+function retryWrong() { startQuiz(wrongQuestions); }
+function retryAll() { startQuiz(ALL_QUESTIONS); }
+
+startQuiz(ALL_QUESTIONS);
+</script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG2-0013 | 비교급</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --card: #ffffff;
+    --text: #333333;
+    --light-text: #777777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 14px 20px 10px;
+    text-align: center;
+  }
+  .header .series { font-size: 11px; opacity: 0.85; letter-spacing: 1px; margin-bottom: 2px; }
+  .header h1 { font-size: 18px; font-weight: 900; }
+  .header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    background: #4A90D9;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .progress-wrap { background: #f0d9c8; height: 8px; width: 100%; }
+  .progress-bar { height: 8px; background: var(--accent); transition: width 0.4s ease; border-radius: 0 4px 4px 0; }
+  .progress-info { text-align: center; font-size: 12px; color: var(--light-text); padding: 5px; }
+  .quiz-wrap { max-width: 540px; margin: 0 auto; padding: 16px 16px 0; }
+  .instruction {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+    margin-bottom: 14px;
+  }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent-dark); margin-bottom: 8px; }
+  .q-sentence {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .q-sentence .arrow-line {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 80px;
+    border-bottom: 2.5px solid #444;
+    margin-bottom: -2px;
+    text-align: center;
+  }
+  .q-sentence .arrow-line .blank {
+    border-bottom: 2.5px solid var(--accent-dark);
+  }
+  .q-translation {
+    font-size: 15px;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .hl { color: var(--accent-dark); border-bottom: 2.5px solid var(--accent-dark); font-weight: 800; padding-bottom: 1px; }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+  .opt-btn {
+    border: 2.5px solid #e0cabb;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fff0e0; transform: translateY(-1px); }
+  .opt-btn.correct { background: #e8f8f3; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.correct { background: #e8f8f3; border-left: 4px solid var(--correct); display: block; }
+  .feedback.wrong { background: #fdecea; border-left: 4px solid var(--wrong); display: block; }
+  .feedback .fb-title { font-weight: 800; margin-bottom: 4px; word-break: keep-all; line-height: 1.5; }
+  .feedback .fb-reason { color: #555; margin-top: 4px; font-size: 12px; word-break: keep-all; }
+
+  .next-btn {
+    display: none;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--accent-dark);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+  }
+  .next-btn:hover { background: #b87516; }
+
+  .result-screen {
+    max-width: 540px;
+    margin: 20px auto;
+    padding: 0 16px;
+    display: none;
+    text-align: center;
+  }
+  .result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .star-display { font-size: 40px; margin-bottom: 10px; }
+  .result-score { font-size: 36px; font-weight: 900; color: var(--accent-dark); }
+  .result-msg { font-size: 15px; color: var(--light-text); margin: 8px 0 20px; }
+  .wrong-list {
+    text-align: left;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .wrong-list h3 { font-size: 13px; color: var(--wrong); margin-bottom: 10px; font-weight: 800; }
+  .wrong-item { font-size: 13px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0e0d0; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wrong-item .wi-wrong { color: var(--wrong); font-weight: 700; }
+  .wrong-item .wi-right { color: var(--correct); font-weight: 700; }
+  .wrong-item .wi-reason { color: #666; font-size: 12px; margin-top: 2px; word-break: keep-all; }
+
+  .action-btns { display: flex; gap: 10px; }
+  .retry-wrong-btn, .retry-all-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .retry-wrong-btn { background: var(--wrong); color: white; }
+  .retry-all-btn { background: var(--accent-dark); color: white; }
+  .retry-wrong-btn:hover { background: #c94030; }
+  .retry-all-btn:hover { background: #b87516; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="series">🔍 영문법 탐정단 · 스타트 영문법 2권</div>
+  <h1>비교급</h1>
+  <div class="sub">Lesson 10 — Comparatives</div>
+  <span class="badge">A형</span>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-info" id="progressInfo">1 / 12</div>
+
+<div class="quiz-wrap" id="quizWrap">
+  <div class="instruction" id="instruction">📌 알맞은 비교급을 골라요!</div>
+  <div class="question-card" id="questionCard"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+</div>
+
+<div class="result-screen" id="resultScreen">
+  <div class="result-card">
+    <div class="star-display" id="starDisplay"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="wrong-list" id="wrongList" style="display:none">
+      <h3>❌ 틀린 문제 복습</h3>
+      <div id="wrongItems"></div>
+    </div>
+    <div class="action-btns">
+      <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()" style="display:none">오답만 다시 풀기</button>
+      <button class="retry-all-btn" onclick="retryAll()">전체 다시 풀기 🔄</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // ── ~er 규칙 ──
+  {
+    instruction: "📌 비교급 형태를 골라요! (~er)",
+    display: '<span class="hl">fast</span>의 비교급은?',
+    translation: "fast(빠른)의 비교급은 무엇인가요?",
+    options: ["faster", "more fast", "fastest", "fastes"],
+    answer: "faster",
+    feedback_correct: "✅ 정답! fast → faster (-er를 붙여요)",
+    feedback_wrong: "❌ fast의 비교급은 faster예요!",
+    reason: "짧은 형용사 → -er 붙이기 (fast→faster, slow→slower, tall→taller)"
+  },
+  {
+    instruction: "📌 비교급 형태를 골라요! (~er)",
+    display: '<span class="hl">big</span>의 비교급은?',
+    translation: "big(큰)의 비교급은 무엇인가요?",
+    options: ["biger", "bigger", "more big", "bigest"],
+    answer: "bigger",
+    feedback_correct: "✅ 정답! big → bigger (자음+모음+자음 → 마지막 자음 한 번 더!)",
+    feedback_wrong: "❌ big의 비교급은 bigger예요!",
+    reason: "자음+모음+자음으로 끝나는 형용사 → 마지막 자음 한 번 더 + er (big→bigger, hot→hotter)"
+  },
+  {
+    instruction: "📌 비교급 형태를 골라요! (~er)",
+    display: '<span class="hl">hot</span>의 비교급은?',
+    translation: "hot(뜨거운)의 비교급은 무엇인가요?",
+    options: ["hoter", "hotter", "more hot", "hotier"],
+    answer: "hotter",
+    feedback_correct: "✅ 정답! hot → hotter (자음+모음+자음 → t를 한 번 더!)",
+    feedback_wrong: "❌ hot의 비교급은 hotter예요!",
+    reason: "hot처럼 자음+모음+자음으로 끝나면 마지막 자음을 한 번 더 써요 (hot→hotter)"
+  },
+
+  // ── ~ier 규칙 ──
+  {
+    instruction: "📌 비교급 형태를 골라요! (~ier)",
+    display: '<span class="hl">happy</span>의 비교급은?',
+    translation: "happy(행복한)의 비교급은 무엇인가요?",
+    options: ["happyer", "happier", "more happy", "happyier"],
+    answer: "happier",
+    feedback_correct: "✅ 정답! happy → happier (-y를 -ier로 바꿔요)",
+    feedback_wrong: "❌ happy의 비교급은 happier예요!",
+    reason: "-y로 끝나는 형용사 → -y를 없애고 -ier (happy→happier, easy→easier)"
+  },
+  {
+    instruction: "📌 비교급 형태를 골라요! (~ier)",
+    display: '<span class="hl">easy</span>의 비교급은?',
+    translation: "easy(쉬운)의 비교급은 무엇인가요?",
+    options: ["easyer", "easier", "more easy", "easyier"],
+    answer: "easier",
+    feedback_correct: "✅ 정답! easy → easier (-y를 -ier로 바꿔요)",
+    feedback_wrong: "❌ easy의 비교급은 easier예요!",
+    reason: "-y로 끝나는 형용사 → -y를 없애고 -ier (easy→easier, happy→happier)"
+  },
+
+  // ── more ~ 규칙 ──
+  {
+    instruction: "📌 비교급 형태를 골라요! (more ~)",
+    display: '<span class="hl">interesting</span>의 비교급은?',
+    translation: "interesting(흥미로운)의 비교급은 무엇인가요?",
+    options: ["interestinger", "more interesting", "interestingier", "most interesting"],
+    answer: "more interesting",
+    feedback_correct: "✅ 정답! interesting → more interesting (긴 형용사는 앞에 more를 붙여요)",
+    feedback_wrong: "❌ 긴 형용사의 비교급은 앞에 more를 붙여요!",
+    reason: "긴 형용사(3음절 이상) → more + 형용사 (more interesting, more expensive)"
+  },
+  {
+    instruction: "📌 비교급 형태를 골라요! (more ~)",
+    display: '<span class="hl">expensive</span>의 비교급은?',
+    translation: "expensive(비싼)의 비교급은 무엇인가요?",
+    options: ["expensiver", "more expensive", "expensiveer", "expensiveier"],
+    answer: "more expensive",
+    feedback_correct: "✅ 정답! expensive → more expensive (긴 형용사는 앞에 more!)",
+    feedback_wrong: "❌ expensive의 비교급은 more expensive예요!",
+    reason: "긴 형용사 → more + 형용사 (more expensive, more interesting)"
+  },
+
+  // ── 비교급 문장 완성: A is ___ than B ──
+  {
+    instruction: "📌 비교급 문장을 완성해요!",
+    display: 'The elephant is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> than the lion.',
+    translation: "코끼리는 사자보다 더 커요.",
+    options: ["big", "bigger", "biggest", "more big"],
+    answer: "bigger",
+    feedback_correct: "✅ 정답! big → bigger than ~ (~보다 더 커요)",
+    feedback_wrong: "❌ 비교급 문장엔 bigger처럼 비교급 형태를 써야 해요!",
+    reason: "A is + 비교급 + than B = A는 B보다 더 ~해요 (bigger than)"
+  },
+  {
+    instruction: "📌 비교급 문장을 완성해요!",
+    display: 'The airplane is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> than the train.',
+    translation: "비행기는 기차보다 더 빨라요.",
+    options: ["fast", "faster", "fastest", "more fast"],
+    answer: "faster",
+    feedback_correct: "✅ 정답! fast → faster than ~ (~보다 더 빨라요)",
+    feedback_wrong: "❌ fast의 비교급은 faster예요!",
+    reason: "A is + 비교급 + than B (faster than, taller than, hotter than)"
+  },
+  {
+    instruction: "📌 비교급 문장을 완성해요!",
+    display: 'She thinks the book is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> than the movie.',
+    translation: "그녀는 책이 영화보다 더 흥미롭다고 생각해요.",
+    options: ["interesting", "interestinger", "more interesting", "most interesting"],
+    answer: "more interesting",
+    feedback_correct: "✅ 정답! interesting → more interesting than ~",
+    feedback_wrong: "❌ interesting의 비교급은 more interesting이에요!",
+    reason: "긴 형용사의 비교급 → more + 형용사 + than (more interesting than)"
+  },
+
+  // ── 올바른 비교급 문장 고르기 ──
+  {
+    instruction: "📌 다음 중 올바른 비교급 문장을 골라요!",
+    display: '치타(cheetah)와 거북이(turtle) 중 거북이가 더 느려요.<br><span class="arrow-line">→ 올바른 문장은?</span>',
+    translation: "치타는 빠르고, 거북이는 느려요.<br>→ 거북이가 치타보다 더 느린 걸 올바르게 표현한 문장은?",
+    options: [
+      "The turtle is more slow than the cheetah.",
+      "The turtle is slower than the cheetah.",
+      "The turtle is slowier than the cheetah.",
+      "The turtle is slow than the cheetah."
+    ],
+    answer: "The turtle is slower than the cheetah.",
+    feedback_correct: "✅ 정답! slow → slower than ~ (거북이가 치타보다 더 느려요)",
+    feedback_wrong: "❌ slow의 비교급은 slower예요!",
+    reason: "slow → slower (짧은 형용사 → -er) / more slow라고 하지 않아요"
+  },
+  {
+    instruction: "📌 다음 중 올바른 비교급 문장을 골라요!",
+    display: '자전거(10만원) vs 컴퓨터(50만원)<br><span class="arrow-line">→ 컴퓨터가 더 비싸요. 올바른 문장은?</span>',
+    translation: "자전거는 10만원, 컴퓨터는 50만원이에요.<br>→ 컴퓨터가 자전거보다 더 비싼 걸 올바르게 표현한 문장은?",
+    options: [
+      "The computer is more expensive than the bike.",
+      "The computer is expensiver than the bike.",
+      "The computer is expensive than the bike.",
+      "The computer is more expensiver than the bike."
+    ],
+    answer: "The computer is more expensive than the bike.",
+    feedback_correct: "✅ 정답! expensive → more expensive than ~ (컴퓨터가 자전거보다 더 비싸요)",
+    feedback_wrong: "❌ expensive의 비교급은 more expensive예요!",
+    reason: "expensive → more expensive (긴 형용사 → more + 형용사)"
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongQuestions = [];
+let answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(qList) {
+  questions = shuffle(qList);
+  currentIndex = 0;
+  score = 0;
+  wrongQuestions = [];
+  answered = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizWrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  const total = questions.length;
+  const pct = (currentIndex / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressInfo').textContent = (currentIndex + 1) + ' / ' + total;
+  document.getElementById('instruction').innerHTML = q.instruction;
+
+  const isLast = (currentIndex === total - 1);
+  document.getElementById('nextBtn').textContent = isLast ? '결과 보기 🏁' : '다음 문제 →';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  const shuffledOpts = shuffle(q.options);
+  const displayOpts = (q.sentence_start)
+    ? shuffledOpts.map(o => o.charAt(0).toUpperCase() + o.slice(1))
+    : shuffledOpts;
+
+  let html = `<div class="q-num">문제 ${currentIndex + 1} / ${total}</div>`;
+  html += `<div class="q-sentence">${q.display}</div>`;
+  html += `<div class="q-translation">${q.translation}</div>`;
+  html += `<div class="options" id="optionsDiv">`;
+  displayOpts.forEach(opt => {
+    html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+  });
+  html += `</div>`;
+  html += `<div class="feedback" id="feedback"></div>`;
+
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function selectAnswer(btn, selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = selected.toLowerCase() === q.answer.toLowerCase();
+  const fb = document.getElementById('feedback');
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score++;
+    fb.className = 'feedback correct';
+    fb.innerHTML = `<div class="fb-title">${q.feedback_correct}</div>
+      <div class="fb-reason">💡 ${q.reason}</div>`;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => {
+      if (b.textContent.toLowerCase() === q.answer.toLowerCase()) b.classList.add('correct');
+    });
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `<div class="fb-title">${q.feedback_wrong}</div>
+      <div class="fb-reason">✅ 정답: <strong>${q.answer}</strong><br>💡 ${q.reason}</div>`;
+    wrongQuestions.push(q);
+  }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizWrap').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let stars = '⭐';
+  let msg = '조금 더 연습해 봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = '완벽해요! 비교급 마스터! 🎉'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = '잘했어요! 조금만 더 연습해요! 😊'; }
+
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('resultScore').textContent = score + ' / ' + total + ' (' + pct + '%)';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressInfo').textContent = total + ' / ' + total;
+
+  if (wrongQuestions.length > 0) {
+    document.getElementById('wrongList').style.display = 'block';
+    document.getElementById('retryWrongBtn').style.display = 'block';
+    let wHtml = '';
+    wrongQuestions.forEach(q => {
+      const plain = q.display.replace(/<[^>]+>/g, '');
+      wHtml += `<div class="wrong-item">
+        <div class="wi-wrong">❌ ${plain}</div>
+        <div class="wi-right">✅ 정답: ${q.answer}</div>
+        <div class="wi-reason">💡 ${q.reason}</div>
+      </div>`;
+    });
+    document.getElementById('wrongItems').innerHTML = wHtml;
+  } else {
+    document.getElementById('wrongList').style.display = 'none';
+    document.getElementById('retryWrongBtn').style.display = 'none';
+  }
+}
+
+function retryWrong() { startQuiz(wrongQuestions); }
+function retryAll() { startQuiz(ALL_QUESTIONS); }
+
+startQuiz(ALL_QUESTIONS);
+</script>
+</body>
+</html>

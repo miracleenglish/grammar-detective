@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG2-TEST2 | 실전테스트 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --card: #ffffff;
+    --text: #333333;
+    --light-text: #777777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 14px 20px 10px;
+    text-align: center;
+  }
+  .header .series { font-size: 11px; opacity: 0.85; letter-spacing: 1px; margin-bottom: 2px; }
+  .header h1 { font-size: 20px; font-weight: 900; }
+  .header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    background: #E8604C;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .progress-wrap { background: #f0d9c8; height: 8px; width: 100%; }
+  .progress-bar { height: 8px; background: var(--accent); transition: width 0.4s ease; border-radius: 0 4px 4px 0; }
+  .progress-info { text-align: center; font-size: 12px; color: var(--light-text); padding: 5px; }
+  .quiz-wrap { max-width: 540px; margin: 0 auto; padding: 16px 16px 0; }
+  .instruction {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+    margin-bottom: 14px;
+  }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent-dark); margin-bottom: 8px; }
+  .q-range { font-size: 10px; color: var(--light-text); margin-bottom: 6px; }
+  .q-sentence {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .q-sentence .arrow-line {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 72px;
+    border-bottom: 2.5px solid #444;
+    margin-bottom: -2px;
+    text-align: center;
+  }
+  .q-sentence .arrow-line .blank {
+    border-bottom: 2.5px solid var(--accent-dark);
+  }
+  .q-translation {
+    font-size: 15px;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .hl { color: var(--accent-dark); border-bottom: 2.5px solid var(--accent-dark); font-weight: 800; padding-bottom: 1px; }
+
+  .q-label { font-size: 12px; font-weight: 700; color: var(--wrong); margin-bottom: 6px; }
+  .error-box {
+    background: #fff3f0;
+    border: 2px solid #E8604C;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .error-sentence { font-size: 19px; font-weight: 800; color: var(--text); line-height: 1.6; }
+
+  .options { display: grid; gap: 9px; }
+  .options.col2 { grid-template-columns: 1fr 1fr; }
+  .options.col3 { grid-template-columns: 1fr 1fr 1fr; }
+  .opt-btn {
+    border: 2.5px solid #e0cabb;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fff0e0; transform: translateY(-1px); }
+  .opt-btn.correct { background: #e8f8f3; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  .feedback-simple {
+    margin-top: 12px; padding: 12px 14px; border-radius: 10px;
+    font-size: 13px; line-height: 1.6; display: none;
+  }
+  .feedback-simple.correct { background: #e8f8f3; border-left: 4px solid var(--correct); display: block; }
+  .feedback-simple.wrong { background: #fdecea; border-left: 4px solid var(--wrong); display: block; }
+  .feedback-simple .fb-title { font-weight: 800; margin-bottom: 4px; word-break: keep-all; }
+  .feedback-simple .fb-reason { color: #555; margin-top: 4px; font-size: 12px; word-break: keep-all; }
+
+  .feedback-error { margin-top: 12px; border-radius: 10px; font-size: 13px; line-height: 1.6; display: none; overflow: hidden; }
+  .feedback-error.show { display: block; }
+  .fb-correct-header { background: var(--correct); color: white; padding: 8px 14px; font-weight: 800; }
+  .fb-wrong-header { background: var(--wrong); color: white; padding: 8px 14px; font-weight: 800; }
+  .fb-body { background: #f9f9f9; padding: 12px 14px; border: 1px solid #e8e8e8; border-top: none; border-radius: 0 0 10px 10px; }
+  .fb-row { margin-bottom: 6px; font-size: 13px; line-height: 1.6; word-break: keep-all; }
+  .fb-row:last-child { margin-bottom: 0; }
+  .fb-wrong-sent { color: var(--wrong); font-weight: 700; }
+  .fb-right-sent { color: var(--correct); font-weight: 700; }
+  .fb-reason-text { color: #555; }
+
+  .next-btn {
+    display: none; width: 100%; margin-top: 14px; padding: 14px;
+    background: var(--accent-dark); color: white; border: none;
+    border-radius: 12px; font-size: 16px; font-weight: 800;
+    font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .next-btn:hover { background: #b87516; }
+
+  .result-screen {
+    max-width: 540px; margin: 20px auto; padding: 0 16px; display: none; text-align: center;
+  }
+  .result-card {
+    background: white; border-radius: 20px; padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .star-display { font-size: 40px; margin-bottom: 10px; }
+  .result-score { font-size: 40px; font-weight: 900; color: var(--accent-dark); }
+  .result-pct { font-size: 22px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+  .result-msg { font-size: 15px; color: var(--light-text); margin: 10px 0 20px; }
+  .wrong-list {
+    text-align: left; background: #fff9f5; border-radius: 12px;
+    padding: 14px; margin-bottom: 16px;
+  }
+  .wrong-list h3 { font-size: 13px; color: var(--wrong); margin-bottom: 10px; font-weight: 800; }
+  .wrong-item { font-size: 13px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0e0d0; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wi-wrong { color: var(--wrong); font-weight: 700; margin-bottom: 2px; }
+  .wi-right { color: var(--correct); font-weight: 700; margin-bottom: 2px; }
+  .wi-reason { color: #666; font-size: 12px; word-break: keep-all; }
+  .action-btns { display: flex; gap: 10px; }
+  .retry-wrong-btn, .retry-all-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .retry-wrong-btn { background: var(--wrong); color: white; }
+  .retry-all-btn { background: var(--accent-dark); color: white; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="series">🔍 영문법 탐정단 · 스타트 영문법 2권</div>
+  <h1>실전테스트 2</h1>
+  <div class="sub">Lesson 11~20 종합 평가</div>
+  <span class="badge">TEST</span>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-info" id="progressInfo">1 / 15</div>
+
+<div class="quiz-wrap" id="quizWrap">
+  <div class="instruction" id="instruction">📌 알맞은 것을 골라요!</div>
+  <div class="question-card" id="questionCard"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+</div>
+
+<div class="result-screen" id="resultScreen">
+  <div class="result-card">
+    <div class="star-display" id="starDisplay"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-pct" id="resultPct"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="wrong-list" id="wrongList" style="display:none">
+      <h3>❌ 틀린 문제 복습</h3>
+      <div id="wrongItems"></div>
+    </div>
+    <div class="action-btns">
+      <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()" style="display:none">오답만 다시 풀기</button>
+      <button class="retry-all-btn" onclick="retryAll()">전체 다시 풀기 🔄</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // ── L11: 일반동사 긍정문 ──
+  {
+    type: "choice", range: "L11",
+    instruction: "📌 주어에 맞는 동사 형태를 골라요!",
+    display: '<span class="hl">My teacher</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> a newspaper every morning.',
+    translation: "우리 선생님은 매일 아침 신문을 읽어요.",
+    options: ["read", "reads", "reades", "reading"],
+    answer: "reads",
+    feedback_correct: "✅ 정답! My teacher(She/He) → reads예요.",
+    feedback_wrong: "❌ My teacher = She/He → reads를 써요!",
+    reason: "She/He/It → 동사 + s/es (read→reads)"
+  },
+
+  // ── L12: 일반동사 부정문 ──
+  {
+    type: "choice", range: "L12",
+    instruction: "📌 알맞은 부정문을 골라요!",
+    display: '<span class="hl">우리 고양이</span>는 생선을 좋아하지 않아요.',
+    translation: "올바른 부정문을 골라요.",
+    options: [
+      "My cat don't like fish.",
+      "My cat doesn't like fish.",
+      "My cat doesn't likes fish.",
+      "My cat not like fish."
+    ],
+    answer: "My cat doesn't like fish.",
+    feedback_correct: "✅ 정답! My cat(It) → doesn't + 동사원형(like).",
+    feedback_wrong: "❌ My cat = It → doesn't like예요!",
+    reason: "She/He/It → doesn't + 동사원형"
+  },
+
+  // ── L13: 일반동사 의문문 ──
+  {
+    type: "choice", range: "L13",
+    instruction: "📌 질문에 맞는 답변을 골라요!",
+    display: 'Does your brother play basketball?<br><span class="arrow-line">→ Yes, _____</span>',
+    translation: "너의 남동생은 농구를 하나요?<br>→ 네, _____",
+    options: ["he does.", "he do.", "he is.", "they do."],
+    answer: "he does.",
+    feedback_correct: "✅ 정답! Does he ~?의 긍정 답변 → Yes, he does.",
+    feedback_wrong: "❌ Does he ~? → Yes, he does.예요!",
+    reason: "Does he ~? → Yes, he does. / No, he doesn't."
+  },
+
+  // ── L14: 현재진행형 긍정문 ──
+  {
+    type: "choice", range: "L14",
+    instruction: "📌 알맞은 -ing형을 골라요!",
+    display: '<span class="hl">swim</span>의 -ing형은?',
+    translation: "swim(수영하다)의 -ing형은 무엇인가요?",
+    options: ["swiming", "swimming", "swimeing", "swimng"],
+    answer: "swimming",
+    feedback_correct: "✅ 정답! swim → swimming (자음+모음+자음 → m 한 번 더!)",
+    feedback_wrong: "❌ swim의 -ing형은 swimming이에요!",
+    reason: "자음+모음+자음 → 마지막 자음 한 번 더 + ing (swim→swimming)"
+  },
+
+  // ── L15: 현재진행형 부정문 ──
+  {
+    type: "choice", range: "L15",
+    instruction: "📌 알맞은 부정형을 골라요!",
+    display: '<span class="hl">우리 아빠</span>는 지금 운전하고 있지 않아요.',
+    translation: "올바른 부정문을 골라요.",
+    options: [
+      "My dad isn't driving now.",
+      "My dad aren't driving now.",
+      "My dad don't driving now.",
+      "My dad isn't drive now."
+    ],
+    answer: "My dad isn't driving now.",
+    feedback_correct: "✅ 정답! My dad(He) → isn't driving now.",
+    feedback_wrong: "❌ My dad = He → isn't driving이에요!",
+    reason: "She/He/It → isn't + 동사ing"
+  },
+
+  // ── L16: 현재진행형 의문문 ──
+  {
+    type: "choice", range: "L16",
+    instruction: "📌 질문에 맞는 답변을 골라요!",
+    display: 'Are the penguins swimming?<br><span class="arrow-line">→ No, _____</span>',
+    translation: "펭귄들은 수영하고 있나요?<br>→ 아니요, _____",
+    options: ["they aren't.", "they isn't.", "it isn't.", "they don't."],
+    answer: "they aren't.",
+    feedback_correct: "✅ 정답! Are they ~?의 부정 답변 → No, they aren't.",
+    feedback_wrong: "❌ Are they ~? → No, they aren't.예요!",
+    reason: "Are they ~? → Yes, they are. / No, they aren't."
+  },
+
+  // ── L17: What/Who 현재진행형 ──
+  {
+    type: "choice", range: "L17",
+    instruction: "📌 답변에 맞는 의문사를 골라요!",
+    display: '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> is eating the cake?<br><span class="arrow-line">→ The dog is eating the cake.</span>',
+    translation: "누가 케이크를 먹고 있나요?<br>→ 강아지가 케이크를 먹고 있어요.",
+    options: ["What", "Who", "Whose", "Where"],
+    answer: "Who",
+    sentence_start: true,
+    feedback_correct: "✅ 정답! 누가(어떤 동물이) 먹는지 물어볼 때는 Who를 써요.",
+    feedback_wrong: "❌ 누가 먹는지 물어볼 때는 Who를 써요!",
+    reason: "Who + is + 동사ing? → 누가 하는지 물어봐요"
+  },
+
+  // ── L18: 장소 전치사 ──
+  {
+    type: "choice", range: "L18",
+    instruction: "📌 빈칸에 알맞은 것을 골라요!",
+    display: 'Where is the rabbit?<br><span class="arrow-line">→ It is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the box.</span>',
+    translation: "토끼는 어디에 있나요?<br>→ 토끼는 <strong>상자 안</strong>에 있어요.",
+    options: ["in", "on", "behind", "in front of"],
+    answer: "in",
+    feedback_correct: "✅ 정답! 상자 안에 → in the box예요.",
+    feedback_wrong: "❌ 상자 안에는 in the box예요!",
+    reason: "in = ~ 안에 / on = ~ 위에 / behind = ~ 뒤에"
+  },
+
+  // ── L19: 조동사 ──
+  {
+    type: "choice", range: "L19",
+    instruction: "📌 알맞은 조동사를 골라요!",
+    display: '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> I use your computer?<br><span class="arrow-line">→ Yes, you may.</span>',
+    translation: "당신의 컴퓨터를 사용해도 될까요?<br>→ 네, 그래도 돼요.",
+    options: ["May", "Do", "Are", "Does"],
+    answer: "May",
+    sentence_start: true,
+    feedback_correct: "✅ 정답! 정중하게 허락을 구할 때는 May를 써요.",
+    feedback_wrong: "❌ 정중한 허락 요청은 May I ~?예요!",
+    reason: "May I ~? = ~해도 될까요? (정중한 허가 요청)"
+  },
+
+  // ── L20: 명령문 ──
+  {
+    type: "choice", range: "L20",
+    instruction: "📌 알맞은 명령문을 골라요!",
+    display: '도서관에서 음식을 먹고 있는 아이가 있어요.',
+    translation: "올바른 부정 명령문을 골라요.",
+    options: [
+      "Don't eat in the library.",
+      "Doesn't eat in the library.",
+      "Not eat in the library.",
+      "Don't eats in the library."
+    ],
+    answer: "Don't eat in the library.",
+    feedback_correct: "✅ 정답! Don't + 동사원형 → Don't eat!",
+    feedback_wrong: "❌ 부정 명령문은 Don't + 동사원형이에요!",
+    reason: "부정 명령문 → Don't + 동사원형 (Don't eat / Don't run)"
+  },
+
+  // ── 오류 찾기 (L11~20 혼합) ──
+  {
+    type: "error", range: "L11~12",
+    error_sentence: "My cousin don't eats vegetables.",
+    translation: "내 사촌은 채소를 먹지 않아요.",
+    options: ["don't", "eats", "vegetables"],
+    answer: "don't",
+    wrong_sent: "My cousin don't eats vegetables.",
+    right_sent: "My cousin doesn't eat vegetables.",
+    reason: "My cousin = She/He → don't(X) → doesn't, 그리고 뒤에 동사원형 eat(O)"
+  },
+  {
+    type: "error", range: "L14~15",
+    error_sentence: "She is danceing in the hall.",
+    translation: "그녀는 홀에서 춤추고 있어요.",
+    options: ["is", "danceing", "hall"],
+    answer: "danceing",
+    wrong_sent: "She is danceing in the hall.",
+    right_sent: "She is dancing in the hall.",
+    reason: "dance는 -e로 끝나니 e를 없애고 -ing! dancing(O) / danceing(X)"
+  },
+  {
+    type: "error", range: "L16~17",
+    error_sentence: "What is running in the park?",
+    translation: "누가 공원에서 달리고 있나요?",
+    options: ["What", "is", "park"],
+    answer: "What",
+    wrong_sent: "What is running in the park?",
+    right_sent: "Who is running in the park?",
+    reason: "누가 달리는지(사람/동물) 물어볼 때는 What이 아니라 Who를 써요!"
+  },
+  {
+    type: "error", range: "L19~20",
+    error_sentence: "She cans ride a horse.",
+    translation: "그녀는 말을 탈 수 있어요.",
+    options: ["She", "cans", "horse"],
+    answer: "cans",
+    wrong_sent: "She cans ride a horse.",
+    right_sent: "She can ride a horse.",
+    reason: "조동사 can은 주어에 관계없이 형태가 변하지 않아요! cans(X) → can(O)"
+  },
+  {
+    type: "error", range: "L18~20",
+    error_sentence: "Sits down. The teacher is coming.",
+    translation: "앉으세요. 선생님이 오고 있어요.",
+    options: ["Sits", "down", "coming"],
+    answer: "Sits",
+    wrong_sent: "Sits down. The teacher is coming.",
+    right_sent: "Sit down. The teacher is coming.",
+    reason: "명령문은 동사원형으로 시작해요! Sits(X) → Sit(O)"
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongQuestions = [];
+let answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(qList) {
+  questions = shuffle(qList);
+  currentIndex = 0; score = 0; wrongQuestions = []; answered = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizWrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('progressBar').style.width = ((currentIndex / total) * 100) + '%';
+  document.getElementById('progressInfo').textContent = (currentIndex + 1) + ' / ' + total;
+  document.getElementById('instruction').innerHTML = q.instruction || '🔍 문장에서 틀린 단어를 골라요!';
+
+  const isLast = (currentIndex === total - 1);
+  document.getElementById('nextBtn').textContent = isLast ? '결과 보기 🏁' : '다음 문제 →';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  let html = `<div class="q-num">문제 ${currentIndex + 1} / ${total}</div>`;
+  html += `<div class="q-range">📍 ${q.range}</div>`;
+
+  if (q.type === 'error') {
+    const shuffledOpts = shuffle(q.options);
+    html += `<div class="q-label">❌ 다음 문장에서 틀린 단어는?</div>`;
+    html += `<div class="error-box"><div class="error-sentence">${q.error_sentence}</div></div>`;
+    html += `<div class="q-translation">${q.translation}</div>`;
+    html += `<div class="options col3" id="optionsDiv">`;
+    shuffledOpts.forEach(opt => {
+      html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+    });
+    html += `</div><div class="feedback-error" id="feedback"></div>`;
+  } else {
+    const shuffledOpts = shuffle(q.options);
+    const displayOpts = q.sentence_start
+      ? shuffledOpts.map(o => o.charAt(0).toUpperCase() + o.slice(1))
+      : shuffledOpts;
+    html += `<div class="q-sentence">${q.display}</div>`;
+    html += `<div class="q-translation">${q.translation}</div>`;
+    html += `<div class="options col2" id="optionsDiv">`;
+    displayOpts.forEach(opt => {
+      html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+    });
+    html += `</div><div class="feedback-simple" id="feedback"></div>`;
+  }
+
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function selectAnswer(btn, selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = selected.toLowerCase() === q.answer.toLowerCase();
+  const fb = document.getElementById('feedback');
+
+  if (q.type === 'error') {
+    fb.className = 'feedback-error show';
+    if (isCorrect) {
+      btn.classList.add('correct'); score++;
+      fb.innerHTML = `<div class="fb-correct-header">✅ 정답! 틀린 단어를 찾았어요!</div>
+        <div class="fb-body">
+          <div class="fb-row fb-wrong-sent">❌ ${q.wrong_sent}</div>
+          <div class="fb-row fb-right-sent">✅ ${q.right_sent}</div>
+          <div class="fb-row fb-reason-text">💡 ${q.reason}</div>
+        </div>`;
+    } else {
+      btn.classList.add('wrong');
+      allBtns.forEach(b => { if (b.textContent === q.answer) b.classList.add('correct'); });
+      fb.innerHTML = `<div class="fb-wrong-header">❌ 틀린 단어는 <strong>${q.answer}</strong>예요!</div>
+        <div class="fb-body">
+          <div class="fb-row fb-wrong-sent">❌ ${q.wrong_sent}</div>
+          <div class="fb-row fb-right-sent">✅ ${q.right_sent}</div>
+          <div class="fb-row fb-reason-text">💡 ${q.reason}</div>
+        </div>`;
+      wrongQuestions.push(q);
+    }
+  } else {
+    if (isCorrect) {
+      btn.classList.add('correct'); score++;
+      fb.className = 'feedback-simple correct';
+      fb.innerHTML = `<div class="fb-title">${q.feedback_correct}</div>
+        <div class="fb-reason">💡 ${q.reason}</div>`;
+    } else {
+      btn.classList.add('wrong');
+      allBtns.forEach(b => { if (b.textContent.toLowerCase() === q.answer.toLowerCase()) b.classList.add('correct'); });
+      fb.className = 'feedback-simple wrong';
+      fb.innerHTML = `<div class="fb-title">${q.feedback_wrong}</div>
+        <div class="fb-reason">✅ 정답: <strong>${q.answer}</strong><br>💡 ${q.reason}</div>`;
+      wrongQuestions.push(q);
+    }
+  }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizWrap').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let stars = '⭐', msg = '조금 더 연습해 봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = '완벽해요! L11~20 마스터! 🎉'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = '잘했어요! 틀린 문제를 복습해요! 😊'; }
+
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('resultScore').textContent = score + ' / ' + total;
+  document.getElementById('resultPct').textContent = '(' + pct + '점)';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressInfo').textContent = total + ' / ' + total;
+
+  if (wrongQuestions.length > 0) {
+    document.getElementById('wrongList').style.display = 'block';
+    document.getElementById('retryWrongBtn').style.display = 'block';
+    let wHtml = '';
+    wrongQuestions.forEach(q => {
+      const label = q.type === 'error' ? q.wrong_sent : q.display.replace(/<[^>]+>/g, '');
+      wHtml += `<div class="wrong-item">
+        <div class="wi-wrong">❌ ${q.type === 'error' ? q.wrong_sent : label}</div>
+        <div class="wi-right">✅ 정답: ${q.answer}</div>
+        <div class="wi-reason">💡 ${q.reason}</div>
+      </div>`;
+    });
+    document.getElementById('wrongItems').innerHTML = wHtml;
+  } else {
+    document.getElementById('wrongList').style.display = 'none';
+    document.getElementById('retryWrongBtn').style.display = 'none';
+  }
+}
+
+function retryWrong() { startQuiz(wrongQuestions); }
+function retryAll() { startQuiz(ALL_QUESTIONS); }
+
+startQuiz(ALL_QUESTIONS);
+</script>
+</body>
+</html>

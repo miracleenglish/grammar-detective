@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG2-TEST1 | 실전테스트 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --card: #ffffff;
+    --text: #333333;
+    --light-text: #777777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 14px 20px 10px;
+    text-align: center;
+  }
+  .header .series { font-size: 11px; opacity: 0.85; letter-spacing: 1px; margin-bottom: 2px; }
+  .header h1 { font-size: 20px; font-weight: 900; }
+  .header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    background: #E8604C;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .progress-wrap { background: #f0d9c8; height: 8px; width: 100%; }
+  .progress-bar { height: 8px; background: var(--accent); transition: width 0.4s ease; border-radius: 0 4px 4px 0; }
+  .progress-info { text-align: center; font-size: 12px; color: var(--light-text); padding: 5px; }
+  .quiz-wrap { max-width: 540px; margin: 0 auto; padding: 16px 16px 0; }
+  .instruction {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+    margin-bottom: 14px;
+  }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent-dark); margin-bottom: 8px; }
+  .q-range { font-size: 10px; color: var(--light-text); margin-bottom: 6px; }
+  .q-sentence {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .q-sentence .arrow-line {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 72px;
+    border-bottom: 2.5px solid #444;
+    margin-bottom: -2px;
+    text-align: center;
+  }
+  .q-sentence .arrow-line .blank {
+    border-bottom: 2.5px solid var(--accent-dark);
+  }
+  .q-translation {
+    font-size: 15px;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .hl { color: var(--accent-dark); border-bottom: 2.5px solid var(--accent-dark); font-weight: 800; padding-bottom: 1px; }
+
+  /* 오류 찾기 */
+  .q-label { font-size: 12px; font-weight: 700; color: var(--wrong); margin-bottom: 6px; }
+  .error-box {
+    background: #fff3f0;
+    border: 2px solid #E8604C;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .error-sentence { font-size: 19px; font-weight: 800; color: var(--text); line-height: 1.6; }
+
+  .options { display: grid; gap: 9px; }
+  .options.col2 { grid-template-columns: 1fr 1fr; }
+  .options.col3 { grid-template-columns: 1fr 1fr 1fr; }
+  .opt-btn {
+    border: 2.5px solid #e0cabb;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fff0e0; transform: translateY(-1px); }
+  .opt-btn.correct { background: #e8f8f3; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* 일반 피드백 */
+  .feedback-simple {
+    margin-top: 12px; padding: 12px 14px; border-radius: 10px;
+    font-size: 13px; line-height: 1.6; display: none;
+  }
+  .feedback-simple.correct { background: #e8f8f3; border-left: 4px solid var(--correct); display: block; }
+  .feedback-simple.wrong { background: #fdecea; border-left: 4px solid var(--wrong); display: block; }
+  .feedback-simple .fb-title { font-weight: 800; margin-bottom: 4px; word-break: keep-all; }
+  .feedback-simple .fb-reason { color: #555; margin-top: 4px; font-size: 12px; word-break: keep-all; }
+
+  /* 오류 찾기 피드백 */
+  .feedback-error { margin-top: 12px; border-radius: 10px; font-size: 13px; line-height: 1.6; display: none; overflow: hidden; }
+  .feedback-error.show { display: block; }
+  .fb-correct-header { background: var(--correct); color: white; padding: 8px 14px; font-weight: 800; }
+  .fb-wrong-header { background: var(--wrong); color: white; padding: 8px 14px; font-weight: 800; }
+  .fb-body { background: #f9f9f9; padding: 12px 14px; border: 1px solid #e8e8e8; border-top: none; border-radius: 0 0 10px 10px; }
+  .fb-row { margin-bottom: 6px; font-size: 13px; line-height: 1.6; word-break: keep-all; }
+  .fb-row:last-child { margin-bottom: 0; }
+  .fb-wrong-sent { color: var(--wrong); font-weight: 700; }
+  .fb-right-sent { color: var(--correct); font-weight: 700; }
+  .fb-reason-text { color: #555; }
+
+  .next-btn {
+    display: none; width: 100%; margin-top: 14px; padding: 14px;
+    background: var(--accent-dark); color: white; border: none;
+    border-radius: 12px; font-size: 16px; font-weight: 800;
+    font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .next-btn:hover { background: #b87516; }
+
+  .result-screen {
+    max-width: 540px; margin: 20px auto; padding: 0 16px; display: none; text-align: center;
+  }
+  .result-card {
+    background: white; border-radius: 20px; padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .star-display { font-size: 40px; margin-bottom: 10px; }
+  .result-score { font-size: 40px; font-weight: 900; color: var(--accent-dark); }
+  .result-pct { font-size: 22px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+  .result-msg { font-size: 15px; color: var(--light-text); margin: 10px 0 20px; }
+  .wrong-list {
+    text-align: left; background: #fff9f5; border-radius: 12px;
+    padding: 14px; margin-bottom: 16px;
+  }
+  .wrong-list h3 { font-size: 13px; color: var(--wrong); margin-bottom: 10px; font-weight: 800; }
+  .wrong-item { font-size: 13px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0e0d0; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wi-wrong { color: var(--wrong); font-weight: 700; margin-bottom: 2px; }
+  .wi-right { color: var(--correct); font-weight: 700; margin-bottom: 2px; }
+  .wi-reason { color: #666; font-size: 12px; word-break: keep-all; }
+  .action-btns { display: flex; gap: 10px; }
+  .retry-wrong-btn, .retry-all-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .retry-wrong-btn { background: var(--wrong); color: white; }
+  .retry-all-btn { background: var(--accent-dark); color: white; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="series">🔍 영문법 탐정단 · 스타트 영문법 2권</div>
+  <h1>실전테스트 1</h1>
+  <div class="sub">Lesson 1~10 종합 평가</div>
+  <span class="badge">TEST</span>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-info" id="progressInfo">1 / 15</div>
+
+<div class="quiz-wrap" id="quizWrap">
+  <div class="instruction" id="instruction">📌 알맞은 것을 골라요!</div>
+  <div class="question-card" id="questionCard"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+</div>
+
+<div class="result-screen" id="resultScreen">
+  <div class="result-card">
+    <div class="star-display" id="starDisplay"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-pct" id="resultPct"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="wrong-list" id="wrongList" style="display:none">
+      <h3>❌ 틀린 문제 복습</h3>
+      <div id="wrongItems"></div>
+    </div>
+    <div class="action-btns">
+      <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()" style="display:none">오답만 다시 풀기</button>
+      <button class="retry-all-btn" onclick="retryAll()">전체 다시 풀기 🔄</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// type: "choice" | "error"
+const ALL_QUESTIONS = [
+
+  // ── L1: be동사 ──
+  {
+    type: "choice", range: "L1",
+    instruction: "📌 알맞은 be동사를 골라요!",
+    display: '<span class="hl">Mr. and Mrs. Park</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> nurses.',
+    translation: "Park 씨 부부는 간호사예요.",
+    options: ["am", "is", "are", "be"],
+    answer: "are",
+    feedback_correct: "✅ 정답! Mr. and Mrs. Park(They) → are예요.",
+    feedback_wrong: "❌ 복수 주어 → are를 써요!",
+    reason: "We/You/They → are"
+  },
+
+  // ── L2: be동사 의문문 ──
+  {
+    type: "choice", range: "L2",
+    instruction: "📌 의문문에 맞는 답변을 골라요!",
+    display: 'Is your cat friendly?<br><span class="arrow-line">→ No, _____</span>',
+    translation: "네 고양이는 친근한가요?<br>→ 아니요, _____",
+    options: ["it is.", "it isn't.", "they are.", "she isn't."],
+    answer: "it isn't.",
+    feedback_correct: "✅ 정답! Is it ~?의 부정 답변 → No, it isn't.",
+    feedback_wrong: "❌ Is it ~? → No, it isn't.예요!",
+    reason: "Is it ~? → Yes, it is. / No, it isn't."
+  },
+
+  // ── L3: 소유격 ──
+  {
+    type: "choice", range: "L3",
+    instruction: "📌 알맞은 소유격을 골라요!",
+    display: 'Look at <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> dog! It\'s so cute.',
+    translation: "저 강아지를 봐요! 정말 귀엽네요.",
+    options: ["my", "me", "I", "mine"],
+    answer: "my",
+    feedback_correct: "✅ 정답! 명사(dog) 앞에는 소유격 my를 써요.",
+    feedback_wrong: "❌ 명사 앞에는 소유격(my)을 써요!",
+    reason: "소유격(my/your/his/her/its/our/their) + 명사"
+  },
+
+  // ── L4: What/Who/Whose ──
+  {
+    type: "choice", range: "L4",
+    instruction: "📌 알맞은 의문사를 골라요!",
+    display: '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> bag is this?<br><span class="arrow-line">→ It\'s Jenny\'s bag.</span>',
+    translation: "이것은 누구의 가방인가요?<br>→ Jenny의 가방이에요.",
+    options: ["What", "Who", "Whose", "Where"],
+    answer: "Whose",
+    sentence_start: true,
+    feedback_correct: "✅ 정답! 소유(누구의 것)를 물어볼 때는 Whose예요.",
+    feedback_wrong: "❌ 누구의 것인지 물어볼 때는 Whose를 써요!",
+    reason: "Whose → 소유 / Who → 사람 / What → 사물"
+  },
+
+  // ── L5: 복수형 ──
+  {
+    type: "choice", range: "L5",
+    instruction: "📌 올바른 복수형을 골라요!",
+    display: 'I see two <span class="hl">mouse</span>.<br><span class="arrow-line">→ 올바른 복수형은?</span>',
+    translation: "나는 쥐 두 마리를 봐요.<br>→ mouse의 올바른 복수형은?",
+    options: ["mouses", "mice", "mousies", "mouseies"],
+    answer: "mice",
+    feedback_correct: "✅ 정답! mouse → mice (불규칙 복수형이에요!)",
+    feedback_wrong: "❌ mouse의 복수형은 mice예요! 불규칙 복수라 외워야 해요.",
+    reason: "불규칙 복수: mouse→mice / foot→feet / child→children"
+  },
+
+  // ── L6: 가산/불가산 ──
+  {
+    type: "choice", range: "L6",
+    instruction: "📌 올바른 표현을 골라요!",
+    display: 'I see _____ <span class="hl">milk</span>.',
+    translation: "나는 우유를 봐요.",
+    options: ["a", "an", "some", "two"],
+    answer: "some",
+    feedback_correct: "✅ 정답! milk는 셀 수 없는 명사 → some milk예요.",
+    feedback_wrong: "❌ milk는 셀 수 없는 명사예요. some milk!",
+    reason: "셀 수 없는 명사 → some (some milk, some bread, some water)"
+  },
+
+  // ── L7: a/an/the ──
+  {
+    type: "choice", range: "L7",
+    instruction: "📌 a / an / the 중 알맞은 것을 골라요!",
+    display: 'I see <span class="hl">an owl</span>.<br><span class="arrow-line">→ <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> owl is on the tree.</span>',
+    translation: "나는 부엉이 한 마리를 봐요.<br>→ <strong>그 부엉이</strong>는 나무 위에 있어요.",
+    options: ["A", "An", "The", "Some"],
+    answer: "The",
+    sentence_start: true,
+    feedback_correct: "✅ 정답! 앞에서 언급한 부엉이 → The owl예요.",
+    feedback_wrong: "❌ 앞에서 이미 언급된 것은 The를 써요!",
+    reason: "처음 언급 → a/an / 다시 언급 → The"
+  },
+
+  // ── L8: There is/are ──
+  {
+    type: "choice", range: "L8",
+    instruction: "📌 알맞은 말을 골라요!",
+    display: '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> any cookies?<br><span class="arrow-line">→ Yes, there are.</span>',
+    translation: "쿠키가 있나요?<br>→ 네, 있어요.",
+    options: ["Is there", "Are there", "There is", "There are"],
+    answer: "Are there",
+    sentence_start: true,
+    feedback_correct: "✅ 정답! cookies(복수) → Are there any ~?",
+    feedback_wrong: "❌ 복수 명사의 의문문은 Are there ~?예요!",
+    reason: "복수 명사 → Are there any ~? / 단수·불가산 → Is there any ~?"
+  },
+
+  // ── L9: 형용사 ──
+  {
+    type: "choice", range: "L9",
+    instruction: "📌 두 문장이 같은 뜻이 되도록 골라요!",
+    display: 'It is a <span class="hl">cold</span> day.<br><span class="arrow-line">→ The day is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>.</span>',
+    translation: "오늘은 추운 날이에요.<br>→ 그 날은 <strong>추워요</strong>.",
+    options: ["cold", "hot", "new", "old"],
+    answer: "cold",
+    feedback_correct: "✅ 정답! cold는 '추운'이라는 형용사예요. 위치만 바뀌어요!",
+    feedback_wrong: "❌ cold는 '추운'이라는 뜻의 형용사예요!",
+    reason: "형용사+명사(a cold day) ↔ Be+형용사(The day is cold)"
+  },
+
+  // ── L10: 비교급 ──
+  {
+    type: "choice", range: "L10",
+    instruction: "📌 알맞은 비교급을 골라요!",
+    display: 'A whale is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> a dolphin.',
+    translation: "고래는 돌고래보다 더 커요.",
+    options: ["bigger than", "more bigger than", "big than", "biggest than"],
+    answer: "bigger than",
+    feedback_correct: "✅ 정답! big → bigger than ~ (자음 중복!)",
+    feedback_wrong: "❌ big의 비교급은 bigger than이에요!",
+    reason: "big → bigger (자음+모음+자음 → 마지막 자음 한 번 더 + er)"
+  },
+
+  // ── 오류 찾기 (L1~10 혼합) ──
+  {
+    type: "error", range: "L1~4",
+    error_sentence: "We isn't late for school.",
+    translation: "우리는 학교에 늦지 않아요.",
+    options: ["We", "isn't", "late"],
+    answer: "isn't",
+    wrong_sent: "We isn't late for school.",
+    right_sent: "We aren't late for school.",
+    reason: "We/You/They의 부정문은 isn't가 아니라 aren't예요!"
+  },
+  {
+    type: "error", range: "L5~6",
+    error_sentence: "I see three leafs on the ground.",
+    translation: "나는 땅 위에 나뭇잎 세 장을 봐요.",
+    options: ["three", "leafs", "ground"],
+    answer: "leafs",
+    wrong_sent: "I see three leafs on the ground.",
+    right_sent: "I see three leaves on the ground.",
+    reason: "leaf의 복수형은 leafs가 아니라 leaves예요! (-f → -ves)"
+  },
+  {
+    type: "error", range: "L7~8",
+    error_sentence: "There is some bananas in the bowl.",
+    translation: "그릇 안에 바나나들이 있어요.",
+    options: ["There", "is", "bananas"],
+    answer: "is",
+    wrong_sent: "There is some bananas in the bowl.",
+    right_sent: "There are some bananas in the bowl.",
+    reason: "bananas(복수) → There are를 써요! is(X) → are(O)"
+  },
+  {
+    type: "error", range: "L9~10",
+    error_sentence: "The summer is hoter than the winter.",
+    translation: "여름은 겨울보다 더 더워요.",
+    options: ["hoter", "than", "winter"],
+    answer: "hoter",
+    wrong_sent: "The summer is hoter than the winter.",
+    right_sent: "The summer is hotter than the winter.",
+    reason: "hot → hotter (자음+모음+자음 → 마지막 자음 한 번 더!) hoter(X) → hotter(O)"
+  },
+  {
+    type: "error", range: "L6~7",
+    error_sentence: "I see a orange on the table.",
+    translation: "나는 식탁 위에 오렌지 한 개를 봐요.",
+    options: ["a", "orange", "table"],
+    answer: "a",
+    wrong_sent: "I see a orange on the table.",
+    right_sent: "I see an orange on the table.",
+    reason: "orange는 모음(o)으로 시작하니 a가 아니라 an을 써요!"
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongQuestions = [];
+let answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(qList) {
+  questions = shuffle(qList);
+  currentIndex = 0; score = 0; wrongQuestions = []; answered = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizWrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  const total = questions.length;
+  document.getElementById('progressBar').style.width = ((currentIndex / total) * 100) + '%';
+  document.getElementById('progressInfo').textContent = (currentIndex + 1) + ' / ' + total;
+  document.getElementById('instruction').innerHTML = q.instruction || '🔍 문장에서 틀린 단어를 골라요!';
+
+  const isLast = (currentIndex === total - 1);
+  document.getElementById('nextBtn').textContent = isLast ? '결과 보기 🏁' : '다음 문제 →';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  let html = `<div class="q-num">문제 ${currentIndex + 1} / ${total}</div>`;
+  html += `<div class="q-range">📍 ${q.range}</div>`;
+
+  if (q.type === 'error') {
+    const shuffledOpts = shuffle(q.options);
+    html += `<div class="q-label">❌ 다음 문장에서 틀린 단어는?</div>`;
+    html += `<div class="error-box"><div class="error-sentence">${q.error_sentence}</div></div>`;
+    html += `<div class="q-translation">${q.translation}</div>`;
+    html += `<div class="options col3" id="optionsDiv">`;
+    shuffledOpts.forEach(opt => {
+      html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+    });
+    html += `</div><div class="feedback-error" id="feedback"></div>`;
+  } else {
+    const shuffledOpts = shuffle(q.options);
+    const displayOpts = q.sentence_start
+      ? shuffledOpts.map(o => o.charAt(0).toUpperCase() + o.slice(1))
+      : shuffledOpts;
+    html += `<div class="q-sentence">${q.display}</div>`;
+    html += `<div class="q-translation">${q.translation}</div>`;
+    html += `<div class="options col2" id="optionsDiv">`;
+    displayOpts.forEach(opt => {
+      html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+    });
+    html += `</div><div class="feedback-simple" id="feedback"></div>`;
+  }
+
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function selectAnswer(btn, selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = selected.toLowerCase() === q.answer.toLowerCase();
+  const fb = document.getElementById('feedback');
+
+  if (q.type === 'error') {
+    fb.className = 'feedback-error show';
+    if (isCorrect) {
+      btn.classList.add('correct'); score++;
+      fb.innerHTML = `<div class="fb-correct-header">✅ 정답! 틀린 단어를 찾았어요!</div>
+        <div class="fb-body">
+          <div class="fb-row fb-wrong-sent">❌ ${q.wrong_sent}</div>
+          <div class="fb-row fb-right-sent">✅ ${q.right_sent}</div>
+          <div class="fb-row fb-reason-text">💡 ${q.reason}</div>
+        </div>`;
+    } else {
+      btn.classList.add('wrong');
+      allBtns.forEach(b => { if (b.textContent === q.answer) b.classList.add('correct'); });
+      fb.innerHTML = `<div class="fb-wrong-header">❌ 틀린 단어는 <strong>${q.answer}</strong>예요!</div>
+        <div class="fb-body">
+          <div class="fb-row fb-wrong-sent">❌ ${q.wrong_sent}</div>
+          <div class="fb-row fb-right-sent">✅ ${q.right_sent}</div>
+          <div class="fb-row fb-reason-text">💡 ${q.reason}</div>
+        </div>`;
+      wrongQuestions.push(q);
+    }
+  } else {
+    if (isCorrect) {
+      btn.classList.add('correct'); score++;
+      fb.className = 'feedback-simple correct';
+      fb.innerHTML = `<div class="fb-title">${q.feedback_correct}</div>
+        <div class="fb-reason">💡 ${q.reason}</div>`;
+    } else {
+      btn.classList.add('wrong');
+      allBtns.forEach(b => { if (b.textContent.toLowerCase() === q.answer.toLowerCase()) b.classList.add('correct'); });
+      fb.className = 'feedback-simple wrong';
+      fb.innerHTML = `<div class="fb-title">${q.feedback_wrong}</div>
+        <div class="fb-reason">✅ 정답: <strong>${q.answer}</strong><br>💡 ${q.reason}</div>`;
+      wrongQuestions.push(q);
+    }
+  }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizWrap').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let stars = '⭐', msg = '조금 더 연습해 봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = '완벽해요! L1~10 마스터! 🎉'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = '잘했어요! 틀린 문제를 복습해요! 😊'; }
+
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('resultScore').textContent = score + ' / ' + total;
+  document.getElementById('resultPct').textContent = '(' + pct + '점)';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressInfo').textContent = total + ' / ' + total;
+
+  if (wrongQuestions.length > 0) {
+    document.getElementById('wrongList').style.display = 'block';
+    document.getElementById('retryWrongBtn').style.display = 'block';
+    let wHtml = '';
+    wrongQuestions.forEach(q => {
+      const label = q.type === 'error' ? q.wrong_sent : q.display.replace(/<[^>]+>/g, '');
+      wHtml += `<div class="wrong-item">
+        <div class="wi-wrong">❌ ${q.type === 'error' ? q.wrong_sent : label}</div>
+        <div class="wi-right">✅ 정답: ${q.answer}</div>
+        <div class="wi-reason">💡 ${q.reason}</div>
+      </div>`;
+    });
+    document.getElementById('wrongItems').innerHTML = wHtml;
+  } else {
+    document.getElementById('wrongList').style.display = 'none';
+    document.getElementById('retryWrongBtn').style.display = 'none';
+  }
+}
+
+function retryWrong() { startQuiz(wrongQuestions); }
+function retryAll() { startQuiz(ALL_QUESTIONS); }
+
+startQuiz(ALL_QUESTIONS);
+</script>
+</body>
+</html>

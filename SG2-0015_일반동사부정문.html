@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG2-0015 | 일반동사 부정문</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --card: #ffffff;
+    --text: #333333;
+    --light-text: #777777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 14px 20px 10px;
+    text-align: center;
+  }
+  .header .series { font-size: 11px; opacity: 0.85; letter-spacing: 1px; margin-bottom: 2px; }
+  .header h1 { font-size: 18px; font-weight: 900; }
+  .header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    background: #4A90D9;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .progress-wrap { background: #f0d9c8; height: 8px; width: 100%; }
+  .progress-bar { height: 8px; background: var(--accent); transition: width 0.4s ease; border-radius: 0 4px 4px 0; }
+  .progress-info { text-align: center; font-size: 12px; color: var(--light-text); padding: 5px; }
+  .quiz-wrap { max-width: 540px; margin: 0 auto; padding: 16px 16px 0; }
+  .instruction {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+    margin-bottom: 14px;
+  }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent-dark); margin-bottom: 8px; }
+  .q-sentence {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .q-sentence .arrow-line {
+    display: block;
+    color: var(--accent-dark);
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .q-sentence .blank {
+    display: inline-block;
+    min-width: 72px;
+    border-bottom: 2.5px solid #444;
+    margin-bottom: -2px;
+    text-align: center;
+  }
+  .q-sentence .arrow-line .blank {
+    border-bottom: 2.5px solid var(--accent-dark);
+  }
+  .q-translation {
+    font-size: 15px;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .hl { color: var(--accent-dark); border-bottom: 2.5px solid var(--accent-dark); font-weight: 800; padding-bottom: 1px; }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+  .opt-btn {
+    border: 2.5px solid #e0cabb;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fff0e0; transform: translateY(-1px); }
+  .opt-btn.correct { background: #e8f8f3; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.correct { background: #e8f8f3; border-left: 4px solid var(--correct); display: block; }
+  .feedback.wrong { background: #fdecea; border-left: 4px solid var(--wrong); display: block; }
+  .feedback .fb-title { font-weight: 800; margin-bottom: 4px; word-break: keep-all; line-height: 1.5; }
+  .feedback .fb-reason { color: #555; margin-top: 4px; font-size: 12px; word-break: keep-all; }
+
+  .next-btn {
+    display: none;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--accent-dark);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+  }
+  .next-btn:hover { background: #b87516; }
+
+  .result-screen {
+    max-width: 540px;
+    margin: 20px auto;
+    padding: 0 16px;
+    display: none;
+    text-align: center;
+  }
+  .result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .star-display { font-size: 40px; margin-bottom: 10px; }
+  .result-score { font-size: 36px; font-weight: 900; color: var(--accent-dark); }
+  .result-msg { font-size: 15px; color: var(--light-text); margin: 8px 0 20px; }
+  .wrong-list {
+    text-align: left;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .wrong-list h3 { font-size: 13px; color: var(--wrong); margin-bottom: 10px; font-weight: 800; }
+  .wrong-item { font-size: 13px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0e0d0; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wrong-item .wi-wrong { color: var(--wrong); font-weight: 700; }
+  .wrong-item .wi-right { color: var(--correct); font-weight: 700; }
+  .wrong-item .wi-reason { color: #666; font-size: 12px; margin-top: 2px; word-break: keep-all; }
+
+  .action-btns { display: flex; gap: 10px; }
+  .retry-wrong-btn, .retry-all-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .retry-wrong-btn { background: var(--wrong); color: white; }
+  .retry-all-btn { background: var(--accent-dark); color: white; }
+  .retry-wrong-btn:hover { background: #c94030; }
+  .retry-all-btn:hover { background: #b87516; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="series">🔍 영문법 탐정단 · 스타트 영문법 2권</div>
+  <h1>일반동사 부정문</h1>
+  <div class="sub">Lesson 12 — Present Simple: Negatives</div>
+  <span class="badge">A형</span>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-info" id="progressInfo">1 / 12</div>
+
+<div class="quiz-wrap" id="quizWrap">
+  <div class="instruction" id="instruction">📌 알맞은 부정문을 골라요!</div>
+  <div class="question-card" id="questionCard"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+</div>
+
+<div class="result-screen" id="resultScreen">
+  <div class="result-card">
+    <div class="star-display" id="starDisplay"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="wrong-list" id="wrongList" style="display:none">
+      <h3>❌ 틀린 문제 복습</h3>
+      <div id="wrongItems"></div>
+    </div>
+    <div class="action-btns">
+      <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()" style="display:none">오답만 다시 풀기</button>
+      <button class="retry-all-btn" onclick="retryAll()">전체 다시 풀기 🔄</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+
+  // ── don't / doesn't 고르기 ──
+  {
+    instruction: "📌 don't / doesn't 중 알맞은 것을 골라요!",
+    display: '<span class="hl">I</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> drink coffee.',
+    translation: "나는 커피를 마시지 않아요.",
+    options: ["don't", "doesn't", "not drink", "no drink"],
+    answer: "don't",
+    feedback_correct: "✅ 정답! I → don't를 써요.",
+    feedback_wrong: "❌ I/You/We/They → don't를 써요!",
+    reason: "I/You/We/They → don't + 동사원형 / She/He/It → doesn't + 동사원형"
+  },
+  {
+    instruction: "📌 don't / doesn't 중 알맞은 것을 골라요!",
+    display: '<span class="hl">She</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> study Chinese.',
+    translation: "그녀는 중국어를 공부하지 않아요.",
+    options: ["don't", "doesn't", "not study", "no"],
+    answer: "doesn't",
+    feedback_correct: "✅ 정답! She → doesn't를 써요.",
+    feedback_wrong: "❌ She/He/It → doesn't를 써요!",
+    reason: "She/He/It → doesn't + 동사원형 (동사원형 그대로!)"
+  },
+  {
+    instruction: "📌 don't / doesn't 중 알맞은 것을 골라요!",
+    display: '<span class="hl">They</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> go to work.',
+    translation: "그들은 출근하지 않아요.",
+    options: ["don't", "doesn't", "not go", "didn't"],
+    answer: "don't",
+    feedback_correct: "✅ 정답! They → don't를 써요.",
+    feedback_wrong: "❌ They/We/You → don't를 써요!",
+    reason: "I/You/We/They → don't + 동사원형"
+  },
+  {
+    instruction: "📌 don't / doesn't 중 알맞은 것을 골라요!",
+    display: '<span class="hl">My brother</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> play baseball.',
+    translation: "우리 오빠는 야구를 하지 않아요.",
+    options: ["don't", "doesn't", "not plays", "no play"],
+    answer: "doesn't",
+    feedback_correct: "✅ 정답! My brother(He) → doesn't를 써요.",
+    feedback_wrong: "❌ My brother = He → doesn't를 써요!",
+    reason: "My brother = He → doesn't + 동사원형"
+  },
+
+  // ── doesn't 뒤에는 동사원형! ──
+  {
+    instruction: "📌 doesn't 뒤에 알맞은 동사 형태를 골라요!",
+    display: 'Mary <span class="hl">doesn\'t</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> a cat.',
+    translation: "Mary는 고양이를 갖고 있지 않아요.",
+    options: ["have", "has", "having", "haves"],
+    answer: "have",
+    feedback_correct: "✅ 정답! doesn't 뒤에는 반드시 동사원형! doesn't have.",
+    feedback_wrong: "❌ doesn't 뒤에는 항상 동사원형을 써요. doesn't have (has ❌)!",
+    reason: "doesn't 뒤 → 반드시 동사원형! (doesn't have ✅ / doesn't has ❌)"
+  },
+  {
+    instruction: "📌 doesn't 뒤에 알맞은 동사 형태를 골라요!",
+    display: 'She <span class="hl">doesn\'t</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Spanish.',
+    translation: "그녀는 스페인어를 공부하지 않아요.",
+    options: ["study", "studies", "studying", "studys"],
+    answer: "study",
+    feedback_correct: "✅ 정답! doesn't 뒤에는 반드시 동사원형! doesn't study.",
+    feedback_wrong: "❌ doesn't 뒤에는 항상 동사원형을 써요. doesn't study (studies ❌)!",
+    reason: "doesn't 뒤 → 반드시 동사원형! (doesn't study ✅ / doesn't studies ❌)"
+  },
+  {
+    instruction: "📌 doesn't 뒤에 알맞은 동사 형태를 골라요!",
+    display: 'Sam <span class="hl">doesn\'t</span> <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> to work.',
+    translation: "Sam은 출근하지 않아요.",
+    options: ["go", "goes", "going", "gos"],
+    answer: "go",
+    feedback_correct: "✅ 정답! doesn't 뒤에는 반드시 동사원형! doesn't go.",
+    feedback_wrong: "❌ doesn't 뒤에는 항상 동사원형을 써요. doesn't go (goes ❌)!",
+    reason: "doesn't 뒤 → 반드시 동사원형! (doesn't go ✅ / doesn't goes ❌)"
+  },
+
+  // ── 긍정문 → 부정문 전환 ──
+  {
+    instruction: "📌 긍정문을 부정문으로 바꿔요!",
+    display: 'Ken and Mike have a dog.<br><span class="arrow-line">→ Ken and Mike <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> a dog.',
+    translation: "Ken과 Mike는 개를 갖고 있어요.<br>→ Ken과 Mike는 개를 <strong>갖고 있지 않아요</strong>.",
+    options: ["don't have", "doesn't have", "don't has", "doesn't has"],
+    answer: "don't have",
+    feedback_correct: "✅ 정답! Ken and Mike(They) → don't have.",
+    feedback_wrong: "❌ Ken and Mike = They → don't have예요!",
+    reason: "They → don't + 동사원형 (don't have ✅ / doesn't have ❌)"
+  },
+  {
+    instruction: "📌 긍정문을 부정문으로 바꿔요!",
+    display: 'The boys play soccer.<br><span class="arrow-line">→ The boys <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> soccer.',
+    translation: "그 소년들은 축구를 해요.<br>→ 그 소년들은 축구를 <strong>하지 않아요</strong>.",
+    options: ["don't play", "doesn't play", "don't plays", "doesn't plays"],
+    answer: "don't play",
+    feedback_correct: "✅ 정답! The boys(They) → don't play.",
+    feedback_wrong: "❌ The boys = They → don't play예요!",
+    reason: "복수 주어(They/We) → don't + 동사원형"
+  },
+
+  // ── 올바른 부정문 고르기 ──
+  {
+    instruction: "📌 올바른 부정문을 골라요!",
+    display: '<span class="hl">우리 엄마</span>는 TV를 보지 않아요.',
+    translation: "올바른 부정문을 골라요.",
+    options: [
+      "My mom don't watch TV.",
+      "My mom doesn't watch TV.",
+      "My mom doesn't watches TV.",
+      "My mom not watch TV."
+    ],
+    answer: "My mom doesn't watch TV.",
+    feedback_correct: "✅ 정답! She(My mom) → doesn't + 동사원형(watch).",
+    feedback_wrong: "❌ My mom = She → doesn't watch예요!",
+    reason: "She/He/It → doesn't + 동사원형 (watch, not watches)"
+  },
+  {
+    instruction: "📌 올바른 부정문을 골라요!",
+    display: '<span class="hl">우리</span>는 프랑스어를 공부하지 않아요.',
+    translation: "올바른 부정문을 골라요.",
+    options: [
+      "We doesn't study French.",
+      "We don't studies French.",
+      "We don't study French.",
+      "We not study French."
+    ],
+    answer: "We don't study French.",
+    feedback_correct: "✅ 정답! We → don't + 동사원형(study).",
+    feedback_wrong: "❌ We → don't study예요!",
+    reason: "I/You/We/They → don't + 동사원형"
+  },
+  {
+    instruction: "📌 올바른 부정문을 골라요!",
+    display: '<span class="hl">우리 아빠</span>는 집에서 저녁을 먹지 않아요.',
+    translation: "올바른 부정문을 골라요.",
+    options: [
+      "My dad don't have dinner at home.",
+      "My dad doesn't has dinner at home.",
+      "My dad doesn't have dinner at home.",
+      "My dad not have dinner at home."
+    ],
+    answer: "My dad doesn't have dinner at home.",
+    feedback_correct: "✅ 정답! He(My dad) → doesn't + 동사원형(have).",
+    feedback_wrong: "❌ My dad = He → doesn't have예요! doesn't 뒤는 항상 원형!",
+    reason: "He → doesn't + 동사원형 (have ✅ / has ❌)"
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongQuestions = [];
+let answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(qList) {
+  questions = shuffle(qList);
+  currentIndex = 0;
+  score = 0;
+  wrongQuestions = [];
+  answered = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizWrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  const total = questions.length;
+  const pct = (currentIndex / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressInfo').textContent = (currentIndex + 1) + ' / ' + total;
+  document.getElementById('instruction').innerHTML = q.instruction;
+
+  const isLast = (currentIndex === total - 1);
+  document.getElementById('nextBtn').textContent = isLast ? '결과 보기 🏁' : '다음 문제 →';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  const shuffledOpts = shuffle(q.options);
+  const displayOpts = (q.sentence_start)
+    ? shuffledOpts.map(o => o.charAt(0).toUpperCase() + o.slice(1))
+    : shuffledOpts;
+
+  let html = `<div class="q-num">문제 ${currentIndex + 1} / ${total}</div>`;
+  html += `<div class="q-sentence">${q.display}</div>`;
+  html += `<div class="q-translation">${q.translation}</div>`;
+  html += `<div class="options" id="optionsDiv">`;
+  displayOpts.forEach(opt => {
+    html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+  });
+  html += `</div>`;
+  html += `<div class="feedback" id="feedback"></div>`;
+
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function selectAnswer(btn, selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = selected.toLowerCase() === q.answer.toLowerCase();
+  const fb = document.getElementById('feedback');
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score++;
+    fb.className = 'feedback correct';
+    fb.innerHTML = `<div class="fb-title">${q.feedback_correct}</div>
+      <div class="fb-reason">💡 ${q.reason}</div>`;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => {
+      if (b.textContent.toLowerCase() === q.answer.toLowerCase()) b.classList.add('correct');
+    });
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `<div class="fb-title">${q.feedback_wrong}</div>
+      <div class="fb-reason">✅ 정답: <strong>${q.answer}</strong><br>💡 ${q.reason}</div>`;
+    wrongQuestions.push(q);
+  }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizWrap').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let stars = '⭐';
+  let msg = '조금 더 연습해 봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = '완벽해요! 부정문 마스터! 🎉'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = '잘했어요! 조금만 더 연습해요! 😊'; }
+
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('resultScore').textContent = score + ' / ' + total + ' (' + pct + '%)';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressInfo').textContent = total + ' / ' + total;
+
+  if (wrongQuestions.length > 0) {
+    document.getElementById('wrongList').style.display = 'block';
+    document.getElementById('retryWrongBtn').style.display = 'block';
+    let wHtml = '';
+    wrongQuestions.forEach(q => {
+      const plain = q.display.replace(/<[^>]+>/g, '');
+      wHtml += `<div class="wrong-item">
+        <div class="wi-wrong">❌ ${plain}</div>
+        <div class="wi-right">✅ 정답: ${q.answer}</div>
+        <div class="wi-reason">💡 ${q.reason}</div>
+      </div>`;
+    });
+    document.getElementById('wrongItems').innerHTML = wHtml;
+  } else {
+    document.getElementById('wrongList').style.display = 'none';
+    document.getElementById('retryWrongBtn').style.display = 'none';
+  }
+}
+
+function retryWrong() { startQuiz(wrongQuestions); }
+function retryAll() { startQuiz(ALL_QUESTIONS); }
+
+startQuiz(ALL_QUESTIONS);
+</script>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG2-0006 | be동사 문장 점검</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FEF0E6;
+    --accent: #F5A623;
+    --accent-dark: #D4891A;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --card: #ffffff;
+    --text: #333333;
+    --light-text: #777777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .header {
+    background: var(--accent-dark);
+    color: white;
+    padding: 14px 20px 10px;
+    text-align: center;
+  }
+  .header .series { font-size: 11px; opacity: 0.85; letter-spacing: 1px; margin-bottom: 2px; }
+  .header h1 { font-size: 18px; font-weight: 900; }
+  .header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .badge {
+    display: inline-block;
+    background: #9B6DD1;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+  .progress-wrap { background: #f0d9c8; height: 8px; width: 100%; }
+  .progress-bar { height: 8px; background: var(--accent); transition: width 0.4s ease; border-radius: 0 4px 4px 0; }
+  .progress-info { text-align: center; font-size: 12px; color: var(--light-text); padding: 5px; }
+  .quiz-wrap { max-width: 540px; margin: 0 auto; padding: 16px 16px 0; }
+  .instruction {
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .question-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px 18px 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+    margin-bottom: 14px;
+  }
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent-dark); margin-bottom: 8px; }
+
+  /* 오류 문장 박스 */
+  .error-box {
+    background: #fff3f0;
+    border: 2px solid #E8604C;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .error-sentence {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .q-translation {
+    font-size: 15px;
+    color: var(--light-text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .q-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--wrong);
+    margin-bottom: 6px;
+  }
+
+  /* 선택지 — 단어형, 3개 */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 9px;
+  }
+  .opt-btn {
+    border: 2.5px solid #e0cabb;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    color: var(--text);
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fff0e0; transform: translateY(-1px); }
+  .opt-btn.correct { background: #e8f8f3; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* 피드백 — 3단계 */
+  .feedback {
+    margin-top: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+    overflow: hidden;
+  }
+  .feedback.show { display: block; }
+  .fb-correct-header {
+    background: var(--correct);
+    color: white;
+    padding: 8px 14px;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .fb-wrong-header {
+    background: var(--wrong);
+    color: white;
+    padding: 8px 14px;
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .fb-body {
+    background: #f9f9f9;
+    padding: 12px 14px;
+    border: 1px solid #e8e8e8;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+  }
+  .fb-row {
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+  .fb-row:last-child { margin-bottom: 0; }
+  .fb-wrong-sent { color: var(--wrong); font-weight: 700; }
+  .fb-right-sent { color: var(--correct); font-weight: 700; }
+  .fb-reason { color: #555; }
+
+  .next-btn {
+    display: none;
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--accent-dark);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+  }
+  .next-btn:hover { background: #b87516; }
+
+  .result-screen {
+    max-width: 540px;
+    margin: 20px auto;
+    padding: 0 16px;
+    display: none;
+    text-align: center;
+  }
+  .result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .star-display { font-size: 40px; margin-bottom: 10px; }
+  .result-score { font-size: 36px; font-weight: 900; color: var(--accent-dark); }
+  .result-msg { font-size: 15px; color: var(--light-text); margin: 8px 0 20px; }
+  .wrong-list {
+    text-align: left;
+    background: #fff9f5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .wrong-list h3 { font-size: 13px; color: var(--wrong); margin-bottom: 10px; font-weight: 800; }
+  .wrong-item { font-size: 13px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0e0d0; }
+  .wrong-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .wi-wrong { color: var(--wrong); font-weight: 700; margin-bottom: 2px; }
+  .wi-right { color: var(--correct); font-weight: 700; margin-bottom: 2px; }
+  .wi-reason { color: #666; font-size: 12px; word-break: keep-all; }
+
+  .action-btns { display: flex; gap: 10px; }
+  .retry-wrong-btn, .retry-all-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer;
+  }
+  .retry-wrong-btn { background: var(--wrong); color: white; }
+  .retry-all-btn { background: var(--accent-dark); color: white; }
+  .retry-wrong-btn:hover { background: #c94030; }
+  .retry-all-btn:hover { background: #b87516; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="series">🔍 영문법 탐정단 · 스타트 영문법 2권</div>
+  <h1>be동사 문장 점검 ①</h1>
+  <div class="sub">Lesson 1~4 — 틀린 단어를 찾아라!</div>
+  <span class="badge">C형</span>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+<div class="progress-info" id="progressInfo">1 / 12</div>
+
+<div class="quiz-wrap" id="quizWrap">
+  <div class="instruction" id="instruction">🔍 틀린 단어를 골라요!</div>
+  <div class="question-card" id="questionCard"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()">다음 문제 →</button>
+</div>
+
+<div class="result-screen" id="resultScreen">
+  <div class="result-card">
+    <div class="star-display" id="starDisplay"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="wrong-list" id="wrongList" style="display:none">
+      <h3>❌ 틀린 문제 복습</h3>
+      <div id="wrongItems"></div>
+    </div>
+    <div class="action-btns">
+      <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()" style="display:none">오답만 다시 풀기</button>
+      <button class="retry-all-btn" onclick="retryAll()">전체 다시 풀기 🔄</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 오류 찾기 형식: error_sentence(틀린 문장) → 사지선다로 틀린 단어 고르기
+// 피드백 3단계: 틀린 문장 / 올바른 문장 / 이유
+const ALL_QUESTIONS = [
+
+  // ── L1: be동사 긍정문 오류 ──
+  {
+    error_sentence: "She are a doctor.",
+    translation: "그녀는 의사예요.",
+    options: ["She", "are", "doctor"],
+    answer: "are",
+    wrong_sent: "She are a doctor.",
+    right_sent: "She is a doctor.",
+    reason: "She/He/It 다음엔 are가 아니라 is를 써요!"
+  },
+  {
+    error_sentence: "I is a student.",
+    translation: "나는 학생이에요.",
+    options: ["I", "is", "student"],
+    answer: "is",
+    wrong_sent: "I is a student.",
+    right_sent: "I am a student.",
+    reason: "I 다음엔 is가 아니라 am을 써요!"
+  },
+  {
+    error_sentence: "We is singers.",
+    translation: "우리는 가수들이에요.",
+    options: ["We", "is", "singers"],
+    answer: "is",
+    wrong_sent: "We is singers.",
+    right_sent: "We are singers.",
+    reason: "We/You/They 다음엔 is가 아니라 are를 써요!"
+  },
+
+  // ── L1: be동사 부정문 오류 ──
+  {
+    error_sentence: "He aren't a teacher.",
+    translation: "그는 선생님이 아니에요.",
+    options: ["He", "aren't", "teacher"],
+    answer: "aren't",
+    wrong_sent: "He aren't a teacher.",
+    right_sent: "He isn't a teacher.",
+    reason: "He/She/It의 부정문은 aren't가 아니라 isn't예요!"
+  },
+  {
+    error_sentence: "They isn't doctors.",
+    translation: "그들은 의사가 아니에요.",
+    options: ["They", "isn't", "doctors"],
+    answer: "isn't",
+    wrong_sent: "They isn't doctors.",
+    right_sent: "They aren't doctors.",
+    reason: "They/We/You의 부정문은 isn't가 아니라 aren't예요!"
+  },
+
+  // ── L2: be동사 의문문 오류 ──
+  {
+    error_sentence: "Are she a nurse?",
+    translation: "그녀는 간호사인가요?",
+    options: ["Are", "she", "nurse"],
+    answer: "Are",
+    wrong_sent: "Are she a nurse?",
+    right_sent: "Is she a nurse?",
+    reason: "She/He/It이 주어면 Are가 아니라 Is로 시작해요!"
+  },
+  {
+    error_sentence: "Is they baseball players?",
+    translation: "그들은 야구 선수인가요?",
+    options: ["Is", "they", "players"],
+    answer: "Is",
+    wrong_sent: "Is they baseball players?",
+    right_sent: "Are they baseball players?",
+    reason: "They/We/You가 주어면 Is가 아니라 Are로 시작해요!"
+  },
+
+  // ── L3: 소유격 오류 ──
+  {
+    error_sentence: "This is hers book.",
+    translation: "이것은 그녀의 책이에요.",
+    options: ["hers", "book", "This"],
+    answer: "hers",
+    wrong_sent: "This is hers book.",
+    right_sent: "This is her book.",
+    reason: "명사 앞에는 her(소유격)를 써요. hers는 '그녀의 것'이라는 독립 소유격이에요!"
+  },
+  {
+    error_sentence: "Those are Toms cats.",
+    translation: "저것들은 Tom의 고양이들이에요.",
+    options: ["Those", "Toms", "cats"],
+    answer: "Toms",
+    wrong_sent: "Those are Toms cats.",
+    right_sent: "Those are Tom's cats.",
+    reason: "사람 이름의 소유격은 Tom's처럼 's를 붙여요!"
+  },
+
+  // ── L3: This/That/These/Those 오류 ──
+  {
+    error_sentence: "These is his book.",
+    translation: "이것은 그의 책이에요.",
+    options: ["These", "is", "book"],
+    answer: "These",
+    wrong_sent: "These is his book.",
+    right_sent: "This is his book.",
+    reason: "단수 명사(book) 앞엔 These(복수)가 아니라 This를 써요!"
+  },
+
+  // ── L4: What/Who/Whose 오류 ──
+  {
+    error_sentence: "Who is it? It is a house.",
+    translation: "그것은 무엇인가요? 그것은 집이에요.",
+    options: ["Who", "is", "house"],
+    answer: "Who",
+    wrong_sent: "Who is it? It is a house.",
+    right_sent: "What is it? It is a house.",
+    reason: "사물(집)을 물어볼 때는 Who가 아니라 What을 써요!"
+  },
+  {
+    error_sentence: "Whose are they? They are Amy's sisters.",
+    translation: "그들은 누구인가요? 그들은 Amy의 언니들이에요.",
+    options: ["Whose", "are", "sisters"],
+    answer: "Whose",
+    wrong_sent: "Whose are they? They are Amy's sisters.",
+    right_sent: "Who are they? They are Amy's sisters.",
+    reason: "사람을 물어볼 때는 Whose가 아니라 Who를 써요!"
+  },
+];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongQuestions = [];
+let answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz(qList) {
+  questions = shuffle(qList);
+  currentIndex = 0;
+  score = 0;
+  wrongQuestions = [];
+  answered = false;
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizWrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  const total = questions.length;
+  const pct = (currentIndex / total) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressInfo').textContent = (currentIndex + 1) + ' / ' + total;
+  document.getElementById('instruction').innerHTML = '🔍 문장에서 틀린 단어를 골라요!';
+
+  const isLast = (currentIndex === total - 1);
+  document.getElementById('nextBtn').textContent = isLast ? '결과 보기 🏁' : '다음 문제 →';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  const shuffledOpts = shuffle(q.options);
+
+  let html = `<div class="q-num">문제 ${currentIndex + 1} / ${total}</div>`;
+  html += `<div class="q-label">❌ 다음 문장에서 틀린 단어는?</div>`;
+  html += `<div class="error-box"><div class="error-sentence">${q.error_sentence}</div></div>`;
+  html += `<div class="q-translation">${q.translation}</div>`;
+  html += `<div class="options" id="optionsDiv">`;
+  shuffledOpts.forEach(opt => {
+    html += `<button class="opt-btn" onclick="selectAnswer(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+  });
+  html += `</div>`;
+  html += `<div class="feedback" id="feedback"></div>`;
+
+  document.getElementById('questionCard').innerHTML = html;
+}
+
+function selectAnswer(btn, selected) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show';
+
+  if (selected === q.answer) {
+    btn.classList.add('correct');
+    score++;
+    fb.innerHTML = `
+      <div class="fb-correct-header">✅ 정답! 틀린 단어를 찾았어요!</div>
+      <div class="fb-body">
+        <div class="fb-row fb-wrong-sent">❌ ${q.wrong_sent}</div>
+        <div class="fb-row fb-right-sent">✅ ${q.right_sent}</div>
+        <div class="fb-row fb-reason">💡 ${q.reason}</div>
+      </div>`;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => { if (b.textContent === q.answer) b.classList.add('correct'); });
+    fb.innerHTML = `
+      <div class="fb-wrong-header">❌ 틀린 단어는 <strong>${q.answer}</strong> 예요!</div>
+      <div class="fb-body">
+        <div class="fb-row fb-wrong-sent">❌ ${q.wrong_sent}</div>
+        <div class="fb-row fb-right-sent">✅ ${q.right_sent}</div>
+        <div class="fb-row fb-reason">💡 ${q.reason}</div>
+      </div>`;
+    wrongQuestions.push(q);
+  }
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= questions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quizWrap').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let stars = '⭐';
+  let msg = '조금 더 연습해 봐요! 💪';
+  if (pct >= 90) { stars = '⭐⭐⭐'; msg = '완벽한 문장 탐정! 🎉'; }
+  else if (pct >= 70) { stars = '⭐⭐'; msg = '잘했어요! 조금만 더 연습해요! 😊'; }
+
+  document.getElementById('starDisplay').textContent = stars;
+  document.getElementById('resultScore').textContent = score + ' / ' + total + ' (' + pct + '%)';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressInfo').textContent = total + ' / ' + total;
+
+  if (wrongQuestions.length > 0) {
+    document.getElementById('wrongList').style.display = 'block';
+    document.getElementById('retryWrongBtn').style.display = 'block';
+    let wHtml = '';
+    wrongQuestions.forEach(q => {
+      wHtml += `<div class="wrong-item">
+        <div class="wi-wrong">❌ ${q.wrong_sent}</div>
+        <div class="wi-right">✅ ${q.right_sent}</div>
+        <div class="wi-reason">💡 ${q.reason}</div>
+      </div>`;
+    });
+    document.getElementById('wrongItems').innerHTML = wHtml;
+  } else {
+    document.getElementById('wrongList').style.display = 'none';
+    document.getElementById('retryWrongBtn').style.display = 'none';
+  }
+}
+
+function retryWrong() { startQuiz(wrongQuestions); }
+function retryAll() { startQuiz(ALL_QUESTIONS); }
+
+startQuiz(ALL_QUESTIONS);
+</script>
+</body>
+</html>
