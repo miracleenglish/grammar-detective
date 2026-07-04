@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0004 일반동사 의문문 Do/Does | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --b-badge:#5BAD6F;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--b-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:20px;line-height:1.7;margin-bottom:6px;color:var(--text);}
+  .sub{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .hl{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .blank{display:inline-block;min-width:72px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:16px;}
+
+  /* Yes/No 답변줄 */
+  .yesno-row{font-size:18px;line-height:1.8;margin-bottom:20px;color:var(--text);}
+  .yesno-blank{display:inline-block;min-width:64px;border-bottom:2.5px solid #444;vertical-align:bottom;line-height:1.4;padding:0 4px;font-weight:800;text-align:center;}
+  .yesno-blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;padding:13px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">B형</span>
+      <span class="app-num">SG3-0004</span>
+    </div>
+    <div class="title">일반동사 의문문 Do/Does</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 Do/Does 의문문과 Yes/No 단답을 연습해요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div id="sentenceArea"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 유형 2가지
+// "dodoes" : ___ + 주어 + 동사원형 ~? (Do/Does 의문문 만들기)
+//   → 선택지: Do / Does / Did / Is  (긍정조동사만, 부정형 제외)
+//   → 이중정답 방지: 단수주어(she/he/it/my mom 등)→Does, 복수/I/You/We/They→Do 고정
+// "yesno"  : Do/Does 의문문 → Yes/No 단답 고르기
+//   → Yes 방향 선택지끼리만, No 방향 선택지끼리만 구성
+
+const ALL_QUESTIONS = [
+  // ── Do/Does 의문문 만들기 (6문제) ──────────────────────────
+  {
+    id:1, type:"dodoes",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    doBlank:true,
+    subject:"you", verb:"like", rest:"pizza?",
+    subjectHl:"you",
+    options:["Do","Does","Did","Is"],
+    answer:"Do",
+    reason:{
+      correct:"일반동사 의문문에서 주어가 you일 때는 Do로 시작해요.",
+      wrong:"일반동사 의문문에서 주어가 you / I / we / they일 때는 Do로 시작해요."
+    },
+    translation:"너는 피자를 좋아하니? → <b>Do</b> you like pizza?"
+  },
+  {
+    id:2, type:"dodoes",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    doBlank:true,
+    subject:"she", verb:"walk", rest:"to school?",
+    subjectHl:"she",
+    options:["Does","Do","Did","Is"],
+    answer:"Does",
+    reason:{
+      correct:"일반동사 의문문에서 주어가 she(3인칭 단수)일 때는 Does로 시작해요.",
+      wrong:"일반동사 의문문에서 주어가 she / he / it / 단수명사일 때는 Does로 시작해요."
+    },
+    translation:"그녀는 학교에 걸어가나요? → <b>Does</b> she walk to school?"
+  },
+  {
+    id:3, type:"dodoes",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    doBlank:true,
+    subject:"they", verb:"play", rest:"basketball after school?",
+    subjectHl:"they",
+    options:["Do","Does","Did","Are"],
+    answer:"Do",
+    reason:{
+      correct:"일반동사 의문문에서 주어가 they(복수)일 때는 Do로 시작해요.",
+      wrong:"일반동사 의문문에서 주어가 they / we / you일 때는 Do로 시작해요."
+    },
+    translation:"그들은 방과 후에 농구를 하나요? → <b>Do</b> they play basketball after school?"
+  },
+  {
+    id:4, type:"dodoes",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    doBlank:true,
+    subject:"your dad", verb:"drive", rest:"to work?",
+    subjectHl:"your dad",
+    options:["Does","Do","Did","Is"],
+    answer:"Does",
+    reason:{
+      correct:"일반동사 의문문에서 주어가 your dad(3인칭 단수)일 때는 Does로 시작해요.",
+      wrong:"일반동사 의문문에서 주어가 3인칭 단수 명사일 때는 Does로 시작해요."
+    },
+    translation:"아버지는 차로 출근하시나요? → <b>Does</b> your dad drive to work?"
+  },
+  {
+    id:5, type:"dodoes",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    doBlank:true,
+    subject:"we", verb:"have", rest:"English class today?",
+    subjectHl:"we",
+    options:["Do","Does","Did","Are"],
+    answer:"Do",
+    reason:{
+      correct:"일반동사 의문문에서 주어가 we(복수)일 때는 Do로 시작해요.",
+      wrong:"일반동사 의문문에서 주어가 we / they / you / I일 때는 Do로 시작해요."
+    },
+    translation:"우리 오늘 영어 수업 있나요? → <b>Do</b> we have English class today?"
+  },
+  {
+    id:6, type:"dodoes",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    doBlank:true,
+    subject:"your cat", verb:"eat", rest:"fish?",
+    subjectHl:"your cat",
+    options:["Does","Do","Did","Is"],
+    answer:"Does",
+    reason:{
+      correct:"일반동사 의문문에서 주어가 your cat(3인칭 단수)일 때는 Does로 시작해요.",
+      wrong:"일반동사 의문문에서 주어가 3인칭 단수 명사일 때는 Does로 시작해요."
+    },
+    translation:"너희 고양이는 생선을 먹나요? → <b>Does</b> your cat eat fish?"
+  },
+  // ── Yes/No 단답 고르기 (6문제) ──────────────────────────────
+  // Yes 방향: 선택지 모두 Yes, ___ + 대명사 조합만
+  // No 방향: 선택지 모두 No, ___ + 대명사 조합만
+  {
+    id:7, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ Yes)",
+    question:"Do you like music?",
+    yesno:"yes",
+    hlWord:"Do",
+    options:["Yes, I do.","Yes, I does.","Yes, I am.","Yes, I did."],
+    answer:"Yes, I do.",
+    reason:{
+      correct:"Do you ~? 로 물으면 Yes, I do. 로 답해요.",
+      wrong:"Do you ~? 로 물으면 Yes, I do. 로 답해야 해요."
+    },
+    translation:"너는 음악을 좋아하니? → <b>Yes, I do.</b> 네, 좋아해요."
+  },
+  {
+    id:8, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ No)",
+    question:"Does he play tennis?",
+    yesno:"no",
+    hlWord:"Does",
+    options:["No, he doesn\'t.","No, he don\'t.","No, he isn\'t.","No, he didn\'t."],
+    answer:"No, he doesn\'t.",
+    reason:{
+      correct:"Does he ~? 로 물으면 No, he doesn't. 로 답해요.",
+      wrong:"Does he ~? 로 물으면 No, he doesn't. 로 답해야 해요."
+    },
+    translation:"그는 테니스를 치나요? → <b>No, he doesn't.</b> 아니요, 치지 않아요."
+  },
+  {
+    id:9, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ Yes)",
+    question:"Does she drink milk?",
+    yesno:"yes",
+    hlWord:"Does",
+    options:["Yes, she does.","Yes, she do.","Yes, she is.","Yes, she did."],
+    answer:"Yes, she does.",
+    reason:{
+      correct:"Does she ~? 로 물으면 Yes, she does. 로 답해요.",
+      wrong:"Does she ~? 로 물으면 Yes, she does. 로 답해야 해요."
+    },
+    translation:"그녀는 우유를 마시나요? → <b>Yes, she does.</b> 네, 마셔요."
+  },
+  {
+    id:10, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ No)",
+    question:"Do they go to the park?",
+    yesno:"no",
+    hlWord:"Do",
+    options:["No, they don\'t.","No, they doesn\'t.","No, they aren\'t.","No, they didn\'t."],
+    answer:"No, they don\'t.",
+    reason:{
+      correct:"Do they ~? 로 물으면 No, they don't. 로 답해요.",
+      wrong:"Do they ~? 로 물으면 No, they don't. 로 답해야 해요."
+    },
+    translation:"그들은 공원에 가나요? → <b>No, they don't.</b> 아니요, 가지 않아요."
+  },
+  {
+    id:11, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ Yes)",
+    question:"Do your friends live near school?",
+    yesno:"yes",
+    hlWord:"Do",
+    options:["Yes, they do.","Yes, they does.","Yes, they are.","Yes, they did."],
+    answer:"Yes, they do.",
+    reason:{
+      correct:"Do your friends ~? 로 물으면 Yes, they do. 로 답해요. (your friends = they)",
+      wrong:"Do your friends ~? 로 물으면 Yes, they do. 로 답해야 해요."
+    },
+    translation:"친구들이 학교 근처에 사나요? → <b>Yes, they do.</b> 네, 살아요."
+  },
+  {
+    id:12, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ No)",
+    question:"Does your mom work on Sundays?",
+    yesno:"no",
+    hlWord:"Does",
+    options:["No, she doesn\'t.","No, she don\'t.","No, she isn\'t.","No, she didn\'t."],
+    answer:"No, she doesn\'t.",
+    reason:{
+      correct:"Does your mom ~? 로 물으면 No, she doesn't. 로 답해요.",
+      wrong:"Does your mom ~? 로 물으면 No, she doesn't. 로 답해야 해요."
+    },
+    translation:"어머니는 일요일에 일하시나요? → <b>No, she doesn't.</b> 아니요, 일하지 않아요."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr, answer){
+  let result;
+  let tries = 0;
+  do {
+    result = shuffle(arr);
+    tries++;
+  } while(result[0].toLowerCase() === answer.toLowerCase() && tries < 20);
+  return result;
+}
+
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options, q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  const area=document.getElementById('sentenceArea');
+  area.innerHTML='';
+
+  if(q.type==='dodoes'){
+    // [blank] + subject(hl) + verb + rest
+    const line=document.createElement('div');
+    line.className='sentence en';
+    line.innerHTML=
+      '<span class="blank" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '+
+      '<span class="sub">'+escapeHtml(q.subject)+'</span> '+
+      '<span class="hl">'+escapeHtml(q.verb)+'</span> '+
+      escapeHtml(q.rest);
+    area.appendChild(line);
+  } else {
+    // yesno: 질문 전체 + 방향 표시
+    const qLine=document.createElement('div');
+    qLine.className='sentence en';
+    const words=q.question.split(' ');
+    qLine.innerHTML=words.map(function(w,i){
+      return i===0
+        ? '<span class="sub">'+escapeHtml(w)+'</span>'
+        : escapeHtml(w);
+    }).join(' ');
+    area.appendChild(qLine);
+  }
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  if(q.type==='dodoes'){
+    const bl=document.getElementById('mainBlank');
+    if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+  }
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      let wrongLine='', rightLine='';
+      if(q.type==='dodoes'){
+        wrongLine='[___] '+q.subject+' '+q.verb+' '+q.rest;
+        rightLine=q.answer+' '+q.subject+' '+q.verb+' '+q.rest;
+      } else {
+        wrongLine=q.question+' → ???';
+        rightLine=q.question+' → '+q.answer;
+      }
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(wrongLine)+'</div>'+
+        '<div class="right-line en">'+escapeHtml(rightLine)+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0020 명사 단복수·관사 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --b-badge:#5BAD6F;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--b-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:20px;line-height:1.75;margin-bottom:6px;color:var(--text);}
+  .blank{display:inline-block;min-width:72px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:16px;line-height:1.6;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;padding:14px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">B형</span>
+      <span class="app-num">SG3-0020</span>
+    </div>
+    <div class="title">명사 단복수·관사</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 명사의 형태와 알맞은 관사를 골라봐요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="sentence" id="sentenceBox"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 유형 3가지
+// "plural" : 단수→복수형 고르기 (규칙/불규칙)
+//   - 힌트: 전체 한글 해석 (복수 의미 포함)
+//   - 선택지: 정답+잘못된 복수형 오답만 (이중정답 없음)
+// "article": a/an/the/X 고르기
+//   - 힌트: 전체 한글 해석
+//   - a/an이중정답: 모음시작이면 an만, 자음시작이면 a만 — 동시에 선택지에 안 넣음
+// "noncount": 불가산명사 이해 (복수형 없음, some/any와 함께 사용)
+
+const ALL_QUESTIONS = [
+  // ── 복수형 규칙 (1~5) ─────────────────────────────────────
+  {
+    id:1, type:"plural",
+    instruction:"명사의 알맞은 복수형을 골라요.",
+    parts:["There are five", null, "on the shelf."],
+    hint:"책장에 책이 다섯 권 있어요.",
+    options:["books","bookes","bookies","book"],
+    answer:"books",
+    reason:{
+      correct:"book은 규칙 복수형이에요. book + s = books예요.",
+      wrong:"대부분의 명사는 + s로 복수를 만들어요. books가 맞아요."
+    },
+    translation:"책장에 책이 <b>다섯 권</b> 있어요. → There are five <b>books</b> on the shelf."
+  },
+  {
+    id:2, type:"plural",
+    instruction:"명사의 알맞은 복수형을 골라요.",
+    parts:["I brushed my", null, "after dinner."],
+    hint:"저녁 식사 후에 이를 닦았어요.",
+    options:["teeth","tooths","teethes","tooth"],
+    answer:"teeth",
+    reason:{
+      correct:"tooth의 복수형은 불규칙이에요. tooth → teeth예요.",
+      wrong:"tooth는 불규칙 복수형이에요. tooths가 아니라 teeth예요."
+    },
+    translation:"저녁 식사 후에 <b>이</b>를 닦았어요. → I brushed my <b>teeth</b> after dinner."
+  },
+  {
+    id:3, type:"plural",
+    instruction:"명사의 알맞은 복수형을 골라요.",
+    parts:["There are many", null, "in the park today."],
+    hint:"오늘 공원에 아이들이 많이 있어요.",
+    options:["children","childs","childrens","child"],
+    answer:"children",
+    reason:{
+      correct:"child의 복수형은 불규칙이에요. child → children이에요.",
+      wrong:"child는 불규칙 복수형이에요. childs가 아니라 children이에요."
+    },
+    translation:"오늘 공원에 <b>아이들</b>이 많이 있어요. → There are many <b>children</b> in the park today."
+  },
+  {
+    id:4, type:"plural",
+    instruction:"명사의 알맞은 복수형을 골라요.",
+    parts:["Two", null, "are swimming in the pond."],
+    hint:"연못에서 오리 두 마리가 수영하고 있어요.",
+    options:["ducks","duckies","duckes","duck"],
+    answer:"ducks",
+    reason:{
+      correct:"duck은 규칙 복수형이에요. duck + s = ducks예요.",
+      wrong:"duck은 규칙 복수형이에요. ducks가 맞아요."
+    },
+    translation:"연못에서 <b>오리 두 마리</b>가 수영하고 있어요. → Two <b>ducks</b> are swimming in the pond."
+  },
+  {
+    id:5, type:"plural",
+    instruction:"명사의 알맞은 복수형을 골라요.",
+    parts:["Some", null, "are running in the field."],
+    hint:"들판에서 남자들이 달리고 있어요.",
+    options:["men","mans","manes","man"],
+    answer:"men",
+    reason:{
+      correct:"man의 복수형은 불규칙이에요. man → men이에요.",
+      wrong:"man은 불규칙 복수형이에요. mans가 아니라 men이에요."
+    },
+    translation:"들판에서 <b>남자들</b>이 달리고 있어요. → Some <b>men</b> are running in the field."
+  },
+  // ── a / an 관사 (6~8) ─────────────────────────────────────
+  {
+    id:6, type:"article",
+    instruction:"빈칸에 알맞은 관사를 골라요.",
+    parts:["She is eating", null, "orange."],
+    hint:"그녀는 오렌지를 먹고 있어요.",
+    options:["an","a","the","X"],
+    answer:"an",
+    reason:{
+      correct:"orange는 모음(o)으로 시작해요. 모음 앞에는 an을 써요.",
+      wrong:"모음(a·e·i·o·u)으로 시작하는 명사 앞에는 an을 써요. orange → an orange"
+    },
+    translation:"그녀는 <b>오렌지</b>를 먹고 있어요. → She is eating <b>an</b> orange."
+  },
+  {
+    id:7, type:"article",
+    instruction:"빈칸에 알맞은 관사를 골라요.",
+    parts:["He wants to be", null, "engineer."],
+    hint:"그는 엔지니어가 되고 싶어요.",
+    options:["an","a","the","X"],
+    answer:"an",
+    reason:{
+      correct:"engineer는 모음(e)으로 시작해요. 모음 앞에는 an을 써요.",
+      wrong:"모음(a·e·i·o·u)으로 시작하는 명사 앞에는 an을 써요. engineer → an engineer"
+    },
+    translation:"그는 <b>엔지니어</b>가 되고 싶어요. → He wants to be <b>an</b> engineer."
+  },
+  {
+    id:8, type:"article",
+    instruction:"빈칸에 알맞은 관사를 골라요.",
+    parts:["I have", null, "dog. The dog is very friendly."],
+    hint:"나는 개 한 마리가 있어요. 그 개는 매우 친근해요.",
+    options:["a","an","the","X"],
+    answer:"a",
+    reason:{
+      correct:"처음 언급하는 하나의 사물 앞에는 a를 써요. dog는 자음으로 시작해요.",
+      wrong:"자음으로 시작하는 명사 앞에는 a를 써요. dog → a dog"
+    },
+    translation:"나는 <b>개</b> 한 마리가 있어요. → I have <b>a</b> dog."
+  },
+  // ── the / 관사 없음(X) (9~10) ────────────────────────────
+  {
+    id:9, type:"article",
+    instruction:"빈칸에 알맞은 관사를 골라요.",
+    parts:["Can you see", null, "moon tonight?"],
+    hint:"오늘 밤 달이 보이나요?",
+    options:["the","a","an","X"],
+    answer:"the",
+    reason:{
+      correct:"세상에 하나뿐인 것(moon) 앞에는 the를 써요.",
+      wrong:"달(moon)처럼 세상에 하나뿐인 것 앞에는 the를 써요."
+    },
+    translation:"오늘 밤 <b>달</b>이 보이나요? → Can you see <b>the</b> moon tonight?"
+  },
+  {
+    id:10, type:"article",
+    instruction:"빈칸에 알맞은 관사를 골라요.",
+    parts:["I drink", null, "milk every morning."],
+    hint:"나는 매일 아침 우유를 마셔요.",
+    options:["X","a","an","the"],
+    answer:"X",
+    reason:{
+      correct:"milk처럼 셀 수 없는 명사(불가산) 앞에는 관사 a/an을 쓰지 않아요.",
+      wrong:"milk는 셀 수 없는 불가산 명사예요. a milk라고 쓸 수 없어요."
+    },
+    translation:"나는 매일 아침 <b>우유</b>를 마셔요. → I drink <b>milk</b> every morning."
+  },
+  // ── 불가산 명사 이해 (11~12) ─────────────────────────────
+  {
+    id:11, type:"noncount",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    parts:["There is", null, "in the glass."],
+    hint:"유리잔 안에 물이 있어요.",
+    options:["some water","a water","waters","the water"],
+    answer:"some water",
+    reason:{
+      correct:"water는 셀 수 없는 명사예요. a water라고 쓸 수 없고, some water로 써요.",
+      wrong:"water는 불가산 명사예요. 'a water'가 아니라 'some water'로 써요."
+    },
+    translation:"유리잔 안에 <b>물이</b> 있어요. → There is <b>some water</b> in the glass."
+  },
+  {
+    id:12, type:"noncount",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    parts:["Can I have", null, "please?"],
+    hint:"빵 좀 먹을 수 있을까요?",
+    options:["some bread","a bread","breads","the bread"],
+    answer:"some bread",
+    reason:{
+      correct:"bread는 셀 수 없는 명사예요. a bread라고 쓸 수 없고 some bread로 써요.",
+      wrong:"bread는 불가산 명사예요. 'a bread'가 아니라 'some bread'로 써요."
+    },
+    translation:"<b>빵</b> 좀 먹을 수 있을까요? → Can I have <b>some bread</b> please?"
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result; let tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options,q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  const sb=document.getElementById('sentenceBox');
+  let html='';
+  q.parts.forEach(function(part){
+    if(part===null){
+      html+='<span class="blank en" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ';
+    } else {
+      html+='<span class="en">'+escapeHtml(part)+'</span> ';
+    }
+  });
+  sb.innerHTML=html.trim();
+  document.getElementById('hintBox').textContent=q.hint||'';
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+  const bl=document.getElementById('mainBlank');
+  if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const pStr=q.parts.map(function(p){return p===null?'[___]':p;}).join(' ');
+      const rStr=q.parts.map(function(p){return p===null?q.answer:p;}).join(' ');
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(pStr)+'</div>'+
+        '<div class="right-line en">'+escapeHtml(rStr)+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

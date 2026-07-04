@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - SG3-0026 전체 문장점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;
+    --accent:#F5A623;
+    --accent-dark:#D4891A;
+    --type-c:#9B6DD1;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#3A3A3A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-c);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #F5D9BA;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+  .instruction-box{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(212,137,26,0.12);}
+  .card-instruction{font-size:12.5px;color:var(--type-c);font-weight:700;text-align:center;margin-bottom:14px;background:#F5EEFF;border-radius:10px;padding:6px 8px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:10px;text-align:center;}
+  .wrong-sentence-label{font-size:12px;color:var(--wrong);font-weight:700;text-align:center;margin-bottom:4px;}
+  .sentence-box{background:#FFF5F3;border:2px solid #F5C6BE;border-radius:12px;padding:14px 12px;font-size:17.5px;font-weight:600;text-align:center;line-height:1.65;margin-bottom:18px;color:var(--text);word-break:keep-all;}
+  .ask-label{font-size:13px;color:#666;font-weight:700;text-align:center;margin-bottom:10px;}
+  .options{display:flex;flex-direction:column;gap:9px;margin-bottom:8px;}
+  .opt-btn{font-family:inherit;font-size:16px;font-weight:700;padding:13px 14px;border:2.5px solid #E8D8F0;background:#FAF5FF;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:left;}
+  .opt-btn:hover{border-color:var(--type-c);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.6;font-weight:500;}
+  .feedback.correct{background:#E7F7F0;color:#2E8064;}
+  .feedback.wrong{background:#FDEAE6;color:#B84534;}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:8px;display:block;}
+  .fb-row{margin-bottom:4px;}
+  .fb-wrong-word{color:var(--wrong);text-decoration:line-through;font-weight:700;}
+  .fb-right-word{color:#2A7D55;font-weight:800;}
+  .fb-sentence{font-size:14.5px;font-weight:600;margin:4px 0 2px;line-height:1.55;display:block;}
+  .fb-reason{font-size:13.5px;color:#555;line-height:1.5;margin-top:6px;display:block;}
+  .next-btn{display:none;width:100%;margin-top:16px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:18px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:13.5px;color:#888;margin-bottom:22px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">C형</span>
+    <h1>🔎 영문법 탐정단<br>전체 문장점검 (L1~L20)</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    밑줄 친 부분 중 <strong>틀린 단어</strong>를 찾아 고르세요!<br>
+    (L1~L20 전체 범위)
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">🔍 세 개 중 문법적으로 <strong>틀린 단어</strong>를 고르세요</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="wrong-sentence-label">❌ 틀린 문장을 찾아라!</div>
+    <div class="sentence-box" id="sentence"></div>
+    <div class="ask-label">어느 단어가 틀렸을까요?</div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  SG3-0026  전체 문장점검  C형  L1~L20
+  오류 분배:
+    L1~4  현재시제       Q1  (be동사 오류)
+    L5~6  미래시제       Q2  (will 오류)
+    L7~10 과거시제       Q3  (불규칙과거 오류)
+    L7~10 과거시제       Q4  (Did 의문문 동사원형 오류)
+    L11~14 형용사·비교   Q5  (비교급 오류)
+    L11~14 최상급        Q6  (최상급 오류)
+    L15   대명사         Q7  (목적격 오류)
+    L16   명사·관사      Q8  (불규칙복수 오류)
+    L17   some/any       Q9  (부정문 some 오류)
+    L18   전치사         Q10 (시간 전치사 오류)
+    L18   전치사         Q11 (장소 전치사 오류)
+    L19   조동사         Q12 (조동사+동사원형 오류)
+  규칙 23: 선택지에 주어 절대 금지
+  규칙 24: 문제 표시 시 오류 단어 강조 금지
+*/
+const ALL_QUESTIONS = [
+
+  /* Q1 — L1~4 현재시제: be동사 수 일치 오류 */
+  {
+    id:1,
+    sentence:"My friends is very funny.",
+    options:["funny","is","very"],
+    answer:"is",
+    wrongSentence:'My friends <span class="fb-wrong-word">is</span> very funny.',
+    rightSentence:'My friends <span class="fb-right-word">are</span> very funny.',
+    reason:"주어 friends는 복수이므로 be동사는 <strong>are</strong>를 써야 해요."
+  },
+
+  /* Q2 — L5~6 미래시제: will 뒤 동사 오류 */
+  {
+    id:2,
+    sentence:"It will rains tomorrow.",
+    options:["tomorrow","will","rains"],
+    answer:"rains",
+    wrongSentence:'It will <span class="fb-wrong-word">rains</span> tomorrow.',
+    rightSentence:'It will <span class="fb-right-word">rain</span> tomorrow.',
+    reason:"will 뒤에는 반드시 동사원형을 써요. <strong>rain</strong>이 맞아요."
+  },
+
+  /* Q3 — L7~10 과거시제: 불규칙 과거형 오류 */
+  {
+    id:3,
+    sentence:"She goed to the park yesterday.",
+    options:["park","yesterday","goed"],
+    answer:"goed",
+    wrongSentence:'She <span class="fb-wrong-word">goed</span> to the park yesterday.',
+    rightSentence:'She <span class="fb-right-word">went</span> to the park yesterday.',
+    reason:"go의 불규칙 과거형은 <strong>went</strong>예요. goed는 틀린 형태예요."
+  },
+
+  /* Q4 — L7~10 과거시제: Did 의문문 동사 오류 */
+  {
+    id:4,
+    sentence:"Did you ate lunch at school?",
+    options:["lunch","school","ate"],
+    answer:"ate",
+    wrongSentence:'Did you <span class="fb-wrong-word">ate</span> lunch at school?',
+    rightSentence:'Did you <span class="fb-right-word">eat</span> lunch at school?',
+    reason:"Did로 시작하는 의문문에서는 동사원형을 써요. <strong>eat</strong>이 맞아요."
+  },
+
+  /* Q5 — L11~14 비교급 오류 */
+  {
+    id:5,
+    sentence:"This box is more heavier than that one.",
+    options:["heavier","more","than"],
+    answer:"more",
+    wrongSentence:'This box is <span class="fb-wrong-word">more</span> heavier than that one.',
+    rightSentence:'This box is <span class="fb-right-word">heavier</span> than that one.',
+    reason:"비교급(heavier) 앞에 more를 함께 쓰면 이중 비교급이 돼요. <strong>more</strong>를 빼고 heavier만 써야 해요."
+  },
+
+  /* Q6 — L11~14 최상급 오류 */
+  {
+    id:6,
+    sentence:"This is the expensivest watch in the store.",
+    options:["expensivest","watch","store"],
+    answer:"expensivest",
+    wrongSentence:'This is the <span class="fb-wrong-word">expensivest</span> watch in the store.',
+    rightSentence:'This is the <span class="fb-right-word">most expensive</span> watch in the store.',
+    reason:"expensive처럼 긴 형용사의 최상급은 -est를 붙이지 않고 <strong>most expensive</strong>로 써요. expensivest는 틀린 형태예요."
+  },
+
+  /* Q7 — L15 대명사 오류 */
+  {
+    id:7,
+    sentence:"I like Mrs. Brown. She teaches we math.",
+    options:["teaches","math","we"],
+    answer:"we",
+    wrongSentence:'I like Mrs. Brown. She teaches <span class="fb-wrong-word">we</span> math.',
+    rightSentence:'I like Mrs. Brown. She teaches <span class="fb-right-word">us</span> math.',
+    reason:"동사 teaches의 목적어 자리에는 목적격 <strong>us</strong>를 써야 해요. we는 주격이에요."
+  },
+
+  /* Q8 — L16 명사 불규칙 복수 오류 */
+  {
+    id:8,
+    sentence:"There are two womans in the kitchen.",
+    options:["two","kitchen","womans"],
+    answer:"womans",
+    wrongSentence:'There are two <span class="fb-wrong-word">womans</span> in the kitchen.',
+    rightSentence:'There are two <span class="fb-right-word">women</span> in the kitchen.',
+    reason:"woman의 불규칙 복수형은 <strong>women</strong>이에요. womans는 틀린 형태예요."
+  },
+
+  /* Q9 — L17 some/any 오류 */
+  {
+    id:9,
+    sentence:"There isn\'t some butter in the fridge.",
+    options:["butter","fridge","some"],
+    answer:"some",
+    wrongSentence:'There isn\'t <span class="fb-wrong-word">some</span> butter in the fridge.',
+    rightSentence:'There isn\'t <span class="fb-right-word">any</span> butter in the fridge.',
+    reason:"부정문(isn\'t)에서는 <strong>any</strong>를 써야 해요. some은 긍정문에 써요."
+  },
+
+  /* Q10 — L18 시간 전치사 오류 */
+  {
+    id:10,
+    sentence:"My dad wakes up at 6 o\'clock on the morning.",
+    options:["wakes","at","on"],
+    answer:"on",
+    wrongSentence:'My dad wakes up at 6 o\'clock <span class="fb-wrong-word">on</span> the morning.',
+    rightSentence:'My dad wakes up at 6 o\'clock <span class="fb-right-word">in</span> the morning.',
+    reason:"아침·오후·저녁 앞에는 <strong>in</strong>을 써요. in the morning이 맞아요."
+  },
+
+  /* Q11 — L18 장소 전치사 오류 */
+  {
+    id:11,
+    sentence:"The cat is sleeping in the sofa.",
+    options:["sleeping","cat","in"],
+    answer:"in",
+    wrongSentence:'The cat is sleeping <span class="fb-wrong-word">in</span> the sofa.',
+    rightSentence:'The cat is sleeping <span class="fb-right-word">on</span> the sofa.',
+    reason:"소파 표면 위에 있을 때는 <strong>on</strong>을 써요. on the sofa가 맞아요."
+  },
+
+  /* Q12 — L19 조동사 오류 */
+  {
+    id:12,
+    sentence:"You should wears a coat. It\'s cold outside.",
+    options:["coat","cold","wears"],
+    answer:"wears",
+    wrongSentence:'You should <span class="fb-wrong-word">wears</span> a coat.',
+    rightSentence:'You should <span class="fb-right-word">wear</span> a coat.',
+    reason:"조동사(should) 뒤에는 반드시 동사원형을 써요. <strong>wear</strong>이 맞아요."
+  }
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById("quizScreen").style.display="block";
+  document.getElementById("resultScreen").style.display="none";
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById("qnum").textContent="문제 "+(currentIndex+1)+" / "+queue.length;
+  document.getElementById("progressBar").style.width=Math.round((currentIndex/queue.length)*100)+"%";
+  document.getElementById("sentence").textContent=currentQ.sentence;
+
+  const optWrap=document.getElementById("options");
+  optWrap.innerHTML="";
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement("button");
+    btn.className="opt-btn";
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  document.getElementById("feedback").style.display="none";
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("nextBtn").style.display="none";
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+  document.querySelectorAll(".opt-btn").forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase())b.classList.add("correct");
+    else if(b===btnEl&&!isCorrect)b.classList.add("wrong");
+  });
+
+  if(isCorrect)score++;else wrongList.push(currentQ);
+
+  const fb=document.getElementById("feedback");
+  fb.style.display="block";
+  fb.className="feedback "+(isCorrect?"correct":"wrong");
+  fb.innerHTML=
+    '<span class="fb-title">'+(isCorrect?"🎉 정답이에요!":"❌ 다시 확인해봐요!")+'</span>'+
+    '<div class="fb-row">❌ 틀린 문장: <span class="fb-sentence">'+currentQ.wrongSentence+'</span></div>'+
+    '<div class="fb-row">✅ 올바른 문장: <span class="fb-sentence">'+currentQ.rightSentence+'</span></div>'+
+    '<span class="fb-reason">'+currentQ.reason+'</span>';
+
+  const nb=document.getElementById("nextBtn");
+  nb.style.display="block";
+  nb.textContent=(currentIndex===queue.length-1)?"결과 보기 🏁":"다음 문제 →";
+}
+
+document.getElementById("nextBtn").addEventListener("click",function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById("progressBar").style.width="100%";
+  document.getElementById("quizScreen").style.display="none";
+  document.getElementById("resultScreen").style.display="block";
+  const total=queue.length,pct=Math.round((score/total)*100);
+  document.getElementById("stars").textContent=pct===100?"⭐⭐⭐":pct>=80?"⭐⭐":"⭐";
+  document.getElementById("scoreText").textContent=score+" / "+total+"개 정답!";
+  document.getElementById("scoreSub").textContent=pct+"점이에요.";
+  document.getElementById("retryWrongBtn").style.display=wrongList.length>0?"block":"none";
+}
+
+document.getElementById("retryWrongBtn").addEventListener("click",function(){startQuiz(shuffle(wrongList));});
+document.getElementById("retryAllBtn").addEventListener("click",function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

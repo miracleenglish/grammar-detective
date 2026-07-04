@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0018 형용사·부사·비교·최상급 문장점검 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --c-badge:#9B6DD1;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--c-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:18px;font-weight:900;color:var(--accent-dark);}
+  .scope{font-size:12px;color:#bbb;margin-top:2px;}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:10px;}
+
+  .error-sentence{font-size:18px;line-height:1.75;background:#FFF8F0;border:2px solid #F5D9B8;border-radius:12px;padding:14px 16px;margin-bottom:8px;}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:14px;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;padding:13px 4px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);word-break:break-all;}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.7;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:8px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .fb-wrong{font-family:'Nunito',sans-serif;font-weight:700;margin-bottom:4px;}
+  .fb-right{font-family:'Nunito',sans-serif;font-weight:700;margin-bottom:6px;}
+  .fb-reason{color:#555;}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .r-wrong{font-family:'Nunito',sans-serif;font-weight:700;}
+  .r-right{font-family:'Nunito',sans-serif;font-weight:700;color:var(--correct);}
+  .r-reason{color:#666;margin-top:3px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">C형</span>
+      <span class="app-num">SG3-0018</span>
+    </div>
+    <div class="title">형용사·부사·비교·최상급 문장점검</div>
+    <div class="scope">L11~L14 범위</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 틀린 부분을 찾아서 골라보세요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction">문장에서 틀린 단어를 골라요.</div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="error-sentence en" id="errorSentence"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="fb-wrong en" id="fbWrong"></div>
+        <div class="fb-right en" id="fbRight"></div>
+        <div class="fb-reason" id="fbReason"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ C형 제작 원칙 동일
+// - 삼지선다 / 오류 1개 / 선택지에 주어 배치 금지 / 힌트 필수
+// - 오류 단어 미리 강조 없음 / 피드백에서만 강조
+// - L11~L14 오류 유형 균형 배분:
+//   형용사 자리(명사 앞/be 뒤) Q1~3
+//   부사 자리(동사 뒤) + good/well Q4~5
+//   비교급 형태 Q6~8
+//   최상급 형태 Q9~11
+//   혼합(비교급↔최상급 혼동) Q12
+
+const ALL_QUESTIONS = [
+  // ── 형용사 오류 (L11) Q1~3 ───────────────────────────────
+  {
+    id:1, area:"형용사+명사",
+    hint:"",
+    sentence:["It was a", "rainly", "day yesterday."],
+    errorWord:"rainly", correctWord:"rainy",
+    options:["rainly","day","yesterday"],
+    answer:"rainly",
+    wrongSent:"It was a rainly day yesterday.",
+    rightSent:"It was a rainy day yesterday.",
+    reason:"명사(day) 앞에는 형용사를 써요. rainly는 없는 단어이고, rainy(비오는)가 맞아요."
+  },
+  {
+    id:2, area:"Be+형용사",
+    hint:"",
+    sentence:["The water", "looks coldly", "today."],
+    errorWord:"looks coldly", correctWord:"looks cold",
+    options:["looks coldly","water","today"],
+    answer:"looks coldly",
+    wrongSent:"The water looks coldly today.",
+    rightSent:"The water looks cold today.",
+    reason:"looks(연결동사) 뒤에는 형용사를 써요. coldly는 부사예요. cold(차가운)가 맞아요."
+  },
+  {
+    id:3, area:"형용사+명사",
+    hint:"",
+    sentence:["She has", "long beautifully", "hair."],
+    errorWord:"long beautifully", correctWord:"long beautiful",
+    options:["long beautifully","has","hair"],
+    answer:"long beautifully",
+    wrongSent:"She has long beautifully hair.",
+    rightSent:"She has long beautiful hair.",
+    reason:"명사(hair) 앞에는 형용사를 써요. beautifully는 부사라 쓸 수 없어요. beautiful이 맞아요."
+  },
+  // ── 부사 오류 (L12) Q4~5 ─────────────────────────────────
+  {
+    id:4, area:"동사+부사",
+    hint:"",
+    sentence:["The old man", "walks slow", "in the park."],
+    errorWord:"walks slow", correctWord:"walks slowly",
+    options:["walks slow","old","park"],
+    answer:"walks slow",
+    wrongSent:"The old man walks slow in the park.",
+    rightSent:"The old man walks slowly in the park.",
+    reason:"동사(walks)를 꾸미는 건 부사예요. slow는 형용사이고 slowly(느리게)가 맞아요."
+  },
+  {
+    id:5, area:"good vs well",
+    hint:"",
+    sentence:["My little sister", "sings good", "."],
+    errorWord:"sings good", correctWord:"sings well",
+    options:["sings good","little","sister"],
+    answer:"sings good",
+    wrongSent:"My little sister sings good.",
+    rightSent:"My little sister sings well.",
+    reason:"동사(sings)를 꾸미는 건 부사예요. good은 형용사이고 well(잘)이 맞아요."
+  },
+  // ── 비교급 오류 (L13) Q6~8 ───────────────────────────────
+  {
+    id:6, area:"비교급 -er형",
+    hint:"",
+    sentence:["This road", "is more long", "than that one."],
+    errorWord:"is more long", correctWord:"is longer",
+    options:["is more long","road","that"],
+    answer:"is more long",
+    wrongSent:"This road is more long than that one.",
+    rightSent:"This road is longer than that one.",
+    reason:"long은 1음절 형용사라 more를 쓰지 않아요. more long이 아니라 longer이에요."
+  },
+  {
+    id:7, area:"비교급 more~형",
+    hint:"",
+    sentence:["Driving is", "dangerouser", "than walking."],
+    errorWord:"dangerouser", correctWord:"more dangerous",
+    options:["dangerouser","driving","walking"],
+    answer:"dangerouser",
+    wrongSent:"Driving is dangerouser than walking.",
+    rightSent:"Driving is more dangerous than walking.",
+    reason:"dangerous처럼 긴 형용사는 -er이 아니라 more dangerous로 써야 해요."
+  },
+  {
+    id:8, area:"비교급 불규칙",
+    hint:"",
+    sentence:["Today\'s lunch", "is more good", "than yesterday\'s."],
+    errorWord:"is more good", correctWord:"is better",
+    options:["is more good","lunch","yesterday\'s"],
+    answer:"is more good",
+    wrongSent:"Today\'s lunch is more good than yesterday\'s.",
+    rightSent:"Today\'s lunch is better than yesterday\'s.",
+    reason:"good의 비교급은 불규칙이에요. more good이 아니라 better이에요."
+  },
+  // ── 최상급 오류 (L14) Q9~11 ──────────────────────────────
+  {
+    id:9, area:"최상급 the+est",
+    hint:"",
+    sentence:["She is", "youngest", "student in the class."],
+    errorWord:"youngest", correctWord:"the youngest",
+    options:["youngest","student","class"],
+    answer:"youngest",
+    wrongSent:"She is youngest student in the class.",
+    rightSent:"She is the youngest student in the class.",
+    reason:"최상급 앞에는 반드시 the를 붙여요. youngest가 아니라 the youngest이에요."
+  },
+  {
+    id:10, area:"최상급 the most~",
+    hint:"",
+    sentence:["This is", "most interesting", "story I have read."],
+    errorWord:"most interesting", correctWord:"the most interesting",
+    options:["most interesting","story","read"],
+    answer:"most interesting",
+    wrongSent:"This is most interesting story I have read.",
+    rightSent:"This is the most interesting story I have read.",
+    reason:"최상급 앞에는 반드시 the를 붙여요. most interesting이 아니라 the most interesting이에요."
+  },
+  {
+    id:11, area:"최상급 불규칙",
+    hint:"",
+    sentence:["That was", "the baddest", "movie I have seen."],
+    errorWord:"the baddest", correctWord:"the worst",
+    options:["the baddest","movie","seen"],
+    answer:"the baddest",
+    wrongSent:"That was the baddest movie I have seen.",
+    rightSent:"That was the worst movie I have seen.",
+    reason:"bad의 최상급은 불규칙이에요. the baddest가 아니라 the worst이에요."
+  },
+  // ── 비교급↔최상급 혼동 (Q12) ─────────────────────────────
+  {
+    id:12, area:"비교급↔최상급 혼동",
+    hint:"셋 이상을 비교할 때는 최상급을 써요.",
+    sentence:["Of the three brothers,", "Jake is taller", "."],
+    errorWord:"Jake is taller", correctWord:"Jake is the tallest",
+    options:["Jake is taller","brothers","three"],
+    answer:"Jake is taller",
+    wrongSent:"Of the three brothers, Jake is taller.",
+    rightSent:"Of the three brothers, Jake is the tallest.",
+    reason:"셋(the three brothers) 중에서 비교할 때는 최상급(the tallest)을 써요. 비교급(taller)은 둘을 비교할 때 써요."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result; let tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options,q.answer);
+
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+  document.getElementById('errorSentence').textContent=q.sentence.join(' ');
+  document.getElementById('hintBox').textContent=q.hint||'';
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  const wrongHtml=escapeHtml(q.wrongSent).replace(
+    escapeHtml(q.errorWord),
+    '<span style="color:var(--wrong);font-weight:900;text-decoration:line-through;">'+escapeHtml(q.errorWord)+'</span>'
+  );
+  const rightHtml=escapeHtml(q.rightSent).replace(
+    escapeHtml(q.correctWord),
+    '<span style="color:var(--correct);font-weight:900;">'+escapeHtml(q.correctWord)+'</span>'
+  );
+  document.getElementById('fbWrong').innerHTML='✗ '+wrongHtml;
+  document.getElementById('fbRight').innerHTML='✓ '+rightHtml;
+  document.getElementById('fbReason').textContent=q.reason;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const wH=escapeHtml(q.wrongSent).replace(
+        escapeHtml(q.errorWord),
+        '<span style="color:var(--wrong);text-decoration:line-through;">'+escapeHtml(q.errorWord)+'</span>'
+      );
+      const rH=escapeHtml(q.rightSent).replace(
+        escapeHtml(q.correctWord),
+        '<span style="color:var(--correct);font-weight:900;">'+escapeHtml(q.correctWord)+'</span>'
+      );
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="r-wrong">'+wH+'</div>'+
+        '<div class="r-right">'+rH+'</div>'+
+        '<div class="r-reason">'+escapeHtml(q.reason)+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

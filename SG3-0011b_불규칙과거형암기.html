@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0011b 불규칙 과거형 암기 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --m-badge:#E07B39;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .badge{display:inline-block;background:var(--m-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .subtitle{font-size:12px;color:#bbb;margin-top:2px;}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:18px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:12px;}
+
+  /* 동사 원형 표시 카드 */
+  .verb-card{
+    background:linear-gradient(135deg,#FFF3E0,#FEE4C0);
+    border:2px solid var(--accent);
+    border-radius:18px;
+    padding:20px;
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .verb-label{font-size:12px;color:#aaa;font-weight:700;margin-bottom:6px;}
+  .verb-base{font-size:36px;font-weight:900;color:var(--accent-dark);font-family:'Nunito',sans-serif;margin-bottom:4px;}
+  .verb-meaning{font-size:15px;color:#888;font-weight:600;}
+  .arrow-row{text-align:center;font-size:20px;color:var(--accent);margin-bottom:8px;}
+  .past-label{font-size:13px;color:#aaa;font-weight:700;text-align:center;margin-bottom:14px;}
+
+  /* 선택지 — 3열 */
+  .options-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:0;}
+  /* 선택지 — 4열 (2x2) */
+  .options-4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;}
+  .opt-btn{
+    font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;
+    padding:18px 8px;
+    border:2px solid #EADFCF;background:#FFFDF9;
+    border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);
+  }
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .fb-pair{font-size:18px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--accent-dark);margin-bottom:4px;}
+  .fb-example{font-size:13px;color:#555;margin-top:4px;}
+  .fb-example b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:8px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.7;}
+  .review-item .r-pair{font-family:'Nunito',sans-serif;font-weight:800;color:var(--correct);font-size:16px;}
+  .review-item .r-meaning{color:#888;font-size:13px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">암기형</span>
+      <span class="app-num">SG3-0011b</span>
+    </div>
+    <div class="title">불규칙 과거형 암기</div>
+    <div class="subtitle">L9 · MFG 3권 동사 목록</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 16</div>
+  </div>
+
+  <div class="instruction-box">🔍 동사 원형을 보고 과거형을 골라보세요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction">과거형을 골라요.</div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="verb-card">
+        <div class="verb-label">동사 원형</div>
+        <div class="verb-base en" id="verbBase"></div>
+        <div class="verb-meaning" id="verbMeaning"></div>
+      </div>
+      <div class="arrow-row">↓</div>
+      <div class="past-label">과거형은?</div>
+      <div id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="fb-pair en" id="fbPair"></div>
+        <div class="fb-example" id="fbExample"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 암기형 앱 설계 원칙
+// - 동사 원형 제시 → 과거형 4지선다 (3지선다 혼합)
+// - 선택지: 정답 1개 + 오답 (규칙변화 오답 / 다른 불규칙형 혼동)
+// - 이중정답 방지: 선택지 내 다른 불규칙 과거형이 정답 역할을 못하도록
+//   (예: go 문제에서 went 정답, 오답에 went와 혼동되는 형태만 포함)
+// - 피드백: 원형→과거형 쌍 + 예문 한 줄
+
+const ALL_QUESTIONS = [
+  // MFG 3권 L9 동사 목록: come, do, drink, eat, get, go,
+  // have, run, read, take, wake, write
+  // + 교재 전반 빈출 추가: make, see, give, find
+  {
+    id:1, base:"go", meaning:"가다",
+    answer:"went",
+    options:["went","goed","goes","gone"],
+    pair:"go → went",
+    example:"He <b>went</b> to the park yesterday."
+  },
+  {
+    id:2, base:"eat", meaning:"먹다",
+    answer:"ate",
+    options:["ate","eated","eating","eaten"],
+    pair:"eat → ate",
+    example:"She <b>ate</b> pizza for lunch."
+  },
+  {
+    id:3, base:"come", meaning:"오다",
+    answer:"came",
+    options:["came","comed","come","comes"],
+    pair:"come → came",
+    example:"They <b>came</b> home late last night."
+  },
+  {
+    id:4, base:"have", meaning:"가지다 / 먹다",
+    answer:"had",
+    options:["had","haved","have","has"],
+    pair:"have → had",
+    example:"We <b>had</b> a great time yesterday."
+  },
+  {
+    id:5, base:"run", meaning:"달리다",
+    answer:"ran",
+    options:["ran","runned","ranned","runs"],
+    pair:"run → ran",
+    example:"The dog <b>ran</b> fast in the park."
+  },
+  {
+    id:6, base:"write", meaning:"쓰다",
+    answer:"wrote",
+    options:["wrote","writed","written","writes"],
+    pair:"write → wrote",
+    example:"I <b>wrote</b> a card for my friend."
+  },
+  {
+    id:7, base:"drink", meaning:"마시다",
+    answer:"drank",
+    options:["drank","drinked","drunk","drinks"],
+    pair:"drink → drank",
+    example:"He <b>drank</b> two glasses of water."
+  },
+  {
+    id:8, base:"take", meaning:"가져가다 / 타다",
+    answer:"took",
+    options:["took","taked","taken","takes"],
+    pair:"take → took",
+    example:"She <b>took</b> the bus to school."
+  },
+  {
+    id:9, base:"do", meaning:"하다",
+    answer:"did",
+    options:["did","doed","done","does"],
+    pair:"do → did",
+    example:"He <b>did</b> his homework after dinner."
+  },
+  {
+    id:10, base:"wake", meaning:"일어나다",
+    answer:"woke",
+    options:["woke","waked","woken","wakes"],
+    pair:"wake → woke",
+    example:"I <b>woke</b> up early this morning."
+  },
+  {
+    id:11, base:"read", meaning:"읽다",
+    answer:"read",
+    options:["read","readed","reads","rided"],
+    pair:"read → read (발음: 레드)",
+    example:"She <b>read</b> three books last week."
+  },
+  {
+    id:12, base:"make", meaning:"만들다",
+    answer:"made",
+    options:["made","maked","making","makes"],
+    pair:"make → made",
+    example:"Mom <b>made</b> cookies yesterday."
+  },
+  {
+    id:13, base:"see", meaning:"보다",
+    answer:"saw",
+    options:["saw","seed","seen","sees"],
+    pair:"see → saw",
+    example:"We <b>saw</b> a movie last Friday."
+  },
+  {
+    id:14, base:"give", meaning:"주다",
+    answer:"gave",
+    options:["gave","gived","given","gives"],
+    pair:"give → gave",
+    example:"She <b>gave</b> me a present."
+  },
+  {
+    id:15, base:"get", meaning:"얻다 / 받다",
+    answer:"got",
+    options:["got","getted","gotten","gets"],
+    pair:"get → got",
+    example:"He <b>got</b> a new bike for his birthday."
+  },
+  {
+    id:16, base:"find", meaning:"찾다",
+    answer:"found",
+    options:["found","finded","find","finds"],
+    pair:"find → found",
+    example:"She <b>found</b> her lost key yesterday."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr, answer){
+  let result;
+  let tries = 0;
+  do {
+    result = shuffle(arr);
+    tries++;
+  } while(result[0].toLowerCase() === answer.toLowerCase() && tries < 20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options, q.answer);
+
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+  document.getElementById('verbBase').textContent=q.base;
+  document.getElementById('verbMeaning').textContent=q.meaning;
+
+  const ob=document.getElementById('optionsBox');
+  ob.className = shuffledOpts.length===3 ? 'options-3' : 'options-4';
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('fbPair').textContent=q.pair;
+  document.getElementById('fbExample').innerHTML=q.example;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'개를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="r-pair">'+escapeHtml(q.pair)+'</div>'+
+        '<div class="r-meaning">'+escapeHtml(q.meaning)+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 16개 전부 맞혔어요! 불규칙 동사 완벽 암기!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

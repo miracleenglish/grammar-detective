@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0014 현재·미래·과거 혼합복습 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --c-badge:#9B6DD1;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--c-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:18px;font-weight:900;color:var(--accent-dark);}
+  .scope{font-size:12px;color:#bbb;margin-top:2px;}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:10px;}
+
+  .error-sentence{font-size:19px;line-height:1.7;background:#FFF8F0;border:2px solid #F5D9B8;border-radius:12px;padding:14px 16px;margin-bottom:8px;}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:14px;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;padding:13px 4px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);word-break:break-all;}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.7;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:8px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .fb-wrong{font-family:'Nunito',sans-serif;font-weight:700;margin-bottom:4px;}
+  .fb-right{font-family:'Nunito',sans-serif;font-weight:700;margin-bottom:6px;}
+  .fb-reason{color:#555;}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .r-wrong{font-family:'Nunito',sans-serif;font-weight:700;}
+  .r-right{font-family:'Nunito',sans-serif;font-weight:700;color:var(--correct);}
+  .r-reason{color:#666;margin-top:3px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">C형</span>
+      <span class="app-num">SG3-0014</span>
+    </div>
+    <div class="title">현재·미래·과거 혼합복습</div>
+    <div class="scope">L1~L10 누적 범위 · 시제 신호어 집중</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 시제 신호어를 보고 틀린 부분을 찾아요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction">문장에서 틀린 단어를 골라요.</div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="error-sentence en" id="errorSentence"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="fb-wrong en" id="fbWrong"></div>
+        <div class="fb-right en" id="fbRight"></div>
+        <div class="fb-reason" id="fbReason"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ C형 제작 원칙 (동일)
+// - 삼지선다 / 오류 1개 / 선택지에 주어 배치 금지 / 힌트 필수
+// - 문제 표시 시 오류 단어 강조 없음
+// - 피드백: 오류 취소선+빨강 / 정답 초록
+// ★ 이 앱 특징: 시제 신호어가 핵심 단서
+//   - now/right now → 현재진행형
+//   - every day/always → 현재단순
+//   - tomorrow/next week → 미래(will)
+//   - yesterday/last night → 과거
+//   문제마다 신호어를 힌트에 명시
+
+const ALL_QUESTIONS = [
+  // ── 현재단순 오류 (L1~L3) ────────────────────────────────────
+  {
+    id:1, area:"현재단순 be동사",
+    hint:"신호어: every day → 현재단순. Lucy는 매일 학교에 가요.",
+    sentence:["Lucy", "are", "a student every day."],
+    errorWord:"are", correctWord:"is",
+    options:["are","a","day"],
+    answer:"are",
+    wrongSent:"Lucy are a student every day.",
+    rightSent:"Lucy is a student every day.",
+    reason:"주어 Lucy(3인칭 단수)일 때 be동사 현재형은 is예요."
+  },
+  {
+    id:2, area:"현재단순 일반동사",
+    hint:"신호어: every morning → 현재단순. 그는 매일 아침 개를 산책시켜요.",
+    sentence:["He", "walk", "his dog every morning."],
+    errorWord:"walk", correctWord:"walks",
+    options:["walk","his","morning"],
+    answer:"walk",
+    wrongSent:"He walk his dog every morning.",
+    rightSent:"He walks his dog every morning.",
+    reason:"주어 He(3인칭 단수)일 때 일반동사에 -s를 붙여요. walk → walks"
+  },
+  {
+    id:3, area:"현재진행형",
+    hint:"신호어: right now → 현재진행형. 그들은 지금 바로 점심을 먹고 있어요.",
+    sentence:["They", "are eat", "lunch right now."],
+    errorWord:"are eat", correctWord:"are eating",
+    options:["are eat","lunch","right"],
+    answer:"are eat",
+    wrongSent:"They are eat lunch right now.",
+    rightSent:"They are eating lunch right now.",
+    reason:"현재진행형은 be동사 + 동사-ing예요. are eat이 아니라 are eating이에요."
+  },
+  // ── 미래시제 오류 (L5~L6) ─────────────────────────────────────
+  {
+    id:4, area:"미래시제",
+    hint:"신호어: tomorrow → 미래(will). 우리는 내일 박물관을 방문할 거예요.",
+    sentence:["We", "will visits", "the museum tomorrow."],
+    errorWord:"will visits", correctWord:"will visit",
+    options:["will visits","museum","tomorrow"],
+    answer:"will visits",
+    wrongSent:"We will visits the museum tomorrow.",
+    rightSent:"We will visit the museum tomorrow.",
+    reason:"will 뒤에는 반드시 동사원형을 써요. will visits가 아니라 will visit이에요."
+  },
+  {
+    id:5, area:"미래시제 부정",
+    hint:"신호어: next Friday → 미래(won't). 그는 다음 금요일에 학교에 오지 않을 거예요.",
+    sentence:["He", "won\'t comes", "to school next Friday."],
+    errorWord:"won\'t comes", correctWord:"won\'t come",
+    options:["won\'t comes","school","Friday"],
+    answer:"won\'t comes",
+    wrongSent:"He won\'t comes to school next Friday.",
+    rightSent:"He won\'t come to school next Friday.",
+    reason:"won't 뒤에도 반드시 동사원형을 써요. won't comes가 아니라 won't come이에요."
+  },
+  // ── 과거시제 be동사 오류 (L7) ────────────────────────────────
+  {
+    id:6, area:"과거 be동사",
+    hint:"신호어: last summer → 과거. 그 해변은 지난 여름에 아름다웠어요.",
+    sentence:["The beach", "were", "beautiful last summer."],
+    errorWord:"were", correctWord:"was",
+    options:["were","beautiful","summer"],
+    answer:"were",
+    wrongSent:"The beach were beautiful last summer.",
+    rightSent:"The beach was beautiful last summer.",
+    reason:"The beach는 단수예요. 과거형도 were가 아니라 was를 써야 해요."
+  },
+  // ── 과거 규칙변화 오류 (L8) ──────────────────────────────────
+  {
+    id:7, area:"과거 규칙변화",
+    hint:"신호어: last week → 과거. 그녀는 지난주에 일기를 썼어요.",
+    sentence:["She", "writed", "in her diary last week."],
+    errorWord:"writed", correctWord:"wrote",
+    options:["writed","diary","week"],
+    answer:"writed",
+    wrongSent:"She writed in her diary last week.",
+    rightSent:"She wrote in her diary last week.",
+    reason:"write는 불규칙 동사예요. writed가 아니라 wrote예요."
+  },
+  {
+    id:8, area:"과거 규칙변화 철자",
+    hint:"신호어: yesterday → 과거. 그는 어제 영어를 공부했어요.",
+    sentence:["He", "studyed", "English yesterday."],
+    errorWord:"studyed", correctWord:"studied",
+    options:["studyed","English","yesterday"],
+    answer:"studyed",
+    wrongSent:"He studyed English yesterday.",
+    rightSent:"He studied English yesterday.",
+    reason:"study는 자음+y로 끝나요. studyed가 아니라 studied(y→i+ed)예요."
+  },
+  // ── 과거 불규칙 오류 (L9) ────────────────────────────────────
+  {
+    id:9, area:"과거 불규칙",
+    hint:"신호어: last night → 과거. 나는 어젯밤에 책을 읽었어요.",
+    sentence:["I", "readed", "a book last night."],
+    errorWord:"readed", correctWord:"read",
+    options:["readed","book","night"],
+    answer:"readed",
+    wrongSent:"I readed a book last night.",
+    rightSent:"I read a book last night.",
+    reason:"read는 과거형도 read(발음: 레드)예요. readed가 아니에요."
+  },
+  // ── didn't + 원형 오류 (L8~9) ────────────────────────────────
+  {
+    id:10, area:"didn't + 동사원형",
+    hint:"신호어: yesterday → 과거 부정. 그녀는 어제 버스를 타지 않았어요.",
+    sentence:["She", "didn\'t took", "the bus yesterday."],
+    errorWord:"didn\'t took", correctWord:"didn\'t take",
+    options:["didn\'t took","bus","yesterday"],
+    answer:"didn\'t took",
+    wrongSent:"She didn\'t took the bus yesterday.",
+    rightSent:"She didn\'t take the bus yesterday.",
+    reason:"didn't 뒤에는 반드시 동사원형을 써요. took이 아니라 take예요."
+  },
+  // ── 시제 혼용 오류 (현재 vs 과거) ───────────────────────────
+  {
+    id:11, area:"시제 혼용",
+    hint:"신호어: last Monday → 과거. 우리 선생님은 지난 월요일에 우리에게 노래를 가르쳐 주셨어요.",
+    sentence:["Our teacher", "teaches", "us a song last Monday."],
+    errorWord:"teaches", correctWord:"taught",
+    options:["teaches","song","Monday"],
+    answer:"teaches",
+    wrongSent:"Our teacher teaches us a song last Monday.",
+    rightSent:"Our teacher taught us a song last Monday.",
+    reason:"last Monday는 과거 신호어예요. 현재형 teaches가 아니라 과거형 taught를 써야 해요."
+  },
+  // ── 시제 혼용 오류 (미래 vs 현재) ───────────────────────────
+  {
+    id:12, area:"시제 혼용",
+    hint:"신호어: tomorrow → 미래(will). 날씨가 내일 맑을 거예요.",
+    sentence:["It", "is sunny", "tomorrow."],
+    errorWord:"is sunny", correctWord:"will be sunny",
+    options:["is sunny","It","tomorrow"],
+    answer:"is sunny",
+    wrongSent:"It is sunny tomorrow.",
+    rightSent:"It will be sunny tomorrow.",
+    reason:"tomorrow는 미래 신호어예요. is sunny가 아니라 will be sunny를 써야 해요."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result; let tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options,q.answer);
+
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  document.getElementById('errorSentence').textContent=q.sentence.join(' ');
+  document.getElementById('hintBox').textContent=q.hint||'';
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  const wrongHtml=escapeHtml(q.wrongSent).replace(
+    escapeHtml(q.errorWord),
+    '<span style="color:var(--wrong);font-weight:900;text-decoration:line-through;">'+escapeHtml(q.errorWord)+'</span>'
+  );
+  const rightHtml=escapeHtml(q.rightSent).replace(
+    escapeHtml(q.correctWord),
+    '<span style="color:var(--correct);font-weight:900;">'+escapeHtml(q.correctWord)+'</span>'
+  );
+  document.getElementById('fbWrong').innerHTML='✗ '+wrongHtml;
+  document.getElementById('fbRight').innerHTML='✓ '+rightHtml;
+  document.getElementById('fbReason').textContent=q.reason;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const wrongHtml=escapeHtml(q.wrongSent).replace(
+        escapeHtml(q.errorWord),
+        '<span style="color:var(--wrong);text-decoration:line-through;">'+escapeHtml(q.errorWord)+'</span>'
+      );
+      const rightHtml=escapeHtml(q.rightSent).replace(
+        escapeHtml(q.correctWord),
+        '<span style="color:var(--correct);font-weight:900;">'+escapeHtml(q.correctWord)+'</span>'
+      );
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="r-wrong">'+wrongHtml+'</div>'+
+        '<div class="r-right">'+rightHtml+'</div>'+
+        '<div class="r-reason">'+escapeHtml(q.reason)+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

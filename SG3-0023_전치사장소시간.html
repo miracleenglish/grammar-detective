@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - SG3-0023 전치사 장소·시간</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;
+    --accent:#F5A623;
+    --accent-dark:#D4891A;
+    --type-a:#4A90D9;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#3A3A3A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-a);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #F5D9BA;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+  .instruction-box{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(212,137,26,0.12);}
+  .card-instruction{font-size:12.5px;color:var(--accent-dark);font-weight:700;text-align:center;margin-bottom:14px;background:#FFF3E4;border-radius:10px;padding:6px 8px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+  .sentence{font-size:19px;font-weight:600;text-align:center;line-height:1.65;margin:10px 0 6px;color:var(--text);}
+  .sentence .hl{color:var(--accent-dark);border-bottom:2.5px solid var(--accent-dark);font-weight:800;}
+  .blank{display:inline-block;min-width:52px;border-bottom:2.5px solid #444;margin:0 4px;}
+  .hint{font-size:13px;color:#888;text-align:center;margin-bottom:18px;font-weight:500;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:inherit;font-size:17px;font-weight:700;padding:14px 8px;border:2.5px solid #C9DFFB;background:#F0F7FF;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);}
+  .opt-btn:hover{border-color:var(--type-a);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.6;font-weight:500;}
+  .feedback.correct{background:#E7F7F0;color:#2E8064;}
+  .feedback.wrong{background:#FDEAE6;color:#B84534;}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+  .next-btn{display:none;width:100%;margin-top:16px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:18px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:13.5px;color:#888;margin-bottom:22px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">A형</span>
+    <h1>🔎 영문법 탐정단<br>전치사 장소·시간</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    빈칸에 들어갈 알맞은 <strong>전치사</strong>를 고르세요!<br>
+    (in / on / at / under / next to / behind / in front of)
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">✅ 빈칸에 알맞은 전치사를 골라보세요</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="hint" id="hint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  SG3-0023  전치사 장소·시간  A형  L18
+  장소 전치사: in / on / at / under / next to / behind / in front of
+  시간 전치사: in (월·연도·계절) / on (요일·날짜) / at (시각·특정시점)
+  문제 6개 장소 + 6개 시간 = 12문제
+  힌트: 한글 뜻 (위치/시간 표현)
+*/
+const ALL_QUESTIONS = [
+
+  /* ── 장소 전치사 (6문제) ── */
+  {
+    id:1,
+    sentence:'The cat is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="hl">box</span>.',
+    options:["in","on","behind","under"],
+    answer:"in",
+    hint:"고양이가 상자 안에 있어요.",
+    reason:"<strong>in</strong>은 '~안에'라는 뜻이에요. 상자 속에 있을 때는 in을 써요."
+  },
+  {
+    id:2,
+    sentence:'The book is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="hl">desk</span>.',
+    options:["on","in","under","at"],
+    answer:"on",
+    hint:"책이 책상 위에 있어요.",
+    reason:"<strong>on</strong>은 '~위에(표면 접촉)'라는 뜻이에요. 책상 표면 위에 있을 때는 on을 써요."
+  },
+  {
+    id:3,
+    sentence:'Mr. Kim is waiting <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="hl">bus stop</span>.',
+    options:["at","in","on","behind"],
+    answer:"at",
+    hint:"김 선생님이 버스 정류장에 있어요.",
+    reason:"<strong>at</strong>은 '~에(특정 지점)'라는 뜻이에요. 버스 정류장 같은 특정 장소에 있을 때는 at을 써요."
+  },
+  {
+    id:4,
+    sentence:'The dog is sleeping <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="hl">table</span>.',
+    options:["under","on","in","at"],
+    answer:"under",
+    hint:"강아지가 테이블 아래에서 자고 있어요.",
+    reason:"<strong>under</strong>는 '~아래에'라는 뜻이에요. 테이블 아래에 있을 때는 under를 써요."
+  },
+  {
+    id:5,
+    sentence:'The bank is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="hl">post office</span>.',
+    options:["next to","behind","in","under"],
+    answer:"next to",
+    hint:"은행이 우체국 바로 옆에 있어요.",
+    reason:"<strong>next to</strong>는 '~바로 옆에'라는 뜻이에요."
+  },
+  {
+    id:6,
+    sentence:'There is a garden <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the <span class="hl">house</span>.',
+    options:["in front of","behind","on","at"],
+    answer:"in front of",
+    hint:"집 앞에 정원이 있어요.",
+    reason:"<strong>in front of</strong>는 '~앞에'라는 뜻이에요."
+  },
+
+  /* ── 시간 전치사 (6문제) ── */
+  {
+    id:7,
+    sentence:'My birthday is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hl">July</span>.',
+    options:["in","on","at","under"],
+    answer:"in",
+    hint:"월(7월)을 나타내요.",
+    reason:"월(month) 앞에는 <strong>in</strong>을 써요. in July(7월에)"
+  },
+  {
+    id:8,
+    sentence:'We have PE class <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hl">Monday</span>.',
+    options:["on","in","at","next to"],
+    answer:"on",
+    hint:"요일(월요일)을 나타내요.",
+    reason:"요일(day of the week) 앞에는 <strong>on</strong>을 써요. on Monday(월요일에)"
+  },
+  {
+    id:9,
+    sentence:'The movie starts <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hl">7 o\'clock</span>.',
+    options:["at","on","in","behind"],
+    answer:"at",
+    hint:"시각(7시)을 나타내요.",
+    reason:"시각(exact time) 앞에는 <strong>at</strong>을 써요. at 7 o\'clock(7시에)"
+  },
+  {
+    id:10,
+    sentence:'It is very cold <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hl">winter</span>.',
+    options:["in","on","at","under"],
+    answer:"in",
+    hint:"계절(겨울)을 나타내요.",
+    reason:"계절(season) 앞에는 <strong>in</strong>을 써요. in winter(겨울에)"
+  },
+  {
+    id:11,
+    sentence:'Our school picnic is <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hl">May 5th</span>.',
+    options:["on","in","at","in front of"],
+    answer:"on",
+    hint:"날짜(5월 5일)를 나타내요.",
+    reason:"날짜(specific date) 앞에는 <strong>on</strong>을 써요. on May 5th(5월 5일에)"
+  },
+  {
+    id:12,
+    sentence:'Mrs. Park goes jogging <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <span class="hl">night</span>.',
+    options:["at","on","in","behind"],
+    answer:"at",
+    hint:"특정 시점(밤)을 나타내요.",
+    reason:"at night(밤에)처럼 특정 시점 표현에는 <strong>at</strong>을 써요."
+  }
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById("quizScreen").style.display="block";
+  document.getElementById("resultScreen").style.display="none";
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById("qnum").textContent="문제 "+(currentIndex+1)+" / "+queue.length;
+  document.getElementById("progressBar").style.width=Math.round((currentIndex/queue.length)*100)+"%";
+  document.getElementById("sentence").innerHTML=currentQ.sentence;
+  document.getElementById("hint").textContent="💡 "+currentQ.hint;
+
+  const optWrap=document.getElementById("options");
+  optWrap.innerHTML="";
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement("button");
+    btn.className="opt-btn";
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  document.getElementById("feedback").style.display="none";
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("nextBtn").style.display="none";
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+  document.querySelectorAll(".opt-btn").forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase())b.classList.add("correct");
+    else if(b===btnEl&&!isCorrect)b.classList.add("wrong");
+  });
+
+  if(isCorrect)score++;else wrongList.push(currentQ);
+
+  const fb=document.getElementById("feedback");
+  fb.style.display="block";
+  fb.className="feedback "+(isCorrect?"correct":"wrong");
+  fb.innerHTML=
+    '<span class="fb-title">'+(isCorrect?"🎉 정답이에요!":"❌ 다시 확인해봐요!")+'</span>'+
+    '정답: <strong>'+currentQ.answer+'</strong><br>'+currentQ.reason;
+
+  const nb=document.getElementById("nextBtn");
+  nb.style.display="block";
+  nb.textContent=(currentIndex===queue.length-1)?"결과 보기 🏁":"다음 문제 →";
+}
+
+document.getElementById("nextBtn").addEventListener("click",function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById("progressBar").style.width="100%";
+  document.getElementById("quizScreen").style.display="none";
+  document.getElementById("resultScreen").style.display="block";
+  const total=queue.length,pct=Math.round((score/total)*100);
+  document.getElementById("stars").textContent=pct===100?"⭐⭐⭐":pct>=80?"⭐⭐":"⭐";
+  document.getElementById("scoreText").textContent=score+" / "+total+"개 정답!";
+  document.getElementById("scoreSub").textContent=pct+"점이에요.";
+  document.getElementById("retryWrongBtn").style.display=wrongList.length>0?"block":"none";
+}
+
+document.getElementById("retryWrongBtn").addEventListener("click",function(){startQuiz(shuffle(wrongList));});
+document.getElementById("retryAllBtn").addEventListener("click",function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

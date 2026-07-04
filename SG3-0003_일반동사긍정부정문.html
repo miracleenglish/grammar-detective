@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0003 일반동사 긍정·부정문 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --a-badge:#4A90D9;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--a-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:20px;line-height:1.7;margin-bottom:20px;color:var(--text);}
+  .sub{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .hl{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;padding:13px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">A형</span>
+      <span class="app-num">SG3-0003</span>
+    </div>
+    <div class="title">일반동사 긍정·부정문 고르기</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 주어에 맞는 동사 형태를 찾아보세요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="sentence" id="sentenceBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 이중정답 방지 원칙
+// 긍정문(1~6): 선택지 = 동사원형 / 3인칭단수형(~s/es/ies) / 과거형 / 전혀 다른 동사
+//   → 부정형(don't/doesn't) 선택지 완전 제외
+// 부정문(7~12): 선택지 = don't / doesn't + 동사원형 조합만
+//   → 긍정형 동사 선택지 완전 제외
+// 부정문 문장: 두 문장(맥락 제공)으로 이중정답 원천 차단
+
+const ALL_QUESTIONS = [
+  // ── 긍정문 1~6: 선택지에 부정형 없음 ───────────────────────
+  {
+    id:1, type:"pos",
+    instruction:"주어에 알맞은 동사 형태를 골라요.",
+    before:"I", blank:true, after:"to school every day.",
+    hint:"힌트: 나는 매일 학교에 '걸어가요'.",
+    subjectHl:"I",
+    options:["walk","walks","walked","run"],
+    answer:"walk",
+    reason:{
+      correct:"주어가 I(1인칭)일 때 일반동사는 원형 그대로 써요.",
+      wrong:"주어가 I일 때는 동사원형을 써야 해요."
+    },
+    translation:"나는 매일 학교에 <b>걸어가요</b>. → I <b>walk</b> to school every day."
+  },
+  {
+    id:2, type:"pos",
+    instruction:"주어에 알맞은 동사 형태를 골라요.",
+    before:"She", blank:true, after:"English at school.",
+    hint:"힌트: 그녀는 영어를 '말해요'.",
+    subjectHl:"She",
+    options:["speaks","speak","spoke","talked"],
+    answer:"speaks",
+    reason:{
+      correct:"주어가 She(3인칭 단수)일 때 speak → speaks로 바꿔요.",
+      wrong:"주어가 She/He/It일 때는 동사에 -(e)s를 붙여야 해요. speak → speaks"
+    },
+    translation:"그녀는 학교에서 영어를 <b>말해요</b>. → She <b>speaks</b> English at school."
+  },
+  {
+    id:3, type:"pos",
+    instruction:"주어에 알맞은 동사 형태를 골라요.",
+    before:"He", blank:true, after:"to bed late on weekends.",
+    hint:"힌트: 그는 주말에 늦게 '자러 가요'.",
+    subjectHl:"He",
+    options:["goes","go","went","comes"],
+    answer:"goes",
+    reason:{
+      correct:"주어가 He일 때 go → goes로 바꿔요. (o로 끝나면 -es)",
+      wrong:"주어가 He/She/It일 때 go는 goes가 돼요."
+    },
+    translation:"그는 주말에 늦게 <b>자러 가요</b>. → He <b>goes</b> to bed late on weekends."
+  },
+  {
+    id:4, type:"pos",
+    instruction:"주어에 알맞은 동사 형태를 골라요.",
+    before:"My sister", blank:true, after:"the dishes every day.",
+    hint:"힌트: 내 여동생은 매일 설거지를 '씻어요'.",
+    subjectHl:"My sister",
+    options:["washes","wash","washed","dries"],
+    answer:"washes",
+    reason:{
+      correct:"주어가 My sister(3인칭 단수)일 때 wash → washes로 바꿔요. (-sh로 끝나면 -es)",
+      wrong:"주어가 3인칭 단수일 때 wash는 washes가 돼요."
+    },
+    translation:"내 여동생은 매일 설거지를 <b>해요</b>. → My sister <b>washes</b> the dishes every day."
+  },
+  {
+    id:5, type:"pos",
+    instruction:"주어에 알맞은 동사 형태를 골라요.",
+    before:"They", blank:true, after:"soccer every afternoon.",
+    hint:"힌트: 그들은 매일 오후 축구를 '해요'.",
+    subjectHl:"They",
+    options:["play","plays","played","practice"],
+    answer:"play",
+    reason:{
+      correct:"주어가 They(복수)일 때 동사는 원형 그대로 써요.",
+      wrong:"주어가 They일 때는 동사원형을 써야 해요."
+    },
+    translation:"그들은 매일 오후 축구를 <b>해요</b>. → They <b>play</b> soccer every afternoon."
+  },
+  {
+    id:6, type:"pos",
+    instruction:"주어에 알맞은 동사 형태를 골라요.",
+    before:"The baby", blank:true, after:"every night.",
+    hint:"힌트: 아기가 매일 밤 '울어요'.",
+    subjectHl:"The baby",
+    options:["cries","cry","cried","sleeps"],
+    answer:"cries",
+    reason:{
+      correct:"주어가 The baby(3인칭 단수)일 때 cry → cries로 바꿔요. (자음+y → -ies)",
+      wrong:"주어가 3인칭 단수일 때 cry는 cries가 돼요."
+    },
+    translation:"아기는 매일 밤 <b>울어요</b>. → The baby <b>cries</b> every night."
+  },
+  // ── 부정문 7~12: 선택지에 긍정 동사 없음 ───────────────────
+  {
+    id:7, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"I", blank:true, after:"meat. I eat vegetables.",
+    subjectHl:"I",
+    options:["don\'t eat","doesn\'t eat","don\'t eats","didn\'t eat"],
+    answer:"don\'t eat",
+    reason:{
+      correct:"주어가 I일 때 부정문은 don't + 동사원형을 써요.",
+      wrong:"주어가 I일 때 부정문은 don't + 동사원형을 써야 해요."
+    },
+    translation:"나는 고기를 먹지 <b>않아요</b>. 나는 채소를 먹어요.<br>→ I <b>don\'t eat</b> meat. I eat vegetables."
+  },
+  {
+    id:8, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"She", blank:true, after:"coffee. She drinks tea.",
+    subjectHl:"She",
+    options:["doesn\'t drink","don\'t drink","doesn\'t drinks","didn\'t drink"],
+    answer:"doesn\'t drink",
+    reason:{
+      correct:"주어가 She(3인칭 단수)일 때 부정문은 doesn't + 동사원형을 써요.",
+      wrong:"주어가 She/He/It일 때 부정문은 doesn't + 동사원형을 써야 해요."
+    },
+    translation:"그녀는 커피를 마시지 <b>않아요</b>. 그녀는 차를 마셔요.<br>→ She <b>doesn\'t drink</b> coffee. She drinks tea."
+  },
+  {
+    id:9, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"He", blank:true, after:"to school. He works at home.",
+    subjectHl:"He",
+    options:["doesn\'t go","don\'t go","doesn\'t goes","didn\'t go"],
+    answer:"doesn\'t go",
+    reason:{
+      correct:"주어가 He(3인칭 단수)일 때 부정문은 doesn't + 동사원형을 써요.",
+      wrong:"주어가 He/She/It일 때 부정문은 doesn't + 동사원형이에요. goes가 아니라 go예요."
+    },
+    translation:"그는 학교에 가지 <b>않아요</b>. 그는 집에서 일해요.<br>→ He <b>doesn\'t go</b> to school. He works at home."
+  },
+  {
+    id:10, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"We", blank:true, after:"TV on weekdays. We study.",
+    subjectHl:"We",
+    options:["don\'t watch","doesn\'t watch","don\'t watches","didn\'t watch"],
+    answer:"don\'t watch",
+    reason:{
+      correct:"주어가 We(복수)일 때 부정문은 don't + 동사원형을 써요.",
+      wrong:"주어가 We/They/You일 때 부정문은 don't + 동사원형을 써야 해요."
+    },
+    translation:"우리는 평일에 TV를 보지 <b>않아요</b>. 우리는 공부해요.<br>→ We <b>don\'t watch</b> TV on weekdays. We study."
+  },
+  {
+    id:11, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"My dad", blank:true, after:"fish. He likes chicken.",
+    subjectHl:"My dad",
+    options:["doesn\'t like","don\'t like","doesn\'t likes","didn\'t like"],
+    answer:"doesn\'t like",
+    reason:{
+      correct:"주어가 My dad(3인칭 단수)일 때 부정문은 doesn't + 동사원형을 써요.",
+      wrong:"주어가 3인칭 단수일 때 부정문은 doesn't + 동사원형이에요. likes가 아니라 like예요."
+    },
+    translation:"우리 아빠는 생선을 좋아하지 <b>않아요</b>. 그는 닭고기를 좋아해요.<br>→ My dad <b>doesn\'t like</b> fish. He likes chicken."
+  },
+  {
+    id:12, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"They", blank:true, after:"early. They get up at 8.",
+    subjectHl:"They",
+    options:["don\'t get up","doesn\'t get up","don\'t gets up","didn\'t get up"],
+    answer:"don\'t get up",
+    reason:{
+      correct:"주어가 They(복수)일 때 부정문은 don't + 동사원형을 써요.",
+      wrong:"주어가 They/We/You일 때 부정문은 don't + 동사원형을 써야 해요."
+    },
+    translation:"그들은 일찍 일어나지 <b>않아요</b>. 그들은 8시에 일어나요.<br>→ They <b>don\'t get up</b> early. They get up at 8."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr, answer){
+  let result;
+  let tries = 0;
+  do {
+    result = shuffle(arr);
+    tries++;
+  } while(result[0].toLowerCase() === answer.toLowerCase() && tries < 20);
+  return result;
+}
+
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options, q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  // 문장 렌더링
+  const sb=document.getElementById('sentenceBox');
+  // 주어 중에 공백 포함(My sister, The baby, My dad) 처리
+  const subHtml='<span class="sub en">'+escapeHtml(q.subjectHl)+'</span>';
+  const blankHtml='<span class="blank en" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+  const afterHtml='<span class="en">'+escapeHtml(q.after)+'</span>';
+  const hintHtml=q.hint
+    ? '<div style="margin-top:8px;font-size:13px;color:#888;font-weight:600;">'+escapeHtml(q.hint)+'</div>'
+    : '';
+  sb.innerHTML=subHtml+' '+blankHtml+' '+afterHtml+hintHtml;
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  const bl=document.getElementById('mainBlank');
+  if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(q.subjectHl)+' [___] '+escapeHtml(q.after)+'</div>'+
+        '<div class="right-line en">'+escapeHtml(q.subjectHl)+' '+escapeHtml(q.answer)+' '+escapeHtml(q.after)+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

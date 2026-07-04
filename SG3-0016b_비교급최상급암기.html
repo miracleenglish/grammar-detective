@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0016b 비교급·최상급 암기 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --m-badge:#E07B39;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .badge{display:inline-block;background:var(--m-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .subtitle{font-size:12px;color:#bbb;margin-top:2px;}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:12px;}
+
+  /* 원급 표시 카드 */
+  .adj-card{
+    background:linear-gradient(135deg,#FFF3E0,#FEE4C0);
+    border:2px solid var(--accent);
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .adj-label{font-size:12px;color:#aaa;font-weight:700;margin-bottom:4px;}
+  .adj-base{font-size:32px;font-weight:900;color:var(--accent-dark);font-family:'Nunito',sans-serif;margin-bottom:2px;}
+  .adj-meaning{font-size:14px;color:#888;font-weight:600;}
+
+  /* 변환 방향 표시 */
+  .ask-row{
+    display:flex;align-items:center;justify-content:center;
+    gap:10px;margin-bottom:14px;
+    font-size:16px;font-weight:700;color:#666;
+  }
+  .ask-tag{
+    display:inline-block;
+    padding:6px 18px;
+    border-radius:20px;
+    font-size:17px;font-weight:900;
+  }
+  .tag-comp{background:#E3F2FD;color:#1976D2;}
+  .tag-super{background:#F3E5F5;color:#7B1FA2;}
+  .arrow-icon{font-size:20px;color:var(--accent);}
+
+  /* 선택지 — 2열 */
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{
+    font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;
+    padding:15px 8px;
+    border:2px solid #EADFCF;background:#FFFDF9;
+    border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);
+  }
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:8px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  /* 원급→비교급→최상급 3단 표시 */
+  .triple{
+    font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;
+    color:var(--accent-dark);margin-bottom:6px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .triple .arrow{color:var(--accent);font-size:14px;}
+  .triple .comp{color:#1976D2;}
+  .triple .super{color:#7B1FA2;}
+  .fb-example{font-size:13px;color:#555;margin-top:6px;}
+  .fb-example b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:8px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.7;}
+  .review-item .r-triple{font-family:'Nunito',sans-serif;font-weight:800;color:var(--accent-dark);font-size:15px;}
+  .review-item .r-meaning{color:#888;font-size:13px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">암기형</span>
+      <span class="app-num">SG3-0016b</span>
+    </div>
+    <div class="title">비교급·최상급 암기</div>
+    <div class="subtitle">L13~14 · 4가지 패턴 전체</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 16</div>
+  </div>
+
+  <div class="instruction-box">🔍 원급을 보고 비교급 또는 최상급을 골라요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="adj-card">
+        <div class="adj-label">원급 (형용사)</div>
+        <div class="adj-base en" id="adjBase"></div>
+        <div class="adj-meaning" id="adjMeaning"></div>
+      </div>
+      <div class="ask-row">
+        <span class="arrow-icon">↓</span>
+        <span class="ask-tag" id="askTag"></span>
+        <span class="arrow-icon">은?</span>
+      </div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="triple" id="fbTriple"></div>
+        <div class="fb-example" id="fbExample"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 암기형 설계 원칙
+// - 원급 제시 → 비교급 또는 최상급 4지선다
+// - ask: "comp" (비교급) 또는 "super" (최상급)
+// - 오답: 잘못된 형태 (er오답/more오답/est오답/원급) 혼합
+// - 피드백: 원급→비교급→최상급 3단 표시 + 예문
+// - 4가지 패턴 균형: ~er/~ier/more~/불규칙
+// - 비교급 8문제 + 최상급 8문제 = 16문제
+
+const ALL_QUESTIONS = [
+  // ── 비교급 (comp) ──────────────────────────────────────────
+  // ~er형
+  {id:1,  ask:"comp", base:"fast",       meaning:"빠른",
+   comp:"faster",        super_:"the fastest",
+   options:["faster","fastly","fastest","more fast"],
+   answer:"faster",
+   example:"A cheetah is <b>faster</b> than a horse."},
+  {id:2,  ask:"comp", base:"big",        meaning:"큰",
+   comp:"bigger",        super_:"the biggest",
+   options:["bigger","more big","bigest","biggest"],
+   answer:"bigger",
+   example:"An elephant is <b>bigger</b> than a dog."},
+  {id:3,  ask:"comp", base:"hot",        meaning:"뜨거운 / 더운",
+   comp:"hotter",        super_:"the hottest",
+   options:["hotter","hoter","more hot","hottest"],
+   answer:"hotter",
+   example:"Egypt is <b>hotter</b> than England."},
+  {id:4,  ask:"comp", base:"nice",       meaning:"멋진 / 좋은",
+   comp:"nicer",         super_:"the nicest",
+   options:["nicer","more nice","nicest","nicely"],
+   answer:"nicer",
+   example:"This jacket is <b>nicer</b> than that one."},
+  // ~ier형
+  {id:5,  ask:"comp", base:"easy",       meaning:"쉬운",
+   comp:"easier",        super_:"the easiest",
+   options:["easier","easyer","more easy","easiest"],
+   answer:"easier",
+   example:"This test is <b>easier</b> than the last one."},
+  {id:6,  ask:"comp", base:"happy",      meaning:"행복한",
+   comp:"happier",       super_:"the happiest",
+   options:["happier","happyer","more happy","happiest"],
+   answer:"happier",
+   example:"She looks <b>happier</b> today."},
+  // more~형
+  {id:7,  ask:"comp", base:"dangerous",  meaning:"위험한",
+   comp:"more dangerous", super_:"the most dangerous",
+   options:["more dangerous","dangerouser","dangerousest","most dangerous"],
+   answer:"more dangerous",
+   example:"A shark is <b>more dangerous</b> than a fish."},
+  {id:8,  ask:"comp", base:"expensive",  meaning:"비싼",
+   comp:"more expensive", super_:"the most expensive",
+   options:["more expensive","expensiver","expensivest","most expensive"],
+   answer:"more expensive",
+   example:"Gold is <b>more expensive</b> than silver."},
+  // ── 최상급 (super) ─────────────────────────────────────────
+  // ~est형
+  {id:9,  ask:"super", base:"long",      meaning:"긴",
+   comp:"longer",        super_:"the longest",
+   options:["the longest","longer","most long","longuest"],
+   answer:"the longest",
+   example:"The Nile is <b>the longest</b> river in the world."},
+  {id:10, ask:"super", base:"tall",      meaning:"키 큰",
+   comp:"taller",        super_:"the tallest",
+   options:["the tallest","taller","the most tall","taller than"],
+   answer:"the tallest",
+   example:"Karen is <b>the tallest</b> student in class."},
+  // ~iest형
+  {id:11, ask:"super", base:"heavy",     meaning:"무거운",
+   comp:"heavier",       super_:"the heaviest",
+   options:["the heaviest","heavier","heavyest","the most heavy"],
+   answer:"the heaviest",
+   example:"The elephant is <b>the heaviest</b> animal here."},
+  {id:12, ask:"super", base:"funny",     meaning:"재미있는",
+   comp:"funnier",       super_:"the funniest",
+   options:["the funniest","funnier","the most funny","most funnily"],
+   answer:"the funniest",
+   example:"He is <b>the funniest</b> kid in class."},
+  // most~형
+  {id:13, ask:"super", base:"interesting", meaning:"흥미로운",
+   comp:"more interesting", super_:"the most interesting",
+   options:["the most interesting","more interesting","interestingest","most interestingly"],
+   answer:"the most interesting",
+   example:"This is <b>the most interesting</b> book I have ever read."},
+  {id:14, ask:"super", base:"beautiful",  meaning:"아름다운",
+   comp:"more beautiful",  super_:"the most beautiful",
+   options:["the most beautiful","more beautiful","beautifulest","most beautifully"],
+   answer:"the most beautiful",
+   example:"That is <b>the most beautiful</b> painting in the museum."},
+  // 불규칙
+  {id:15, ask:"comp", base:"good",       meaning:"좋은",
+   comp:"better",        super_:"the best",
+   options:["better","gooder","more good","best"],
+   answer:"better",
+   example:"Today\'s weather is <b>better</b> than yesterday\'s."},
+  {id:16, ask:"super", base:"bad",       meaning:"나쁜",
+   comp:"worse",         super_:"the worst",
+   options:["the worst","worse","most bad","baddest"],
+   answer:"the worst",
+   example:"This is <b>the worst</b> score I have ever gotten."}
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result; let tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options,q.answer);
+
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+  document.getElementById('adjBase').textContent=q.base;
+  document.getElementById('adjMeaning').textContent=q.meaning;
+
+  const tag=document.getElementById('askTag');
+  if(q.ask==='comp'){
+    tag.textContent='비교급';
+    tag.className='ask-tag tag-comp';
+  } else {
+    tag.textContent='최상급';
+    tag.className='ask-tag tag-super';
+  }
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+
+  // 3단 표시: 원급 → 비교급 → 최상급
+  const triple=document.getElementById('fbTriple');
+  triple.innerHTML=
+    '<span class="en">'+escapeHtml(q.base)+'</span>'+
+    '<span class="arrow">→</span>'+
+    '<span class="comp en">'+escapeHtml(q.comp)+'</span>'+
+    '<span class="arrow">→</span>'+
+    '<span class="super en">'+escapeHtml(q.super_)+'</span>';
+  document.getElementById('fbExample').innerHTML=q.example;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'개를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="r-triple en">'+escapeHtml(q.base)+
+        ' → <span style="color:#1976D2">'+escapeHtml(q.comp)+'</span>'+
+        ' → <span style="color:#7B1FA2">'+escapeHtml(q.super_)+'</span></div>'+
+        '<div class="r-meaning">'+escapeHtml(q.meaning)+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 16개 전부 맞혔어요! 비교급·최상급 완벽 암기!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

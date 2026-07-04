@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0016 비교급 고르기 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --a-badge:#4A90D9;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--a-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:19px;line-height:1.7;margin-bottom:6px;color:var(--text);}
+  .hl{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .blank{display:inline-block;min-width:100px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:16px;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;padding:13px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">A형</span>
+      <span class="app-num">SG3-0016</span>
+    </div>
+    <div class="title">비교급 고르기</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 ~ than으로 두 가지를 비교해봐요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="sentence" id="sentenceBox"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 이중정답 방지 원칙
+// - 한글 힌트로 비교 대상과 방향 명확히 고정
+// - 선택지 구성: 정답 1개 + 철자 오류형 + 원급형 + more+짧은형용사(금지패턴) 오답
+// - "more + 짧은형용사" 이중정답 방지: 오답에 포함하되 정답으로 처리 안 함
+//   → 단, 오답이 "more+짧은형용사" 패턴이면 설명에서 명시
+// - 불규칙 비교급(good→better, bad→worse) 명확히 구분
+// - 4가지 패턴 균형 배분:
+//   ① ~er형(1음절): fast·big·cheap·hot 등
+//   ② ~ier형(자음+y): easy·happy·heavy 등
+//   ③ more~형(3음절+): dangerous·expensive·interesting
+//   ④ 불규칙: good→better / bad→worse
+
+const ALL_QUESTIONS = [
+  // ── ~er형 비교급 (1~4) ────────────────────────────────────
+  {
+    id:1, type:"er",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["A cheetah is", null, "than a horse."],
+    hint:"힌트: 치타가 말보다 더 '빠르다'고 비교해요.",
+    options:["faster","more fast","fastest","fast"],
+    answer:"faster",
+    reason:{
+      correct:"fast는 1음절이라 -er을 붙여요. faster than이 맞아요.",
+      wrong:"짧은 형용사(1~2음절)는 -er을 붙여요. more fast가 아니라 faster예요."
+    },
+    translation:"치타는 말보다 <b>더 빠르다</b>. → A cheetah is <b>faster</b> than a horse."
+  },
+  {
+    id:2, type:"er",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["The Nile is", null, "than the Amazon."],
+    hint:"힌트: 나일강이 아마존강보다 더 '길다'고 비교해요.",
+    options:["longer","more long","long","longest"],
+    answer:"longer",
+    reason:{
+      correct:"long은 1음절이라 -er을 붙여요. longer than이 맞아요.",
+      wrong:"짧은 형용사는 -er을 붙여요. more long이 아니라 longer예요."
+    },
+    translation:"나일강은 아마존강보다 <b>더 길다</b>. → The Nile is <b>longer</b> than the Amazon."
+  },
+  {
+    id:3, type:"er",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["This phone is", null, "than that one."],
+    hint:"힌트: 이 전화기가 저것보다 더 '새 것'이라고 비교해요.",
+    options:["newer","more new","newest","new"],
+    answer:"newer",
+    reason:{
+      correct:"new는 1음절이라 -er을 붙여요. newer than이 맞아요.",
+      wrong:"짧은 형용사는 -er을 붙여요. more new가 아니라 newer예요."
+    },
+    translation:"이 전화기는 저것보다 <b>더 새 것이다</b>. → This phone is <b>newer</b> than that one."
+  },
+  {
+    id:4, type:"er",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["Summer is", null, "than spring here."],
+    hint:"힌트: 여름이 봄보다 더 '덥다'고 비교해요.",
+    options:["hotter","more hot","hoter","hot"],
+    answer:"hotter",
+    reason:{
+      correct:"hot은 단모음+단자음이라 자음을 중복하고 -er을 붙여요. hotter이 맞아요.",
+      wrong:"hot처럼 단모음+단자음으로 끝나는 형용사는 자음 중복 후 -er예요. hotter이에요."
+    },
+    translation:"여름은 봄보다 <b>더 덥다</b>. → Summer is <b>hotter</b> than spring here."
+  },
+  // ── ~ier형 비교급 (5~6) ───────────────────────────────────
+  {
+    id:5, type:"ier",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["Math is", null, "than art for me."],
+    hint:"힌트: 나에게 수학이 미술보다 더 '쉽다'고 비교해요.",
+    options:["easier","more easy","easyer","easy"],
+    answer:"easier",
+    reason:{
+      correct:"easy는 자음+y로 끝나요. y를 i로 바꾸고 -er을 붙여요. easier이 맞아요.",
+      wrong:"자음+y로 끝나는 형용사는 y→i+er예요. easier이에요. easyer이 아니에요."
+    },
+    translation:"나에게 수학은 미술보다 <b>더 쉽다</b>. → Math is <b>easier</b> than art for me."
+  },
+  {
+    id:6, type:"ier",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["She looks", null, "than her sister."],
+    hint:"힌트: 그녀가 언니보다 더 '행복해 보인다'고 비교해요.",
+    options:["happier","more happy","happyer","happy"],
+    answer:"happier",
+    reason:{
+      correct:"happy는 자음+y로 끝나요. y를 i로 바꾸고 -er을 붙여요. happier이 맞아요.",
+      wrong:"자음+y로 끝나는 형용사는 y→i+er예요. happier이에요. happyer이 아니에요."
+    },
+    translation:"그녀는 언니보다 <b>더 행복해 보인다</b>. → She looks <b>happier</b> than her sister."
+  },
+  // ── more~ 형 비교급 (7~9) ─────────────────────────────────
+  {
+    id:7, type:"more",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["A lion is", null, "than a rabbit."],
+    hint:"힌트: 사자가 토끼보다 더 '위험하다'고 비교해요.",
+    options:["more dangerous","dangerouser","most dangerous","dangerous"],
+    answer:"more dangerous",
+    reason:{
+      correct:"dangerous처럼 긴 형용사(3음절+)는 앞에 more를 붙여요. more dangerous than이 맞아요.",
+      wrong:"3음절 이상 형용사는 -er이 아니라 more를 앞에 붙여요. dangerouser는 틀렸어요."
+    },
+    translation:"사자는 토끼보다 <b>더 위험하다</b>. → A lion is <b>more dangerous</b> than a rabbit."
+  },
+  {
+    id:8, type:"more",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["A car is", null, "than a bike."],
+    hint:"힌트: 자동차가 자전거보다 더 '비싸다'고 비교해요.",
+    options:["more expensive","expensiver","most expensive","expensive"],
+    answer:"more expensive",
+    reason:{
+      correct:"expensive처럼 긴 형용사는 앞에 more를 붙여요. more expensive than이 맞아요.",
+      wrong:"긴 형용사는 -er이 아니라 more를 붙여요. expensiver는 틀렸어요."
+    },
+    translation:"자동차는 자전거보다 <b>더 비싸다</b>. → A car is <b>more expensive</b> than a bike."
+  },
+  {
+    id:9, type:"more",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["This movie is", null, "than that book."],
+    hint:"힌트: 이 영화가 저 책보다 더 '흥미롭다'고 비교해요.",
+    options:["more interesting","interestinger","most interesting","interesting"],
+    answer:"more interesting",
+    reason:{
+      correct:"interesting처럼 긴 형용사는 앞에 more를 붙여요. more interesting than이 맞아요.",
+      wrong:"긴 형용사는 -er이 아니라 more를 붙여요. interestinger는 틀렸어요."
+    },
+    translation:"이 영화는 저 책보다 <b>더 흥미롭다</b>. → This movie is <b>more interesting</b> than that book."
+  },
+  // ── 불규칙 비교급 (10~12) ────────────────────────────────
+  {
+    id:10, type:"irreg",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["Today\'s weather is", null, "than yesterday\'s."],
+    hint:"힌트: 오늘 날씨가 어제보다 더 '좋다'고 비교해요.",
+    options:["better","more good","gooder","best"],
+    answer:"better",
+    reason:{
+      correct:"good의 비교급은 불규칙이에요. better than이 맞아요.",
+      wrong:"good은 불규칙 비교급이에요. gooder이나 more good이 아니라 better예요."
+    },
+    translation:"오늘 날씨는 어제보다 <b>더 좋다</b>. → Today\'s weather is <b>better</b> than yesterday\'s."
+  },
+  {
+    id:11, type:"irreg",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["My cold is", null, "than last week."],
+    hint:"힌트: 감기가 지난 주보다 더 '심하다'고 비교해요.",
+    options:["worse","more bad","badder","worst"],
+    answer:"worse",
+    reason:{
+      correct:"bad의 비교급은 불규칙이에요. worse than이 맞아요.",
+      wrong:"bad는 불규칙 비교급이에요. badder이나 more bad가 아니라 worse예요."
+    },
+    translation:"내 감기는 지난 주보다 <b>더 심하다</b>. → My cold is <b>worse</b> than last week."
+  },
+  {
+    id:12, type:"irreg",
+    instruction:"빈칸에 알맞은 비교급을 골라요.",
+    parts:["She has", null, "books than me."],
+    hint:"힌트: 그녀가 나보다 책이 더 '많다'고 비교해요.",
+    options:["more","many more","manier","most"],
+    answer:"more",
+    reason:{
+      correct:"many의 비교급은 불규칙이에요. more than이 맞아요.",
+      wrong:"many의 비교급은 manier가 아니라 more예요. (many → more → the most)"
+    },
+    translation:"그녀는 나보다 책이 <b>더 많다</b>. → She has <b>more</b> books than me."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result; let tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options,q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  const sb=document.getElementById('sentenceBox');
+  const p=q.parts;
+  sb.innerHTML=
+    '<span class="en">'+escapeHtml(p[0])+'</span> '+
+    '<span class="blank en" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>'+
+    (p[2]?'<span class="en"> '+escapeHtml(p[2])+'</span>':'');
+
+  document.getElementById('hintBox').textContent=q.hint||'';
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+  const bl=document.getElementById('mainBlank');
+  if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const p=q.parts;
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(p[0])+' [___]'+(p[2]?' '+escapeHtml(p[2]):'')+'</div>'+
+        '<div class="right-line en">'+escapeHtml(p[0])+' '+escapeHtml(q.answer)+(p[2]?' '+escapeHtml(p[2]):'')+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

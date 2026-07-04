@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0005 현재진행형 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --a-badge:#4A90D9;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--a-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:20px;line-height:1.7;margin-bottom:6px;color:var(--text);}
+  .sub{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .hl{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .blank{display:inline-block;min-width:88px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:16px;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;padding:13px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">A형</span>
+      <span class="app-num">SG3-0005</span>
+    </div>
+    <div class="title">현재진행형 긍정·부정·의문문</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 지금 이 순간 일어나는 일을 표현해요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="sentence" id="sentenceBox"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 이중정답 방지 원칙
+// 긍정문(1~4): be동사+ing 선택지만, 부정형 없음
+//   시제신호어(now/Look!) → hl 강조
+//   동사 의미 충돌 방지: 한글 힌트 필수
+// 부정문(5~8): isn't/aren't+ing 선택지만, 긍정형 없음
+//   두 문장 맥락 제공
+// 의문문(9~12): Is/Are+ing 의문문 → Yes/No 단답
+//   Yes방향끼리 / No방향끼리만 구성
+
+const ALL_QUESTIONS = [
+  // ── 긍정문 (1~4): be동사+ing 선택지만 ─────────────────────
+  {
+    id:1, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"She", after:"now.",
+    signal:"now",
+    subjectHl:"She",
+    hint:"힌트: 그녀는 지금 '달리고 있어요'.",
+    options:["is running","are running","is run","am running"],
+    answer:"is running",
+    reason:{
+      correct:"주어가 She일 때 현재진행형은 is + 동사-ing예요. run → running(자음중복+ing)",
+      wrong:"주어가 She/He/It일 때 현재진행형은 is + 동사-ing예요."
+    },
+    translation:"그녀는 지금 <b>달리고 있어요</b>. → She <b>is running</b> now."
+  },
+  {
+    id:2, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"They", after:"in the park now.",
+    signal:"now",
+    subjectHl:"They",
+    hint:"힌트: 그들은 지금 공원에서 '자전거를 타고 있어요'.",
+    options:["are riding","is riding","are ride","were riding"],
+    answer:"are riding",
+    reason:{
+      correct:"주어가 They일 때 현재진행형은 are + 동사-ing예요. ride → riding(e 제거+ing)",
+      wrong:"주어가 They/We/You일 때 현재진행형은 are + 동사-ing예요."
+    },
+    translation:"그들은 지금 공원에서 <b>자전거를 타고 있어요</b>. → They <b>are riding</b> in the park now."
+  },
+  {
+    id:3, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"Look! The dog", after:"in the yard.",
+    signal:"Look!",
+    subjectHl:"The dog",
+    hint:"힌트: 강아지가 마당에서 '뛰어놀고 있어요'.",
+    options:["is playing","are playing","is play","was playing"],
+    answer:"is playing",
+    reason:{
+      correct:"주어가 The dog(3인칭 단수)일 때 현재진행형은 is + 동사-ing예요.",
+      wrong:"주어가 3인칭 단수일 때 현재진행형은 is + 동사-ing예요."
+    },
+    translation:"봐요! 강아지가 마당에서 <b>뛰어놀고 있어요</b>. → Look! The dog <b>is playing</b> in the yard."
+  },
+  {
+    id:4, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"I", after:"right now.",
+    signal:"right now",
+    subjectHl:"I",
+    hint:"힌트: 나는 지금 '공부하고 있어요'.",
+    options:["am studying","is studying","are studying","was studying"],
+    answer:"am studying",
+    reason:{
+      correct:"주어가 I일 때 현재진행형은 am + 동사-ing예요. study → studying(y 유지+ing)",
+      wrong:"주어가 I일 때 현재진행형은 am + 동사-ing예요."
+    },
+    translation:"나는 지금 <b>공부하고 있어요</b>. → I <b>am studying</b> right now."
+  },
+  // ── 부정문 (5~8): isn't/aren't+ing 선택지만 ────────────────
+  {
+    id:5, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"He", after:"TV now. He is reading.",
+    signal:"now",
+    subjectHl:"He",
+    options:["isn\'t watching","aren\'t watching","isn\'t watch","wasn\'t watching"],
+    answer:"isn\'t watching",
+    reason:{
+      correct:"주어가 He일 때 현재진행형 부정문은 isn't + 동사-ing예요.",
+      wrong:"주어가 He/She/It일 때 현재진행형 부정문은 isn't + 동사-ing예요."
+    },
+    translation:"그는 지금 TV를 보고 있지 <b>않아요</b>. 그는 책을 읽고 있어요.<br>→ He <b>isn\'t watching</b> TV now. He is reading."
+  },
+  {
+    id:6, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"We", after:"now. We are walking.",
+    signal:"now",
+    subjectHl:"We",
+    options:["aren\'t running","isn\'t running","aren\'t run","weren\'t running"],
+    answer:"aren\'t running",
+    reason:{
+      correct:"주어가 We일 때 현재진행형 부정문은 aren't + 동사-ing예요.",
+      wrong:"주어가 We/They/You일 때 현재진행형 부정문은 aren't + 동사-ing예요."
+    },
+    translation:"우리는 지금 달리고 있지 <b>않아요</b>. 우리는 걷고 있어요.<br>→ We <b>aren\'t running</b> now. We are walking."
+  },
+  {
+    id:7, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"She", after:"now. She is eating.",
+    signal:"now",
+    subjectHl:"She",
+    options:["isn\'t cooking","aren\'t cooking","isn\'t cook","wasn\'t cooking"],
+    answer:"isn\'t cooking",
+    reason:{
+      correct:"주어가 She일 때 현재진행형 부정문은 isn't + 동사-ing예요.",
+      wrong:"주어가 She/He/It일 때 현재진행형 부정문은 isn't + 동사-ing예요."
+    },
+    translation:"그녀는 지금 요리하고 있지 <b>않아요</b>. 그녀는 먹고 있어요.<br>→ She <b>isn\'t cooking</b> now. She is eating."
+  },
+  {
+    id:8, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"They", after:"right now. They are sleeping.",
+    signal:"right now",
+    subjectHl:"They",
+    options:["aren\'t playing","isn\'t playing","aren\'t play","weren\'t playing"],
+    answer:"aren\'t playing",
+    reason:{
+      correct:"주어가 They일 때 현재진행형 부정문은 aren't + 동사-ing예요.",
+      wrong:"주어가 They/We/You일 때 현재진행형 부정문은 aren't + 동사-ing예요."
+    },
+    translation:"그들은 지금 놀고 있지 <b>않아요</b>. 그들은 자고 있어요.<br>→ They <b>aren\'t playing</b> right now. They are sleeping."
+  },
+  // ── 의문문 → Yes/No 단답 (9~12) ───────────────────────────
+  {
+    id:9, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ Yes)",
+    question:"Is she dancing now?",
+    yesno:"yes",
+    hlWord:"Is",
+    options:["Yes, she is.","Yes, she are.","Yes, she am.","Yes, she does."],
+    answer:"Yes, she is.",
+    reason:{
+      correct:"Is she ~? 로 물으면 Yes, she is. 로 답해요.",
+      wrong:"Is she ~? 로 물으면 Yes, she is. 로 답해야 해요."
+    },
+    translation:"그녀는 지금 춤추고 있나요? → <b>Yes, she is.</b> 네, 추고 있어요."
+  },
+  {
+    id:10, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ No)",
+    question:"Are they swimming now?",
+    yesno:"no",
+    hlWord:"Are",
+    options:["No, they aren\'t.","No, they isn\'t.","No, they don\'t.","No, they weren\'t."],
+    answer:"No, they aren\'t.",
+    reason:{
+      correct:"Are they ~? 로 물으면 No, they aren't. 로 답해요.",
+      wrong:"Are they ~? 로 물으면 No, they aren't. 로 답해야 해요."
+    },
+    translation:"그들은 지금 수영하고 있나요? → <b>No, they aren't.</b> 아니요, 수영하고 있지 않아요."
+  },
+  {
+    id:11, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ Yes)",
+    question:"Is he sleeping right now?",
+    yesno:"yes",
+    hlWord:"Is",
+    options:["Yes, he is.","Yes, he are.","Yes, he am.","Yes, he does."],
+    answer:"Yes, he is.",
+    reason:{
+      correct:"Is he ~? 로 물으면 Yes, he is. 로 답해요.",
+      wrong:"Is he ~? 로 물으면 Yes, he is. 로 답해야 해요."
+    },
+    translation:"그는 지금 자고 있나요? → <b>Yes, he is.</b> 네, 자고 있어요."
+  },
+  {
+    id:12, type:"yesno",
+    instruction:"의문문을 읽고, 알맞은 단답을 골라요. (→ No)",
+    question:"Are you eating lunch now?",
+    yesno:"no",
+    hlWord:"Are",
+    options:["No, I\'m not.","No, I aren\'t.","No, I don\'t.","No, I wasn\'t."],
+    answer:"No, I\'m not.",
+    reason:{
+      correct:"Are you ~? 로 물으면 No, I'm not. 으로 답해요. (you → I로 바꿔요)",
+      wrong:"Are you ~? 로 물으면 No, I'm not. 으로 답해야 해요. (you → I로 바꿔요)"
+    },
+    translation:"너는 지금 점심을 먹고 있니? → <b>No, I\'m not.</b> 아니요, 먹고 있지 않아요."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr, answer){
+  let result;
+  let tries = 0;
+  do {
+    result = shuffle(arr);
+    tries++;
+  } while(result[0].toLowerCase() === answer.toLowerCase() && tries < 20);
+  return result;
+}
+
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options, q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  const sb=document.getElementById('sentenceBox');
+  const hb=document.getElementById('hintBox');
+
+  if(q.type==='yesno'){
+    // 질문 전체, 첫 단어(Is/Are) 강조
+    const words=q.question.split(' ');
+    sb.innerHTML=words.map(function(w,i){
+      // 시제신호어(now/right now) 강조
+      if(w==='now' || w==='now?' || w==='now.'){
+        return '<span class="hl">'+escapeHtml(w)+'</span>';
+      }
+      return i===0?'<span class="sub en">'+escapeHtml(w)+'</span>':'<span class="en">'+escapeHtml(w)+'</span>';
+    }).join(' ');
+    hb.textContent='';
+  } else {
+    // pos/neg: 주어(hl) + blank + after, 시제신호어 강조
+    const afterWithHl=escapeHtml(q.after).replace(
+      /(now\?|now\.|now|right now\.|right now|Look!)/g,
+      '<span class="hl">$1</span>'
+    );
+    sb.innerHTML=
+      '<span class="sub en">'+escapeHtml(q.subjectHl)+'</span> '+
+      '<span class="blank en" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '+
+      afterWithHl;
+    hb.textContent=q.hint||'';
+  }
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  if(q.type!=='yesno'){
+    const bl=document.getElementById('mainBlank');
+    if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+  }
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      let wrongLine='',rightLine='';
+      if(q.type==='yesno'){
+        wrongLine=q.question+' → ???';
+        rightLine=q.question+' → '+q.answer;
+      } else {
+        wrongLine=q.subjectHl+' [___] '+q.after;
+        rightLine=q.subjectHl+' '+q.answer+' '+q.after;
+      }
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(wrongLine)+'</div>'+
+        '<div class="right-line en">'+escapeHtml(rightLine)+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

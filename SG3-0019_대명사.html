@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0019 대명사 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --a-badge:#4A90D9;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--a-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:20px;line-height:1.75;margin-bottom:6px;color:var(--text);}
+  .sub{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .blank{display:inline-block;min-width:72px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:16px;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;padding:14px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">A형</span>
+      <span class="app-num">SG3-0019</span>
+    </div>
+    <div class="title">대명사 고르기</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 주격·소유격·지시대명사를 골라봐요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="sentence" id="sentenceBox"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 이중정답 방지 원칙
+// 유형 3가지:
+// "subj"  : 주격 대명사 (I/You/He/She/It/We/They)
+//   → 맥락으로 성별·단복수 명확히 고정
+//   → 선택지: 같은 카테고리 대명사만
+// "poss"  : 소유격 (my/your/his/her/its/our/their + 's형)
+//   → 힌트로 소유자 맥락 고정
+//   → 소유격만 선택지에 포함
+// "demo"  : 지시대명사 (this/that/these/those)
+//   → 단수/복수, 가까움/멂 맥락 명확히 고정
+
+const ALL_QUESTIONS = [
+  // ── 주격 대명사 (1~4) ────────────────────────────────────
+  {
+    id:1, type:"subj",
+    instruction:"빈칸에 알맞은 주격 대명사를 골라요.",
+    parts:["Look at that woman.", null, "is my English teacher."],
+    hint:"저 여자분을 봐요. 그녀는 내 영어 선생님이에요.",
+    options:["She","He","They","It"],
+    answer:"She",
+    reason:{
+      correct:"여성(woman)을 가리킬 때 주격 대명사는 She예요.",
+      wrong:"woman은 여성 단수예요. 주격 대명사는 She예요."
+    },
+    translation:"저 여자분을 봐요. <b>그녀</b>는 내 영어 선생님이에요. → <b>She</b> is my English teacher."
+  },
+  {
+    id:2, type:"subj",
+    instruction:"빈칸에 알맞은 주격 대명사를 골라요.",
+    parts:["My brother and I study together.", null, "are in the same class."],
+    hint:"내 남동생과 나는 함께 공부해요. 우리는 같은 반이에요.",
+    options:["We","They","He","She"],
+    answer:"We",
+    reason:{
+      correct:"말하는 사람(I)이 포함된 복수는 We예요.",
+      wrong:"My brother and I는 화자 포함 복수예요. We가 맞아요."
+    },
+    translation:"내 남동생과 나는 함께 공부해요. <b>우리</b>는 같은 반이에요. → <b>We</b> are in the same class."
+  },
+  {
+    id:3, type:"subj",
+    instruction:"빈칸에 알맞은 주격 대명사를 골라요.",
+    parts:["I have a cat.", null, "is very cute and fluffy."],
+    hint:"나는 고양이가 있어요. _____은 매우 귀엽고 복슬복슬해요.",
+    options:["It","She","He","They"],
+    answer:"It",
+    reason:{
+      correct:"동물(cat)을 가리킬 때 주격 대명사는 It이에요.",
+      wrong:"동물은 사람이 아니므로 It을 써요."
+    },
+    translation:"나는 고양이가 있어요. <b>그것</b>은 매우 귀엽고 복슬복슬해요. → <b>It</b> is very cute and fluffy."
+  },
+  {
+    id:4, type:"subj",
+    instruction:"빈칸에 알맞은 주격 대명사를 골라요.",
+    parts:["Those are Tom\'s books.", null, "are on the desk."],
+    hint:"저것들은 Tom의 책이에요. _____은 책상 위에 있어요.",
+    options:["They","It","He","She"],
+    answer:"They",
+    reason:{
+      correct:"books처럼 복수 사물을 가리킬 때 주격 대명사는 They예요.",
+      wrong:"books는 복수예요. 복수 사물의 주격 대명사는 They예요."
+    },
+    translation:"저것들은 Tom의 책이에요. <b>그것들</b>은 책상 위에 있어요. → <b>They</b> are on the desk."
+  },
+  // ── 소유격 (5~8) ─────────────────────────────────────────
+  {
+    id:5, type:"poss",
+    instruction:"빈칸에 알맞은 소유격을 골라요.",
+    parts:["The dog wags", null, "tail when it is happy."],
+    hint:"개는 행복할 때 _____ 꼬리를 흔들어요.",
+    options:["its","his","her","their"],
+    answer:"its",
+    reason:{
+      correct:"사물/동물의 소유격은 its예요. it\'s(축약형)와 구별해요.",
+      wrong:"동물(dog)의 소유격은 its예요."
+    },
+    translation:"개는 행복할 때 <b>자신의</b> 꼬리를 흔들어요. → The dog wags <b>its</b> tail when it is happy."
+  },
+  {
+    id:6, type:"poss",
+    instruction:"빈칸에 알맞은 소유격을 골라요.",
+    parts:["Anna and Lisa share", null, "bedroom."],
+    hint:"Anna와 Lisa는 _____ 침실을 함께 써요.",
+    options:["their","our","her","its"],
+    answer:"their",
+    reason:{
+      correct:"두 사람이 함께 소유할 때 소유격은 their예요.",
+      wrong:"Anna and Lisa는 복수 3인칭이에요. 소유격은 their예요."
+    },
+    translation:"Anna와 Lisa는 <b>그들의</b> 침실을 함께 써요. → Anna and Lisa share <b>their</b> bedroom."
+  },
+  {
+    id:7, type:"poss",
+    instruction:"빈칸에 알맞은 소유격을 골라요.",
+    parts:["Is this", null, "pencil case?", "Yes, it\'s mine."],
+    hint:"이것이 _____ 필통이니? 응, 내 거야.",
+    options:["your","my","her","their"],
+    answer:"your",
+    reason:{
+      correct:"상대방에게 물을 때 '너의'는 your예요.",
+      wrong:"상대방의 물건을 물을 때는 your를 써요."
+    },
+    translation:"이것이 <b>너의</b> 필통이니? 응, 내 거야. → Is this <b>your</b> pencil case? Yes, it\'s mine."
+  },
+  {
+    id:8, type:"poss",
+    instruction:"빈칸에 알맞은 소유격을 골라요.",
+    parts:["Mr. Kim forgot", null, "glasses at home."],
+    hint:"Kim 선생님은 _____ 안경을 집에 두고 오셨어요.",
+    options:["his","her","its","their"],
+    answer:"his",
+    reason:{
+      correct:"남성(Mr. Kim)의 소유격은 his예요.",
+      wrong:"Mr. Kim은 남성이에요. 남성 소유격은 his예요."
+    },
+    translation:"Kim 선생님은 <b>그의</b> 안경을 집에 두고 오셨어요. → Mr. Kim forgot <b>his</b> glasses at home."
+  },
+  // ── 지시대명사 (9~12) ────────────────────────────────────
+  {
+    id:9, type:"demo",
+    instruction:"빈칸에 알맞은 지시대명사를 골라요.",
+    parts:[null, "is my new backpack. I bought it yesterday."],
+    hint:"이것은 내 새 가방이에요. 어제 샀어요.",
+    options:["This","That","These","Those"],
+    answer:"This",
+    reason:{
+      correct:"가까이 있는 단수 사물은 This예요.",
+      wrong:"가까이 있는 단수는 This, 멀리 있는 단수는 That이에요."
+    },
+    translation:"<b>이것</b>은 내 새 가방이에요. → <b>This</b> is my new backpack."
+  },
+  {
+    id:10, type:"demo",
+    instruction:"빈칸에 알맞은 지시대명사를 골라요.",
+    parts:["Look at the birds over there.", null, "are flying south."],
+    hint:"저기 새들을 봐요. 저것들은 남쪽으로 날고 있어요.",
+    options:["Those","These","That","This"],
+    answer:"Those",
+    reason:{
+      correct:"멀리 있는 복수 사물은 Those예요.",
+      wrong:"멀리 있는 복수는 Those예요. 가까이 있는 복수는 These예요."
+    },
+    translation:"저기 새들을 봐요. <b>저것들</b>은 남쪽으로 날고 있어요. → <b>Those</b> are flying south."
+  },
+  {
+    id:11, type:"demo",
+    instruction:"빈칸에 알맞은 지시대명사를 골라요.",
+    parts:[null, "cookies are for you. Please eat them."],
+    hint:"이 쿠키들은 너를 위한 거야. 먹어.",
+    options:["These","Those","This","That"],
+    answer:"These",
+    reason:{
+      correct:"가까이 있는 복수 사물은 These예요.",
+      wrong:"가까이 있는 복수는 These예요. 멀리 있는 복수는 Those예요."
+    },
+    translation:"<b>이 쿠키들</b>은 너를 위한 거야. 먹어. → <b>These</b> cookies are for you."
+  },
+  {
+    id:12, type:"demo",
+    instruction:"빈칸에 알맞은 지시대명사를 골라요.",
+    parts:["Can you see the mountain over there?", null, "is Mt. Halla."],
+    hint:"저기 산 보여요? 저것이 한라산이에요.",
+    options:["That","This","Those","These"],
+    answer:"That",
+    reason:{
+      correct:"멀리 있는 단수 사물은 That이에요.",
+      wrong:"멀리 있는 단수는 That이에요. 가까이 있는 단수는 This예요."
+    },
+    translation:"저기 산 보여요? <b>저것</b>이 한라산이에요. → <b>That</b> is Mt. Halla."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result; let tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options,q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  const sb=document.getElementById('sentenceBox');
+  const p=q.parts;
+  let html='';
+  p.forEach(function(part,i){
+    if(part===null){
+      html+='<span class="blank en" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ';
+    } else {
+      html+='<span class="en">'+escapeHtml(part)+'</span> ';
+    }
+  });
+  sb.innerHTML=html.trim();
+  document.getElementById('hintBox').textContent=q.hint||'';
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+  const bl=document.getElementById('mainBlank');
+  if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const pStr=q.parts.map(function(p){return p===null?'[___]':p;}).join(' ');
+      const rStr=q.parts.map(function(p){return p===null?q.answer:p;}).join(' ');
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(pStr)+'</div>'+
+        '<div class="right-line en">'+escapeHtml(rStr)+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>

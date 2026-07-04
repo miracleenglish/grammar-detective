@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SG3-0007 미래시제 긍정·부정문 | 영문법 탐정단</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FEF0E6;--accent:#F5A623;--accent-dark:#D4891A;
+    --a-badge:#4A90D9;--correct:#4CAF93;--wrong:#E8604C;
+    --card:#FFFFFF;--text:#333333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:16px;}
+  .en{font-family:'Nunito','Noto Sans KR',sans-serif;font-weight:700;}
+  .wrap{width:100%;max-width:480px;}
+
+  .header{background:var(--card);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(212,137,26,0.10);}
+  .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .badge{display:inline-block;background:var(--a-badge);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .app-num{font-size:12px;color:#999;font-weight:500;}
+  .title{font-size:19px;font-weight:900;color:var(--accent-dark);}
+  .progress-outer{margin-top:10px;background:#F5E4D3;border-radius:10px;height:10px;overflow:hidden;}
+  .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .3s ease;border-radius:10px;}
+  .progress-text{font-size:12px;color:#999;margin-top:6px;text-align:right;}
+
+  .instruction-box{background:#FFF3E0;border:2px solid var(--accent);border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:700;color:var(--accent-dark);text-align:center;}
+
+  .card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 3px 14px rgba(212,137,26,0.12);margin-bottom:14px;}
+  .card-instruction{font-size:15px;font-weight:800;color:var(--accent-dark);background:#FFF3E0;border-radius:10px;padding:8px 12px;margin-bottom:14px;text-align:center;}
+  .q-num{font-size:13px;font-weight:700;color:#aaa;margin-bottom:8px;}
+
+  .sentence{font-size:20px;line-height:1.7;margin-bottom:6px;color:var(--text);}
+  .sub{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .hl{color:var(--accent-dark);font-weight:800;border-bottom:2.5px solid var(--accent-dark);}
+  .blank{display:inline-block;min-width:88px;border-bottom:2.5px solid #444;text-align:center;font-weight:800;vertical-align:bottom;line-height:1.4;padding:0 4px;}
+  .blank.filled{color:var(--accent-dark);border-bottom-color:var(--accent-dark);}
+  .hint-text{font-size:13px;color:#888;font-weight:600;margin-bottom:16px;}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-btn{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;padding:13px 8px;border:2px solid #EADFCF;background:#FFFDF9;border-radius:14px;cursor:pointer;transition:all .15s;color:var(--text);}
+  .opt-btn:active{transform:scale(0.97);}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.disabled{pointer-events:none;opacity:0.55;}
+  .opt-btn.disabled.correct,.opt-btn.disabled.wrong{opacity:1;}
+
+  .feedback{display:none;margin-top:16px;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.65;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:#E9F8F3;border:2px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDECE9;border:2px solid var(--wrong);}
+  .feedback-title{font-weight:900;margin-bottom:6px;font-size:15px;}
+  .feedback.correct-fb .feedback-title{color:var(--correct);}
+  .feedback.wrong-fb .feedback-title{color:var(--wrong);}
+  .feedback-translation{margin-top:8px;color:#555;}
+  .feedback-translation b{color:var(--accent-dark);}
+
+  .next-btn{display:none;width:100%;margin-top:16px;padding:15px;background:var(--accent-dark);color:#fff;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;}
+  .next-btn.show{display:block;}
+  .next-btn:active{transform:scale(0.98);}
+
+  .result-card{background:var(--card);border-radius:20px;padding:28px 22px;text-align:center;box-shadow:0 3px 14px rgba(212,137,26,0.12);}
+  .result-emoji{font-size:52px;margin-bottom:8px;}
+  .result-title{font-size:20px;font-weight:900;color:var(--accent-dark);margin-bottom:4px;}
+  .result-score{font-size:16px;color:#666;margin-bottom:14px;}
+  .stars{font-size:34px;letter-spacing:4px;margin-bottom:18px;}
+  .review-list{text-align:left;margin:18px 0;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#FFF8F0;border-left:4px solid var(--wrong);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;}
+  .review-item .wrong-line{color:var(--wrong);text-decoration:line-through;opacity:0.8;}
+  .review-item .right-line{color:var(--correct);font-weight:700;}
+  .review-item .reason-line{color:#666;margin-top:4px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+  .result-btn{padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent);color:#fff;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-top">
+      <span class="badge">A형</span>
+      <span class="app-num">SG3-0007</span>
+    </div>
+    <div class="title">미래시제 긍정·부정문 고르기</div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText">0 / 12</div>
+  </div>
+
+  <div class="instruction-box">🔍 will / won't로 미래를 표현해봐요!</div>
+
+  <div id="quizArea">
+    <div class="card">
+      <div class="card-instruction" id="cardInstruction"></div>
+      <div class="q-num" id="qNum">문제 1</div>
+      <div class="sentence" id="sentenceBox"></div>
+      <div class="hint-text" id="hintBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div id="feedbackReason"></div>
+        <div class="feedback-translation" id="feedbackTranslation"></div>
+      </div>
+      <button class="next-btn" id="nextBtn">다음 문제 →</button>
+    </div>
+  </div>
+
+  <div id="resultArea" class="hidden">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-title">탐정 임무 완료!</div>
+      <div class="result-score" id="resultScore"></div>
+      <div class="stars" id="resultStars"></div>
+      <div class="review-list" id="reviewList"></div>
+      <div class="result-btns">
+        <button class="result-btn btn-retry-wrong" id="retryWrongBtn">오답만 다시 풀기</button>
+        <button class="result-btn btn-retry-all" id="retryAllBtn">전체 다시 풀기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ★ 이중정답 방지 원칙
+// 긍정문(1~6): will + 동사원형 선택지만 (won't 등 부정형 완전 제외)
+//   - 신호어(tomorrow/next week 등) .hl 강조
+//   - 동사 의미 충돌 방지: 한글 힌트 필수
+// 부정문(7~12): won't + 동사원형 선택지만 (will 긍정형 완전 제외)
+//   - 두 문장 맥락으로 정답 고정
+
+const ALL_QUESTIONS = [
+  // ── 긍정문 1~6: will + 동사원형, 부정형 선택지 없음 ────────
+  {
+    id:1, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"I", after:"tomorrow.",
+    signal:"tomorrow",
+    subjectHl:"I",
+    hint:"힌트: 나는 내일 '공부할 거예요'.",
+    options:["will study","will studies","am studying","studied"],
+    answer:"will study",
+    reason:{
+      correct:"미래시제 긍정문은 will + 동사원형이에요. 주어와 상관없이 will study예요.",
+      wrong:"미래시제 긍정문은 will + 동사원형이에요. will 뒤에는 항상 동사원형을 써요."
+    },
+    translation:"나는 내일 <b>공부할 거예요</b>. → I <b>will study</b> tomorrow."
+  },
+  {
+    id:2, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"She", after:"next week.",
+    signal:"next week",
+    subjectHl:"She",
+    hint:"힌트: 그녀는 다음 주에 '돌아올 거예요'.",
+    options:["will come back","will comes back","is coming back","came back"],
+    answer:"will come back",
+    reason:{
+      correct:"미래시제 긍정문은 will + 동사원형이에요. will come back이 맞아요.",
+      wrong:"will 뒤에는 동사원형을 써요. comes back이 아니라 come back이에요."
+    },
+    translation:"그녀는 다음 주에 <b>돌아올 거예요</b>. → She <b>will come back</b> next week."
+  },
+  {
+    id:3, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"It", after:"tomorrow.",
+    signal:"tomorrow",
+    subjectHl:"It",
+    hint:"힌트: 내일 '비가 올 거예요'.",
+    options:["will rain","will rains","is raining","rained"],
+    answer:"will rain",
+    reason:{
+      correct:"미래시제 긍정문은 will + 동사원형이에요. will rain이 맞아요.",
+      wrong:"will 뒤에는 동사원형을 써요. rains가 아니라 rain이에요."
+    },
+    translation:"내일 <b>비가 올 거예요</b>. → It <b>will rain</b> tomorrow."
+  },
+  {
+    id:4, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"They", after:"next Sunday.",
+    signal:"next Sunday",
+    subjectHl:"They",
+    hint:"힌트: 그들은 다음 일요일에 '이사할 거예요'.",
+    options:["will move","will moves","are moving","moved"],
+    answer:"will move",
+    reason:{
+      correct:"미래시제 긍정문은 will + 동사원형이에요. will move가 맞아요.",
+      wrong:"will 뒤에는 동사원형을 써요. moves가 아니라 move예요."
+    },
+    translation:"그들은 다음 일요일에 <b>이사할 거예요</b>. → They <b>will move</b> next Sunday."
+  },
+  {
+    id:5, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"We", after:"at the park tomorrow.",
+    signal:"tomorrow",
+    subjectHl:"We",
+    hint:"힌트: 우리는 내일 공원에서 '만날 거예요'.",
+    options:["will meet","will meets","are meeting","met"],
+    answer:"will meet",
+    reason:{
+      correct:"미래시제 긍정문은 will + 동사원형이에요. will meet이 맞아요.",
+      wrong:"will 뒤에는 동사원형을 써요. meets가 아니라 meet이에요."
+    },
+    translation:"우리는 내일 공원에서 <b>만날 거예요</b>. → We <b>will meet</b> at the park tomorrow."
+  },
+  {
+    id:6, type:"pos",
+    instruction:"빈칸에 알맞은 말을 골라요.",
+    before:"My mom", after:"dinner tonight.",
+    signal:"tonight",
+    subjectHl:"My mom",
+    hint:"힌트: 엄마는 오늘 저녁 '요리할 거예요'.",
+    options:["will cook","will cooks","is cooking","cooked"],
+    answer:"will cook",
+    reason:{
+      correct:"미래시제 긍정문은 will + 동사원형이에요. will cook이 맞아요.",
+      wrong:"will 뒤에는 동사원형을 써요. cooks가 아니라 cook이에요."
+    },
+    translation:"엄마는 오늘 저녁 <b>요리할 거예요</b>. → My mom <b>will cook</b> dinner tonight."
+  },
+  // ── 부정문 7~12: won't + 동사원형, 긍정형 선택지 없음 ───────
+  {
+    id:7, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"I", after:"tomorrow. I will stay home.",
+    signal:"tomorrow",
+    subjectHl:"I",
+    hint:"힌트: 나는 내일 '학교에 가지 않을 거예요'.",
+    options:["won\'t go","won\'t goes","didn\'t go","don\'t go"],
+    answer:"won\'t go",
+    reason:{
+      correct:"미래시제 부정문은 won't + 동사원형이에요.",
+      wrong:"미래시제 부정문은 won't + 동사원형이에요. won't 뒤에는 동사원형을 써요."
+    },
+    translation:"나는 내일 학교에 가지 <b>않을 거예요</b>. 나는 집에 있을 거예요.<br>→ I <b>won\'t go</b> to school tomorrow. I will stay home."
+  },
+  {
+    id:8, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"She", after:"pizza. She will eat salad.",
+    signal:"",
+    subjectHl:"She",
+    hint:"힌트: 그녀는 피자를 '먹지 않을 거예요'.",
+    options:["won\'t eat","won\'t eats","didn\'t eat","doesn\'t eat"],
+    answer:"won\'t eat",
+    reason:{
+      correct:"미래시제 부정문은 won't + 동사원형이에요.",
+      wrong:"미래시제 부정문은 won't + 동사원형이에요. won't 뒤에는 항상 동사원형을 써요."
+    },
+    translation:"그녀는 피자를 먹지 <b>않을 거예요</b>. 그녀는 샐러드를 먹을 거예요.<br>→ She <b>won\'t eat</b> pizza. She will eat salad."
+  },
+  {
+    id:9, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"It", after:"tomorrow. It will be sunny.",
+    signal:"tomorrow",
+    subjectHl:"It",
+    hint:"힌트: 내일 '눈이 오지 않을 거예요'.",
+    options:["won\'t snow","won\'t snows","didn\'t snow","doesn\'t snow"],
+    answer:"won\'t snow",
+    reason:{
+      correct:"미래시제 부정문은 won't + 동사원형이에요.",
+      wrong:"미래시제 부정문은 won't + 동사원형이에요. won't 뒤에는 동사원형을 써요."
+    },
+    translation:"내일 눈이 오지 <b>않을 거예요</b>. 내일은 맑을 거예요.<br>→ It <b>won\'t snow</b> tomorrow. It will be sunny."
+  },
+  {
+    id:10, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"They", after:"by bus. They will walk.",
+    signal:"",
+    subjectHl:"They",
+    hint:"힌트: 그들은 버스로 '가지 않을 거예요'.",
+    options:["won\'t go","won\'t goes","didn\'t go","don\'t go"],
+    answer:"won\'t go",
+    reason:{
+      correct:"미래시제 부정문은 won't + 동사원형이에요.",
+      wrong:"미래시제 부정문은 won't + 동사원형이에요. 주어에 상관없이 won't go예요."
+    },
+    translation:"그들은 버스로 가지 <b>않을 거예요</b>. 그들은 걸어갈 거예요.<br>→ They <b>won\'t go</b> by bus. They will walk."
+  },
+  {
+    id:11, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"We", after:"TV tonight. We will read books.",
+    signal:"tonight",
+    subjectHl:"We",
+    hint:"힌트: 우리는 오늘 밤 TV를 '보지 않을 거예요'.",
+    options:["won\'t watch","won\'t watches","didn\'t watch","don\'t watch"],
+    answer:"won\'t watch",
+    reason:{
+      correct:"미래시제 부정문은 won't + 동사원형이에요.",
+      wrong:"미래시제 부정문은 won't + 동사원형이에요. won't 뒤에는 동사원형을 써요."
+    },
+    translation:"우리는 오늘 밤 TV를 보지 <b>않을 거예요</b>. 우리는 책을 읽을 거예요.<br>→ We <b>won\'t watch</b> TV tonight. We will read books."
+  },
+  {
+    id:12, type:"neg",
+    instruction:"두 문장을 비교해서, 문맥에 맞는 부정형을 골라요.",
+    before:"My dad", after:"late tomorrow. He will come home early.",
+    signal:"tomorrow",
+    subjectHl:"My dad",
+    hint:"힌트: 아빠는 내일 '늦지 않을 거예요'.",
+    options:["won\'t be","won\'t is","didn\'t be","doesn\'t be"],
+    answer:"won\'t be",
+    reason:{
+      correct:"미래시제 부정문은 won't + 동사원형이에요. be동사도 won't be로 써요.",
+      wrong:"미래시제 부정문은 won't + 동사원형이에요. won't is가 아니라 won't be예요."
+    },
+    translation:"아빠는 내일 늦지 <b>않을 거예요</b>. 그는 일찍 집에 올 거예요.<br>→ My dad <b>won\'t be</b> late tomorrow. He will come home early."
+  }
+];
+
+let quizQuestions=[], currentIndex=0, score=0, wrongQuestions=[], answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr, answer){
+  let result;
+  let tries = 0;
+  do {
+    result = shuffle(arr);
+    tries++;
+  } while(result[0].toLowerCase() === answer.toLowerCase() && tries < 20);
+  return result;
+}
+
+function startQuiz(list){
+  quizQuestions=list; currentIndex=0; score=0; wrongQuestions=[];
+  document.getElementById('quizArea').classList.remove('hidden');
+  document.getElementById('resultArea').classList.add('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered=false;
+  const q=quizQuestions[currentIndex];
+  const shuffledOpts=shuffleNoFirstAnswer(q.options, q.answer);
+
+  document.getElementById('cardInstruction').textContent=q.instruction;
+  document.getElementById('qNum').textContent='문제 '+(currentIndex+1);
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+quizQuestions.length;
+  document.getElementById('progressBar').style.width=(currentIndex/quizQuestions.length*100)+'%';
+
+  const sb=document.getElementById('sentenceBox');
+  const hb=document.getElementById('hintBox');
+
+  // 신호어 강조 (tomorrow / next week / tonight 등)
+  const signals=['tomorrow','tonight','next week','next sunday','next month'];
+  function hlSignal(text){
+    let result=escapeHtml(text);
+    signals.forEach(function(s){
+      const re=new RegExp('('+s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+      result=result.replace(re,'<span class="hl">$1</span>');
+    });
+    return result;
+  }
+
+  sb.innerHTML=
+    '<span class="sub en">'+escapeHtml(q.subjectHl)+'</span> '+
+    '<span class="blank en" id="mainBlank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '+
+    hlSignal(q.after);
+  hb.textContent=q.hint||'';
+
+  const ob=document.getElementById('optionsBox');
+  ob.innerHTML='';
+  shuffledOpts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn en';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){handleAnswer(opt,btn,q);});
+    ob.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').classList.remove('show','correct-fb','wrong-fb');
+  document.getElementById('nextBtn').classList.remove('show');
+}
+
+function handleAnswer(selected,btnEl,q){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===q.answer.toLowerCase();
+
+  document.querySelectorAll('#optionsBox .opt-btn').forEach(function(b){
+    b.classList.add('disabled');
+    if(b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('correct');
+  });
+  if(!isCorrect){btnEl.classList.add('wrong');wrongQuestions.push(q);}
+  else{score++;}
+
+  const bl=document.getElementById('mainBlank');
+  if(bl){bl.textContent=q.answer;bl.classList.add('filled');}
+
+  const fb=document.getElementById('feedbackBox');
+  fb.classList.add('show',isCorrect?'correct-fb':'wrong-fb');
+  document.getElementById('feedbackTitle').textContent=isCorrect?'✅ 정답이에요!':'❌ 다시 확인해봐요!';
+  document.getElementById('feedbackReason').textContent=isCorrect?q.reason.correct:q.reason.wrong;
+  document.getElementById('feedbackTranslation').innerHTML=q.translation;
+
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=(currentIndex===quizQuestions.length-1)?'결과 보기 🏁':'다음 문제 →';
+  nb.classList.add('show');
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  currentIndex++;
+  if(currentIndex>=quizQuestions.length)showResult();
+  else renderQuestion();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=quizQuestions.length+' / '+quizQuestions.length;
+  document.getElementById('quizArea').classList.add('hidden');
+  document.getElementById('resultArea').classList.remove('hidden');
+
+  const total=quizQuestions.length, pct=score/total;
+  let stars='⭐',emoji='💪';
+  if(pct===1){stars='⭐⭐⭐';emoji='🏆';}
+  else if(pct>=0.7){stars='⭐⭐';emoji='🎉';}
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultScore').textContent=score+' / '+total+'문제를 맞혔어요!';
+  document.getElementById('resultStars').textContent=stars;
+
+  const rl=document.getElementById('reviewList');
+  rl.innerHTML='';
+  if(wrongQuestions.length>0){
+    wrongQuestions.forEach(function(q){
+      const item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML=
+        '<div class="wrong-line en">'+escapeHtml(q.subjectHl)+' [___] '+escapeHtml(q.after)+'</div>'+
+        '<div class="right-line en">'+escapeHtml(q.subjectHl)+' '+escapeHtml(q.answer)+' '+escapeHtml(q.after)+'</div>'+
+        '<div class="reason-line">'+q.reason.correct+'</div>';
+      rl.appendChild(item);
+    });
+  } else {
+    const item=document.createElement('div');
+    item.className='review-item';
+    item.style.borderLeftColor='var(--correct)';
+    item.textContent='🎉 모든 문제를 다 맞혔어요! 완벽해요!';
+    rl.appendChild(item);
+  }
+  document.getElementById('retryWrongBtn').style.display=wrongQuestions.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongQuestions.slice()));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS.slice()));});
+
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+startQuiz(shuffle(ALL_QUESTIONS.slice()));
+</script>
+</body>
+</html>
