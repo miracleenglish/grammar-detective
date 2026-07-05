@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1 실전테스트 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --test-color:#E8604C;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+    --hl:#D4891A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .test-badge{display:inline-block;background:var(--test-color);color:#fff;font-weight:800;font-size:13px;padding:4px 14px;border-radius:999px;margin-bottom:6px;letter-spacing:.8px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+  .subtitle{font-size:13px;color:#888;font-weight:600;margin-top:4px;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 6px;box-shadow:inset 0 0 0 2px #FFBFB5;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--test-color),#C0392B);transition:width .3s ease;}
+  .progress-text{font-size:12px;color:var(--test-color);font-weight:700;text-align:right;margin-bottom:14px;}
+
+  .instruction-box{background:var(--test-color);color:#fff;font-weight:700;font-size:14px;padding:11px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(232,96,76,0.12);}
+  .card-top{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .qnum-badge{background:#FEE;color:var(--test-color);font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap;}
+  .type-badge{font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap;color:#fff;}
+  .type-a{background:#4A90D9;}
+  .type-b{background:#5BAD6F;}
+  .type-c{background:#9B6DD1;}
+
+  /* 문장 영역 */
+  .context-sentence{font-size:15px;color:#777;text-align:center;line-height:1.6;margin:0 0 6px;font-weight:600;background:#F5F5F5;border-radius:8px;padding:7px 10px;}
+  .sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.75;margin:8px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+  .hl{color:var(--hl);border-bottom:2px solid var(--hl);font-weight:800;}
+  .base-word{font-size:13px;color:#777;text-align:center;margin-bottom:14px;font-style:italic;min-height:1em;}
+
+  /* 카드 내 유형별 지시어 */
+  .card-instruction{font-size:15px;font-weight:800;text-align:center;margin-bottom:14px;border-radius:10px;padding:8px 10px;}
+  .ci-a{color:#4A90D9;background:#EEF5FE;}
+  .ci-b{color:#3A7D4E;background:#EBF7EE;}
+  .ci-c{color:#7B4DB1;background:#F3EDFB;}
+
+  /* C형 오류 문장 */
+  .err-sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.7;margin:0 0 6px;color:var(--text);background:#FFF8F0;border-radius:10px;padding:12px 10px;border-left:4px solid #F5A623;}
+  .lesson-tag{font-size:12px;color:#aaa;font-weight:700;text-align:center;margin-bottom:14px;}
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #FFBFB5;background:#FFF5F4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--test-color);background:#FFE8E5;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+  .err-mark{text-decoration:line-through;color:#E8604C;font-weight:800;}
+  .ok-mark{color:#276749;font-weight:800;}
+  .fb-hint{font-size:13px;color:#555;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08);font-style:italic;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--test-color);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#C0392B;}
+
+  /* 결과 화면 */
+  .result-screen{display:none;text-align:center;}
+  .result-screen .trophy{font-size:56px;margin:18px 0 8px;}
+  .result-screen .score-big{font-size:48px;font-weight:900;color:var(--test-color);margin-bottom:4px;}
+  .result-screen .score-label{font-size:15px;color:#888;margin-bottom:6px;}
+  .result-screen .grade-badge{display:inline-block;font-size:22px;font-weight:900;padding:8px 24px;border-radius:999px;margin-bottom:20px;color:#fff;}
+  .grade-S{background:#FFB800;}
+  .grade-A{background:#4A90D9;}
+  .grade-B{background:#5BAD6F;}
+  .grade-C{background:#9B6DD1;}
+  .grade-D{background:#E8604C;}
+  .result-detail{background:#fff;border-radius:14px;padding:14px 18px;margin-bottom:16px;text-align:left;font-size:14px;line-height:1.7;color:#555;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--test-color);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="test-badge">TEST 1</span>
+    <h1>🔎 영문법 탐정단<br>실전테스트 1</h1>
+    <div class="subtitle">L1~L11 &nbsp;·&nbsp; 명사·대명사 / 현재동사 종합</div>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-text" id="progressText">0 / 15</div>
+
+  <div class="instruction-box">
+    15문제 &nbsp;·&nbsp; A형 / B형 / C형 혼합<br>
+    실력을 확인해 보세요! 💪
+  </div>
+
+  <div id="quizCard" class="card">
+    <div class="card-top">
+      <span class="qnum-badge" id="qnumBadge">문제 1</span>
+      <span class="type-badge" id="typeBadge">A형</span>
+    </div>
+    <div class="card-instruction" id="cardInstruction">빈칸에 알맞은 단어를 고르세요.</div>
+    <div class="context-sentence" id="contextSentence" style="display:none"></div>
+    <div class="sentence" id="sentence" style="display:none"></div>
+    <div class="err-sentence" id="errSentence" style="display:none"></div>
+    <div class="lesson-tag" id="lessonTag" style="display:none"></div>
+    <div class="base-word" id="baseWord"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="trophy" id="trophy"></div>
+    <div class="score-big" id="scoreBig"></div>
+    <div class="score-label" id="scoreLabel"></div>
+    <div class="grade-badge" id="gradeBadge"></div>
+    <div class="result-detail" id="resultDetail"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="btnRetryWrong">❌ 틀린 문제만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="btnRetryAll">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-TEST1  실전테스트 1  L1~L11  15문제
+  A형(빈칸 채우기): 9문제
+  B형(문맥/비교 선택): 3문제
+  C형(오류 찾기): 3문제
+  shuffleNoFirstAnswer() 적용
+  TEST형 힌트: 한글 번역만, 문법 설명 없음
+*/
+const ALL_QUESTIONS = [
+
+  /* ════ A형 (9문제) ════ */
+
+  // L1: 복수형
+  {type:'A',
+   sentence:'There are two <span class="blank"></span> in the box.',
+   context:'',baseWord:'tooth → ?',
+   options:['teeth','tooths','toothes'],answer:'teeth',
+   hint:'상자 안에 이가 두 개 있어요.',
+   reason:'tooth의 불규칙 복수형은 <strong>teeth</strong>예요.'
+  },
+  // L2: some / any
+  {type:'A',
+   sentence:'I don\'t have <span class="blank"></span> homework today.',
+   context:'',baseWord:'',
+   options:['any','some','a'],answer:'any',
+   hint:'나는 오늘 숙제가 없어요.',
+   reason:'부정문에서는 <strong>any</strong>를 써요.'
+  },
+  // L3: 목적격 대명사
+  {type:'A',
+   sentence:'Jake is my best friend. I see <span class="blank"></span> every day.',
+   context:'',baseWord:'',
+   options:['him','his','he'],answer:'him',
+   hint:'Jake는 내 가장 친한 친구예요. 나는 매일 그를 봐요.',
+   reason:'동사(see) 뒤 목적어 자리에는 목적격 대명사 <strong>him</strong>을 써요.'
+  },
+  // L5: 소유격 대명사
+  {type:'A',
+   sentence:'Is this your bag? Yes, it is <span class="blank"></span>.',
+   context:'',baseWord:'',
+   options:['mine','my','me'],answer:'mine',
+   hint:'이것이 당신 가방이에요? 네, 제 거예요.',
+   reason:'명사 없이 홀로 쓸 때는 소유격 대명사 <strong>mine</strong>을 써요.'
+  },
+  // L6: be동사
+  {type:'A',
+   sentence:'My parents <span class="blank"></span> very kind.',
+   context:'',baseWord:'',
+   options:['are','is','am'],answer:'are',
+   hint:'나의 부모님은 매우 친절하세요.',
+   reason:'My parents는 복수 주어이므로 be동사는 <strong>are</strong>예요.'
+  },
+  // L7: 3인칭 단수
+  {type:'A',
+   sentence:'She <span class="blank"></span> English every day.',
+   context:'',baseWord:'study → ?',
+   options:['studies','studys','study'],answer:'studies',
+   hint:'그녀는 매일 영어를 공부해요.',
+   reason:'자음+y로 끝나는 동사: y를 빼고 <strong>-ies</strong>를 붙여요. study → <strong>studies</strong>'
+  },
+  // L8: 빈도부사
+  {type:'A',
+   sentence:'He is <span class="hl">always</span> <span class="blank"></span> on time.',
+   context:'',baseWord:'',
+   options:['(뒤 위치 ✓)','always (앞 위치 ✗)','never'],answer:'(뒤 위치 ✓)',
+   hint:'',reason:''
+  },
+  // L9: 현재진행형 -ing
+  {type:'A',
+   sentence:'Look! She is <span class="blank"></span> in the pool.',
+   context:'',baseWord:'swim → ?',
+   options:['swimming','swiming','swimmed'],answer:'swimming',
+   hint:'봐요! 그녀가 수영장에서 수영하고 있어요.',
+   reason:'단모음+단자음(m)으로 끝나는 동사: 자음을 두 번 쓰고 <strong>-ing</strong>를 붙여요. swim → <strong>swimming</strong>'
+  },
+  // L11: will 미래
+  {type:'A',
+   sentence:'It <span class="blank"></span> rain <span class="hl">tomorrow</span>.',
+   context:'',baseWord:'',
+   options:['will','wills','is'],answer:'will',
+   hint:'내일 비가 올 거예요.',
+   reason:'미래는 <strong>will + 동사원형</strong>을 써요. → <strong>will</strong> rain'
+  },
+
+  /* ════ B형 (3문제) ════ */
+
+  // L10: 현재단순 vs 현재진행 (시간 신호어)
+  {type:'B',
+   sentence:'<span class="hl">Every morning</span>, she <span class="blank"></span> jogging.',
+   context:'',baseWord:'',
+   options:['goes','is going','go'],answer:'goes',
+   hint:'그녀는 매일 아침 조깅을 해요.',
+   reason:'<strong>every morning</strong>은 현재단순(습관) 신호어예요. → she <strong>goes</strong> jogging'
+  },
+  // L4: This / These / Those 지시사
+  {type:'B',
+   sentence:'<span class="blank"></span> shoes over there are too small for me.',
+   context:'',baseWord:'',
+   options:['Those','This','These'],answer:'Those',
+   hint:'저기 저 신발들은 나에게 너무 작아요.',
+   reason:'shoes는 복수이고 over there(멀리)에 있어요. → <strong>Those</strong>'
+  },
+  // L7: Don't / Doesn't + 동사원형
+  {type:'B',
+   sentence:'She <span class="blank"></span> eat meat. She\'s vegetarian.',
+   context:'',baseWord:'',
+   options:["doesn't","don't","isn't"],answer:"doesn't",
+   hint:'그녀는 고기를 먹지 않아요. 채식주의자예요.',
+   reason:'She(3인칭 단수) 부정문: <strong>doesn\'t</strong> + 동사원형이에요.'
+  },
+
+  /* ════ C형 (3문제) ════ */
+
+  // L1: 불규칙 복수
+  {type:'C',
+   sentence:'I see three sheeps in the field.',
+   lessonTag:'L1 · 명사 복수형',
+   options:['sheeps','field','three'],answer:'sheeps',
+   correct:'sheep',
+   reason:'<span class="err-mark">sheeps</span> → <span class="ok-mark">sheep</span>: sheep은 단수·복수 형태가 같아요.',
+   hint:'나는 들판에서 양 세 마리를 봐요.'
+  },
+  // L6: be동사 인칭
+  {type:'C',
+   sentence:'We isn\'t ready for the test yet.',
+   lessonTag:'L6 · be동사 부정형',
+   options:["isn't",'ready','yet'],answer:"isn't",
+   correct:"aren't",
+   reason:'<span class="err-mark">isn\'t</span> → <span class="ok-mark">aren\'t</span>: We(복수)의 부정은 <strong>aren\'t</strong>예요.',
+   hint:'우리는 아직 시험 준비가 안 됐어요.'
+  },
+  // L9: -ing 철자
+  {type:'C',
+   sentence:'He is runing very fast in the park.',
+   lessonTag:'L9 · 현재진행형 -ing 철자',
+   options:['runing','fast','park'],answer:'runing',
+   correct:'running',
+   reason:'<span class="err-mark">runing</span> → <span class="ok-mark">running</span>: 단모음+단자음(n): 자음을 두 번 쓰고 -ing를 붙여요.',
+   hint:'그는 공원에서 매우 빠르게 달리고 있어요.'
+  }
+
+];
+
+// Q8 (빈도부사 위치 설명 문제 제거 및 대체)
+// 위 Q8을 더 적합한 문제로 교체
+ALL_QUESTIONS[6]={type:'A',
+  sentence:'I <span class="blank"></span> drink coffee. I prefer tea.',
+  context:'',baseWord:'',
+  options:["don't","doesn't","am not"],answer:"don't",
+  hint:'나는 커피를 마시지 않아요. 차를 더 좋아해요.',
+  reason:'주어가 I이므로 부정문은 <strong>don\'t</strong> + 동사원형이에요.'
+};
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizCard').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  updateProgress();
+  showQuestion();
+}
+
+function updateProgress(){
+  const pct=Math.round((currentIndex/queue.length)*100);
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressText').textContent=currentIndex+' / '+queue.length;
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnumBadge').textContent='문제 '+(currentIndex+1);
+  updateProgress();
+
+  // 유형 배지 + 카드 지시어
+  const tb=document.getElementById('typeBadge');
+  tb.textContent=currentQ.type+'형';
+  tb.className='type-badge type-'+currentQ.type.toLowerCase();
+
+  const ci=document.getElementById('cardInstruction');
+  if(currentQ.type==='A'){
+    ci.textContent='빈칸에 알맞은 단어를 고르세요.';
+    ci.className='card-instruction ci-a';
+  } else if(currentQ.type==='B'){
+    ci.textContent='문맥에 알맞은 표현을 고르세요.';
+    ci.className='card-instruction ci-b';
+  } else {
+    ci.textContent='아래 문장에서 틀린 단어를 찾아 고르세요!';
+    ci.className='card-instruction ci-c';
+  }
+
+  // 문장 영역 초기화
+  const ctxEl=document.getElementById('contextSentence');
+  const sentEl=document.getElementById('sentence');
+  const errEl=document.getElementById('errSentence');
+  const ltEl=document.getElementById('lessonTag');
+  ctxEl.style.display='none'; sentEl.style.display='none';
+  errEl.style.display='none'; ltEl.style.display='none';
+
+  if(currentQ.type==='C'){
+    errEl.textContent=currentQ.sentence;
+    errEl.style.display='block';
+    ltEl.textContent=currentQ.lessonTag;
+    ltEl.style.display='block';
+  } else {
+    if(currentQ.context){
+      ctxEl.textContent='📌 '+currentQ.context;
+      ctxEl.style.display='block';
+    }
+    sentEl.innerHTML=currentQ.sentence;
+    sentEl.style.display='block';
+  }
+  document.getElementById('baseWord').textContent=currentQ.baseWord||'';
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none'; fb.innerHTML=''; fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(isCorrect){
+    fb.className='feedback correct-fb';
+    fb.innerHTML='<span class="fb-title">🎉 정답이에요!</span>'+
+      (currentQ.reason||'')+
+      (currentQ.hint?'<div class="fb-hint">💡 '+currentQ.hint+'</div>':'');
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML='<span class="fb-title">❌ 틀렸어요!</span>'+
+      (currentQ.reason||'')+
+      (currentQ.hint?'<div class="fb-hint">💡 '+currentQ.hint+'</div>':'');
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=queue.length+' / '+queue.length;
+  document.getElementById('quizCard').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+
+  const total=queue.length, pct=Math.round((score/total)*100);
+  let trophy='🎉',grade='',gradeClass='grade-A',comment='';
+  if(pct===100){trophy='🏆';grade='S';gradeClass='grade-S';comment='완벽한 실력이에요!';}
+  else if(pct>=87){grade='A';gradeClass='grade-A';comment='훌륭한 실력이에요!';}
+  else if(pct>=73){grade='B';gradeClass='grade-B';comment='잘 했어요! 조금만 더 연습해봐요.';}
+  else if(pct>=60){grade='C';gradeClass='grade-C';comment='틀린 문제를 다시 확인해봐요.';}
+  else{trophy='💪';grade='D';gradeClass='grade-D';comment='다시 한번 도전해봐요!';}
+
+  document.getElementById('trophy').textContent=trophy;
+  document.getElementById('scoreBig').textContent=score+' / '+total;
+  document.getElementById('scoreLabel').textContent='정답률 '+pct+'%';
+  const gb=document.getElementById('gradeBadge');
+  gb.textContent='등급 '+grade;
+  gb.className='grade-badge '+gradeClass;
+
+  const aWrong=wrongList.filter(q=>q.type==='A').length;
+  const bWrong=wrongList.filter(q=>q.type==='B').length;
+  const cWrong=wrongList.filter(q=>q.type==='C').length;
+  document.getElementById('resultDetail').innerHTML=
+    comment+'<br><br>'+
+    '• A형 오답: '+aWrong+'개<br>'+
+    '• B형 오답: '+bWrong+'개<br>'+
+    '• C형 오답: '+cWrong+'개';
+
+  document.getElementById('btnRetryWrong').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('btnRetryWrong').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('btnRetryAll').addEventListener('click',function(){startQuiz(shuffle([...ALL_QUESTIONS]));});
+
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0015b 불규칙 과거형 암기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-mem:#E07B39;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-mem);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--type-mem),#C05A20);transition:width .3s ease;}
+
+  .instruction-box{background:var(--type-mem);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(224,123,57,0.15);}
+  .card-instruction{font-size:15px;color:var(--type-mem);font-weight:800;text-align:center;margin-bottom:16px;background:#FEF3EC;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:14px;text-align:center;}
+
+  /* 동사 원형 카드 */
+  .verb-card{
+    background:linear-gradient(135deg,#FFF3EC,#FFE8D6);
+    border:2px solid #F5C4A0;
+    border-radius:16px;
+    padding:20px 16px 14px;
+    text-align:center;
+    margin-bottom:14px;
+  }
+  .verb-label{font-size:12px;color:#C05A20;font-weight:800;letter-spacing:.8px;margin-bottom:6px;}
+  .verb-base{font-size:38px;font-weight:900;color:#2D2D2D;letter-spacing:1px;}
+  .verb-meaning{font-size:15px;color:#888;font-weight:600;margin-top:6px;}
+  .arrow{font-size:22px;color:#C05A20;margin:8px 0 0;}
+
+  /* 4지선다 2×2 그리드 */
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:20px;font-weight:800;padding:16px 8px;border:2.5px solid #F5C4A0;background:#FFF8F3;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-mem);background:#FEE9D8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--type-mem);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--type-mem);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">암기형</span>
+    <h1>🔎 영문법 탐정단<br>불규칙 과거형 암기</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    동사의 <strong>불규칙 과거형</strong>을 고르세요!<br>
+    (규칙 변화 -ed는 쓰지 않아요)
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">이 동사의 과거형은?</div>
+    <div class="qnum" id="qnum">문제 1 / 16</div>
+
+    <div class="verb-card">
+      <div class="verb-label">동사원형</div>
+      <div class="verb-base" id="verbBase"></div>
+      <div class="verb-meaning" id="verbMeaning"></div>
+      <div class="arrow">↓</div>
+    </div>
+
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0015b  불규칙 과거형 암기  암기형  L13
+  16개 불규칙 동사: come/drink/eat/give/go/have/make/
+                    read/ride/run/see/sing/sit/sleep/swim/write
+  각 4지선다: 정답 + 오답 3개 (규칙화 오류 or 다른 불규칙 과거형)
+  shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+  {
+    base:'come',  meaning:'오다',
+    options:['came','comed','went','come'],
+    answer:'came',
+    reason:'come → <strong>came</strong> (불규칙 과거형)'
+  },
+  {
+    base:'drink', meaning:'마시다',
+    options:['drank','drinked','swam','drunk'],
+    answer:'drank',
+    reason:'drink → <strong>drank</strong> (불규칙 과거형)'
+  },
+  {
+    base:'eat',   meaning:'먹다',
+    options:['ate','eated','sat','eaten'],
+    answer:'ate',
+    reason:'eat → <strong>ate</strong> (불규칙 과거형)'
+  },
+  {
+    base:'give',  meaning:'주다',
+    options:['gave','gived','went','given'],
+    answer:'gave',
+    reason:'give → <strong>gave</strong> (불규칙 과거형)'
+  },
+  {
+    base:'go',    meaning:'가다',
+    options:['went','goed','came','gone'],
+    answer:'went',
+    reason:'go → <strong>went</strong> (불규칙 과거형)'
+  },
+  {
+    base:'have',  meaning:'가지다 / 먹다',
+    options:['had','haved','made','have'],
+    answer:'had',
+    reason:'have → <strong>had</strong> (불규칙 과거형)'
+  },
+  {
+    base:'make',  meaning:'만들다',
+    options:['made','maked','had','given'],
+    answer:'made',
+    reason:'make → <strong>made</strong> (불규칙 과거형)'
+  },
+  {
+    base:'read',  meaning:'읽다',
+    options:['read','readed','rode','ran'],
+    answer:'read',
+    reason:'read → <strong>read</strong> (현재형과 철자 같지만 발음이 달라요! /red/)'
+  },
+  {
+    base:'ride',  meaning:'타다',
+    options:['rode','rided','read','ran'],
+    answer:'rode',
+    reason:'ride → <strong>rode</strong> (불규칙 과거형)'
+  },
+  {
+    base:'run',   meaning:'달리다',
+    options:['ran','runned','sang','come'],
+    answer:'ran',
+    reason:'run → <strong>ran</strong> (불규칙 과거형)'
+  },
+  {
+    base:'see',   meaning:'보다',
+    options:['saw','seed','swam','sat'],
+    answer:'saw',
+    reason:'see → <strong>saw</strong> (불규칙 과거형)'
+  },
+  {
+    base:'sing',  meaning:'노래하다',
+    options:['sang','singed','ran','sung'],
+    answer:'sang',
+    reason:'sing → <strong>sang</strong> (불규칙 과거형)'
+  },
+  {
+    base:'sit',   meaning:'앉다',
+    options:['sat','sitted','slept','ate'],
+    answer:'sat',
+    reason:'sit → <strong>sat</strong> (불규칙 과거형)'
+  },
+  {
+    base:'sleep', meaning:'자다',
+    options:['slept','sleeped','sat','swam'],
+    answer:'slept',
+    reason:'sleep → <strong>slept</strong> (불규칙 과거형)'
+  },
+  {
+    base:'swim',  meaning:'수영하다',
+    options:['swam','swimmed','sang','swum'],
+    answer:'swam',
+    reason:'swim → <strong>swam</strong> (불규칙 과거형)'
+  },
+  {
+    base:'write', meaning:'쓰다',
+    options:['wrote','writed','rode','written'],
+    answer:'wrote',
+    reason:'write → <strong>wrote</strong> (불규칙 과거형)'
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('verbBase').textContent=currentQ.base;
+  document.getElementById('verbMeaning').textContent=currentQ.meaning;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(isCorrect){
+    fb.className='feedback correct-fb';
+    fb.innerHTML='<span class="fb-title">🎉 정답이에요!</span>'+currentQ.reason;
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML='<span class="fb-title">❌ 틀렸어요!</span>'+currentQ.reason;
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

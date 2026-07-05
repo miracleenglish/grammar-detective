@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0004 지시사·소유격 's</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-b:#5BAD6F;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-b);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+
+  .instruction-box{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+
+  .card-instruction{font-size:15px;color:var(--accent-dark);font-weight:800;text-align:center;margin-bottom:14px;background:#EAF7F0;border-radius:10px;padding:8px 10px;}
+
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+
+  .sentence{font-size:20px;font-weight:700;text-align:center;line-height:1.7;margin:10px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:70px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+
+  /* 제시어 + 한글 해석 영역 */
+  .hint-area{text-align:center;margin-bottom:18px;}
+  .base-word{font-size:13.5px;color:#777;font-style:italic;}
+  /* 선택 전 표시 한글 해석 (소유격 등 모호한 문제에만) */
+  .pre-hint{
+    display:none;
+    font-size:13.5px;color:#3A6640;font-weight:700;
+    margin-top:5px;
+    background:#EAF7F0;border-radius:8px;
+    padding:5px 10px;display:inline-block;
+  }
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:19px;font-weight:700;padding:14px 10px;border:2.5px solid #B8DEC8;background:#F0FAF4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--accent);background:#DFF5E8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+  .fb-hint{font-size:13px;color:#555;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08);font-style:italic;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">B형</span>
+    <h1>🔎 영문법 탐정단<br>지시사 · 소유격 's</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    빈칸에 들어갈 알맞은 단어를 고르세요!<br>
+    지시사: this / that / these / those<br>
+    소유격: 's (단수) &nbsp;·&nbsp; s' (복수)
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">빈칸에 알맞은 단어는?</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="hint-area">
+      <div class="base-word" id="baseWord"></div>
+      <div class="pre-hint" id="preHint"></div>
+    </div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0004  지시사·소유격 's  B형  L4
+  지시사(6): this/these(가까이) / that/those(멀리) × 단수/복수
+  소유격(6): 단수 's / 불규칙복수 's / 규칙복수 s'
+  소유격 문제: preHint(한글 해석)를 선택 전부터 표시
+               → 단수/복수 혼동 방지
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+
+  /* ── 지시사 (6문제) — preHint 없음 ── */
+  {
+    sentence:'<span class="blank"></span> book here is mine.',
+    baseWord:'',
+    preHint:'',
+    options:['This','That','These'],
+    answer:'This',
+    hint:'이 책은 내 거예요.',
+    reason:'<strong>book</strong>은 단수이고 <strong>here(가까이)</strong>에 있어요. → 단수·가까이 = <strong>This</strong>'
+  },
+  {
+    sentence:'<span class="blank"></span> cookies here look delicious.',
+    baseWord:'',
+    preHint:'',
+    options:['These','This','Those'],
+    answer:'These',
+    hint:'이 쿠키들 맛있어 보여요.',
+    reason:'<strong>cookies</strong>는 복수이고 <strong>here(가까이)</strong>에 있어요. → 복수·가까이 = <strong>These</strong>'
+  },
+  {
+    sentence:'<span class="blank"></span> mountain over there is very high.',
+    baseWord:'',
+    preHint:'',
+    options:['That','This','Those'],
+    answer:'That',
+    hint:'저기 저 산은 매우 높아요.',
+    reason:'<strong>mountain</strong>은 단수이고 <strong>over there(멀리)</strong>에 있어요. → 단수·멀리 = <strong>That</strong>'
+  },
+  {
+    sentence:'<span class="blank"></span> children over there are my classmates.',
+    baseWord:'',
+    preHint:'',
+    options:['Those','These','This'],
+    answer:'Those',
+    hint:'저기 저 아이들은 내 반 친구들이에요.',
+    reason:'<strong>children</strong>은 복수이고 <strong>over there(멀리)</strong>에 있어요. → 복수·멀리 = <strong>Those</strong>'
+  },
+  {
+    sentence:'Look at <span class="blank"></span> butterfly near us!',
+    baseWord:'',
+    preHint:'',
+    options:['this','these','those'],
+    answer:'this',
+    hint:'우리 가까이에 있는 저 나비 좀 봐요!',
+    reason:'<strong>butterfly</strong>는 단수이고 <strong>near us(가까이)</strong>에 있어요. → 단수·가까이 = <strong>this</strong>'
+  },
+  {
+    sentence:'<span class="blank"></span> shoes over there are too big.',
+    baseWord:'',
+    preHint:'',
+    options:['Those','These','This'],
+    answer:'Those',
+    hint:'저기 저 신발들은 너무 커요.',
+    reason:'<strong>shoes</strong>는 복수이고 <strong>over there(멀리)</strong>에 있어요. → 복수·멀리 = <strong>Those</strong>'
+  },
+
+  /* ── 소유격 's (6문제) — preHint 있음 ── */
+  {
+    sentence:'This is <span class="blank"></span> cat.',
+    baseWord:'Mike → ?',
+    preHint:'이것은 Mike의 고양이예요.',
+    options:['Mike\'s','Mikes\'','Mikes'],
+    answer:'Mike\'s',
+    hint:'이것은 Mike의 고양이예요.',
+    reason:'단수 명사의 소유격은 <strong>\'s</strong>를 붙여요. → <strong>Mike\'s</strong>'
+  },
+  {
+    sentence:'I like <span class="blank"></span> new bike.',
+    baseWord:'my friend → ?',
+    preHint:'나는 내 친구(한 명)의 새 자전거가 좋아요.',
+    options:['my friend\'s','my friends\'','my friend'],
+    answer:'my friend\'s',
+    hint:'나는 내 친구(한 명)의 새 자전거가 좋아요.',
+    reason:'단수 명사의 소유격은 <strong>\'s</strong>를 붙여요. → <strong>my friend\'s</strong>'
+  },
+  {
+    sentence:'The <span class="blank"></span> bags are heavy.',
+    baseWord:'children → ?',
+    preHint:'아이들(여럿)의 가방이 무거워요.',
+    options:['children\'s','childrens\'','children'],
+    answer:'children\'s',
+    hint:'아이들의 가방이 무거워요.',
+    reason:'불규칙 복수(<strong>children</strong>)는 단수처럼 <strong>\'s</strong>를 붙여요. → <strong>children\'s</strong>'
+  },
+  {
+    sentence:'These are <span class="blank"></span> books.',
+    baseWord:'the boys → ?',
+    preHint:'이것들은 그 소년들(여럿)의 책이에요.',
+    options:['the boys\'','the boy\'s','the boys'],
+    answer:'the boys\'',
+    hint:'이것들은 그 소년들의 책이에요.',
+    reason:'규칙 복수(<strong>boys</strong>)의 소유격은 끝에 <strong>\'</strong>만 붙여요. → <strong>boys\'</strong>'
+  },
+  {
+    sentence:'I know <span class="blank"></span> name.',
+    baseWord:'the teacher → ?',
+    preHint:'나는 선생님(한 분)의 이름을 알아요.',
+    options:['the teacher\'s','the teachers\'','the teacher'],
+    answer:'the teacher\'s',
+    hint:'나는 선생님의 이름을 알아요.',
+    reason:'단수 명사의 소유격은 <strong>\'s</strong>를 붙여요. → <strong>the teacher\'s</strong>'
+  },
+  {
+    sentence:'These are <span class="blank"></span> hats.',
+    baseWord:'the women → ?',
+    preHint:'이것들은 그 여성들(여럿)의 모자예요.',
+    options:['the women\'s','the woman\'s','the women'],
+    answer:'the women\'s',
+    hint:'이것들은 그 여성들의 모자예요.',
+    reason:'불규칙 복수(<strong>women</strong>)는 단수처럼 <strong>\'s</strong>를 붙여요. → <strong>women\'s</strong>'
+  }
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').innerHTML=currentQ.sentence;
+  document.getElementById('baseWord').textContent=currentQ.baseWord;
+
+  // preHint: 소유격 문제에만 선택 전 표시
+  const preHintEl=document.getElementById('preHint');
+  if(currentQ.preHint){
+    preHintEl.textContent='💬 '+currentQ.preHint;
+    preHintEl.style.display='inline-block';
+  } else {
+    preHintEl.style.display='none';
+    preHintEl.textContent='';
+  }
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(isCorrect){
+    fb.className='feedback correct-fb';
+    fb.innerHTML=
+      '<span class="fb-title">🎉 정답이에요!</span>'+
+      currentQ.reason+
+      '<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML=
+      '<span class="fb-title">❌ 틀렸어요!</span>'+
+      currentQ.reason+
+      '<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

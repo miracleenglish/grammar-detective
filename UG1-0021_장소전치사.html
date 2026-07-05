@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0021 장소 전치사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-a:#4A90D9;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-a);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+
+  .instruction-box{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.6;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+  .card-instruction{font-size:15px;color:var(--accent-dark);font-weight:800;text-align:center;margin-bottom:14px;background:#EAF7F0;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+
+  /* 문장 */
+  .sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.8;margin:10px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:100px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+
+  /* 한글 해석 (항상 표시 → 이중정답 방지) */
+  .kr-hint{
+    font-size:14px;font-weight:700;color:#2D6640;
+    text-align:center;margin-bottom:18px;
+    background:#EAF7F0;border-radius:8px;
+    padding:7px 12px;display:block;
+  }
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #B8DEC8;background:#F0FAF4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--accent);background:#DFF5E8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">A형</span>
+    <h1>🔎 영문법 탐정단<br>장소 전치사</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    한글 해석을 보고 알맞은 <strong>장소 전치사</strong>를 고르세요!<br>
+    📌 in / on / above / under / in front of / behind<br>
+    📌 at / near / next to / between / across from
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">빈칸에 알맞은 장소 전치사는?</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="kr-hint" id="krHint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0021  장소 전치사  A형  L18
+  ★ 전체 12문제에 한글 해석(krHint) 항상 표시
+     → 이중정답 방지: 학생이 정확한 위치 파악 후 전치사 선택
+  in/on/above/under/in front of/behind
+  at/near/next to/between/across from
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+  {
+    sentence:'The cat is <span class="blank"></span> the box.',
+    krHint:'💬 고양이가 상자 안에 있어요.',
+    options:['in','on','above'],
+    answer:'in',
+    reason:'상자 안쪽에 있으므로 <strong>in</strong>을 써요. → <strong>in</strong> the box'
+  },
+  {
+    sentence:'The book is <span class="blank"></span> the table.',
+    krHint:'💬 책이 테이블 표면 위에 놓여 있어요.',
+    options:['on','in','under'],
+    answer:'on',
+    reason:'표면에 닿아 있을 때는 <strong>on</strong>을 써요. → <strong>on</strong> the table'
+  },
+  {
+    sentence:'The lamp is <span class="blank"></span> the dining table.',
+    krHint:'💬 램프가 식탁에 닿지 않고 공중에 떠 있어요.',
+    options:['above','on','under'],
+    answer:'above',
+    reason:'표면에 닿지 않고 높이 위에 있을 때는 <strong>above</strong>를 써요. → <strong>above</strong> the table'
+  },
+  {
+    sentence:'My shoes are <span class="blank"></span> the bed.',
+    krHint:'💬 내 신발이 침대 아래(바닥)에 있어요.',
+    options:['under','on','above'],
+    answer:'under',
+    reason:'아래에 있을 때는 <strong>under</strong>를 써요. → <strong>under</strong> the bed'
+  },
+  {
+    sentence:'There is a big tree <span class="blank"></span> the school.',
+    krHint:'💬 학교 정문 앞쪽에 큰 나무가 있어요.',
+    options:['in front of','behind','next to'],
+    answer:'in front of',
+    reason:'앞쪽에 있을 때는 <strong>in front of</strong>를 써요. → <strong>in front of</strong> the school'
+  },
+  {
+    sentence:'The dog is <span class="blank"></span> the sofa.',
+    krHint:'💬 강아지가 소파 뒤쪽에 있어요.',
+    options:['behind','in front of','above'],
+    answer:'behind',
+    reason:'뒤쪽에 있을 때는 <strong>behind</strong>를 써요. → <strong>behind</strong> the sofa'
+  },
+  {
+    sentence:'Let\'s meet <span class="blank"></span> the bus stop.',
+    krHint:'💬 버스 정류장이라는 특정 장소에서 만나요.',
+    options:['at','in','on'],
+    answer:'at',
+    reason:'특정 지점·장소를 나타낼 때는 <strong>at</strong>을 써요. → <strong>at</strong> the bus stop'
+  },
+  {
+    sentence:'She lives <span class="blank"></span> Seoul.',
+    krHint:'💬 그녀는 서울이라는 도시에 살아요.',
+    options:['in','at','on'],
+    answer:'in',
+    reason:'도시·나라처럼 넓은 공간에는 <strong>in</strong>을 써요. → <strong>in</strong> Seoul'
+  },
+  {
+    sentence:'There is a café <span class="blank"></span> the park.',
+    krHint:'💬 카페가 공원 근처(가까운 곳)에 있어요.',
+    options:['near','behind','above'],
+    answer:'near',
+    reason:'가까이에 있을 때는 <strong>near</strong>를 써요. → <strong>near</strong> the park'
+  },
+  {
+    sentence:'The library is <span class="blank"></span> the bank.',
+    krHint:'💬 도서관이 은행 바로 옆에 붙어 있어요.',
+    options:['next to','behind','across from'],
+    answer:'next to',
+    reason:'바로 옆에 있을 때는 <strong>next to</strong>를 써요. → <strong>next to</strong> the bank'
+  },
+  {
+    sentence:'The bus stop is <span class="blank"></span> the two buildings.',
+    krHint:'💬 버스 정류장이 두 건물 사이에 있어요.',
+    options:['between','behind','above'],
+    answer:'between',
+    reason:'두 대상의 사이에 있을 때는 <strong>between</strong>을 써요. → <strong>between</strong> the two buildings'
+  },
+  {
+    sentence:'The pharmacy is <span class="blank"></span> the hospital.',
+    krHint:'💬 약국이 병원 길 건너 맞은편에 있어요.',
+    options:['across from','next to','behind'],
+    answer:'across from',
+    reason:'길 건너 반대편에 있을 때는 <strong>across from</strong>을 써요. → <strong>across from</strong> the hospital'
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').innerHTML=currentQ.sentence;
+  document.getElementById('krHint').textContent=currentQ.krHint;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className=isCorrect?'feedback correct-fb':'feedback wrong-fb';
+  fb.innerHTML=(isCorrect?'<span class="fb-title">🎉 정답이에요!</span>':'<span class="fb-title">❌ 틀렸어요!</span>')+currentQ.reason;
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

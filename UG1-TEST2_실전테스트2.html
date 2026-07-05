@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1 실전테스트 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --test-color:#E8604C;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+    --hl:#3A9D6E;
+    --type-a:#4A90D9;
+    --type-b:#5BAD6F;
+    --type-c:#9B6DD1;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .test-badge{display:inline-block;background:var(--test-color);color:#fff;font-weight:800;font-size:13px;padding:4px 14px;border-radius:99px;margin-bottom:8px;font-family:'Nunito',sans-serif;letter-spacing:1px;}
+  .app-title{font-size:22px;font-weight:900;color:var(--accent-dark);margin-bottom:3px;}
+  .app-sub{font-size:13px;color:#666;font-family:'Noto Sans KR',sans-serif;}
+
+  /* 진행 바 */
+  .progress-wrap{background:#fff;border-radius:12px;padding:10px 16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .progress-label{font-size:13px;font-weight:700;color:var(--accent-dark);}
+  .progress-text{font-size:13px;font-weight:800;color:var(--accent-dark);font-family:'Nunito',sans-serif;}
+  .progress-bar-bg{background:#e0f0e8;border-radius:99px;height:8px;overflow:hidden;}
+  .progress-bar{background:linear-gradient(90deg,var(--accent),var(--accent-dark));height:8px;border-radius:99px;transition:width .4s ease;width:0%;}
+
+  /* 퀴즈 카드 */
+  .quiz-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,.08);margin-bottom:14px;}
+  .q-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .q-num{background:var(--accent);color:#fff;font-weight:900;font-size:14px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Nunito',sans-serif;}
+  .type-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;color:#fff;font-family:'Nunito',sans-serif;}
+  .type-a-bg{background:var(--type-a);}
+  .type-b-bg{background:var(--type-b);}
+  .type-c-bg{background:var(--type-c);}
+  .card-instruction{font-size:17px;font-weight:800;font-family:'Noto Sans KR',sans-serif;}
+  .card-instruction.ci-a{color:var(--type-a);}
+  .card-instruction.ci-b{color:var(--type-b);}
+  .card-instruction.ci-c{color:var(--type-c);}
+
+  .sentence{font-size:19px;font-weight:700;text-align:center;margin:14px 0;line-height:1.6;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .sentence .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;}
+  .sentence .hl{color:var(--hl);font-weight:900;text-decoration:underline;}
+  .sentence .err{color:#c0392b;font-weight:900;}
+
+  .pre-hint{background:#f0faf5;border-radius:10px;padding:8px 12px;text-align:center;font-size:14px;color:#2D7A57;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;font-weight:600;}
+
+  /* 선택지 */
+  .choices{display:flex;flex-direction:column;gap:9px;margin-top:14px;}
+  .choice-btn{background:#f4faf7;border:2px solid #c8e6d4;border-radius:14px;padding:13px 18px;font-size:18px;font-weight:700;font-family:'Nunito','Noto Sans KR',sans-serif;color:var(--text);cursor:pointer;transition:all .15s;text-align:left;}
+  .choice-btn:hover{background:#e0f5ea;border-color:var(--accent);}
+  .choice-btn.selected-correct{background:#e8f8f2;border-color:var(--correct);color:#1a7a56;}
+  .choice-btn.selected-wrong{background:#fdecea;border-color:var(--wrong);color:#c0392b;}
+  .choice-btn.reveal-correct{background:#e8f8f2;border-color:var(--correct);color:#1a7a56;}
+  .choice-btn:disabled{cursor:default;}
+
+  /* 피드백 */
+  .feedback{border-radius:14px;padding:14px 16px;margin-top:14px;font-size:14px;font-family:'Noto Sans KR',sans-serif;line-height:1.7;display:none;}
+  .correct-fb{background:#e8f8f2;border:2px solid var(--correct);color:#155a3e;}
+  .wrong-fb{background:#fdecea;border:2px solid var(--wrong);color:#8B1A0E;}
+  .fb-title{font-weight:800;font-size:15px;display:block;margin-bottom:4px;}
+  .fb-hint{background:rgba(255,255,255,.7);border-radius:8px;padding:6px 10px;margin-top:8px;font-size:13px;}
+
+  /* 다음 버튼 */
+  .next-btn{display:none;width:100%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:16px;padding:15px;font-size:17px;font-weight:800;cursor:pointer;margin-top:4px;font-family:'Nunito','Noto Sans KR',sans-serif;}
+
+  /* 결과 화면 */
+  .result-screen{display:none;background:#fff;border-radius:24px;padding:28px 20px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;}
+  .result-trophy{font-size:56px;margin-bottom:8px;}
+  .result-score{font-size:40px;font-weight:900;color:var(--accent-dark);font-family:'Nunito',sans-serif;}
+  .result-pct{font-size:15px;color:#666;font-family:'Noto Sans KR',sans-serif;margin-bottom:12px;}
+  .grade-badge{display:inline-block;font-size:22px;font-weight:900;padding:6px 24px;border-radius:99px;color:#fff;margin-bottom:16px;font-family:'Nunito',sans-serif;}
+  .grade-S{background:linear-gradient(135deg,#FFD700,#FFA000);}
+  .grade-A{background:linear-gradient(135deg,#4CAF93,#2D7A57);}
+  .grade-B{background:linear-gradient(135deg,#4A90D9,#2C60AA);}
+  .grade-C{background:linear-gradient(135deg,#F5A623,#D4891A);}
+  .grade-D{background:linear-gradient(135deg,#E8604C,#C0392B);}
+  .result-detail{font-size:14px;color:#555;font-family:'Noto Sans KR',sans-serif;line-height:1.8;background:#f4faf7;border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;}
+  .btn-retry-wrong{width:100%;background:linear-gradient(135deg,#E8604C,#C0392B);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .btn-retry-all{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+
+  /* 오답 복습 */
+  .review-list{margin-top:16px;display:flex;flex-direction:column;gap:10px;}
+  .review-item{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:left;font-size:14px;font-family:'Noto Sans KR',sans-serif;line-height:1.7;}
+  .review-q{font-weight:800;margin-bottom:4px;font-size:13px;color:#555;}
+  .review-wrong{color:#c0392b;}
+  .review-correct{color:#1a7a56;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="test-badge">UG1 · TEST 2</div>
+    <div class="app-title">실전 테스트 2</div>
+    <div class="app-sub">L12~L22 · 15문제</div>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-label">진행 상황</span>
+      <span class="progress-text" id="progressText">0 / 15</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+  <div class="quiz-card" id="quizCard">
+    <div class="q-header">
+      <div class="q-num" id="qNum">1</div>
+      <span class="type-badge" id="typeBadge">A형</span>
+      <span class="card-instruction" id="cardInstruction"></span>
+    </div>
+    <div class="pre-hint" id="preHint" style="display:none;"></div>
+    <div class="sentence" id="sentence"></div>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div class="result-screen" id="resultScreen">
+    <div class="result-trophy" id="trophy">🎉</div>
+    <div class="result-score" id="scoreBig"></div>
+    <div class="result-pct" id="scoreLabel"></div>
+    <div class="grade-badge" id="gradeBadge"></div>
+    <div class="result-detail" id="resultDetail"></div>
+    <button class="btn-retry-wrong" id="btnRetryWrong" style="display:none;">❌ 틀린 문제만 다시 풀기</button>
+    <button class="btn-retry-all" id="btnRetryAll">🔄 전체 다시 풀기</button>
+    <div class="review-list" id="reviewList"></div>
+  </div>
+</div>
+
+<script>
+// ── 문제 데이터 ──────────────────────────────────────
+const ALL_QUESTIONS = [
+
+  // ===== A형: 빈칸 채우기 (5문제) =====
+  {
+    type:'A', lesson:'L12',
+    sentence:'She <span class="blank"></span> her room yesterday.',
+    hint:'그녀는 어제 방을 청소했어요.',
+    choices:['cleaned','cleans','cleaning'],
+    answer:'cleaned',
+    reason:'<b>yesterday</b>는 과거 시제 신호어예요. clean의 규칙 과거형은 <b>cleaned</b>예요.'
+  },
+  {
+    type:'A', lesson:'L13',
+    sentence:'We <span class="blank"></span> a great movie last night.',
+    hint:'우리는 어젯밤에 멋진 영화를 봤어요.',
+    choices:['saw','seed','see'],
+    answer:'saw',
+    reason:'see의 불규칙 과거형은 <b>saw</b>예요. last night는 과거 시제 신호어예요.'
+  },
+  {
+    type:'A', lesson:'L14',
+    sentence:'You <span class="blank"></span> eat more vegetables.',
+    hint:'너는 채소를 더 많이 먹어야 해.',
+    preHint:'너는 채소를 더 많이 먹어야 해.',
+    choices:['should','can','will'],
+    answer:'should',
+    reason:'충고를 나타낼 때는 조동사 <b>should</b>를 써요. "~해야 해"라는 뜻이에요.'
+  },
+  {
+    type:'A', lesson:'L15',
+    sentence:'The baby looks <span class="blank"></span> today.',
+    hint:'그 아기는 오늘 귀여워 보여요.',
+    choices:['cute','cutely','cutest'],
+    answer:'cute',
+    reason:'<b>looks</b> 뒤에는 형용사가 와요. <b>cute</b>(귀여운)이 올바른 형용사예요.'
+  },
+  {
+    type:'A', lesson:'L19',
+    sentence:'There <span class="blank"></span> some birds in the tree.',
+    hint:'나무에 새들이 있어요.',
+    preHint:'나무에 새들이 있어요.',
+    choices:['are','is','were'],
+    answer:'are',
+    reason:'birds는 복수명사이므로 <b>There are</b>를 써요.'
+  },
+
+  // ===== B형: 올바른 표현 고르기 (5문제) =====
+  {
+    type:'B', lesson:'L16',
+    sentence:'He runs <span class="blank"></span> in the race.',
+    hint:'그는 경주에서 아주 빠르게 달려요.',
+    preHint:'그는 경주에서 아주 빠르게 달려요.',
+    choices:['very quickly','very quick','quickly very'],
+    answer:'very quickly',
+    reason:'동사 runs를 꾸미려면 부사가 필요해요. quick(형용사)에 -ly를 붙여 <b>quickly</b>(부사)로 써야 해요.'
+  },
+  {
+    type:'B', lesson:'L17',
+    sentence:'The concert starts <span class="blank"></span> 7 o\'clock.',
+    hint:'콘서트는 7시에 시작해요.',
+    preHint:'콘서트는 7시에 시작해요.',
+    choices:['at','on','in'],
+    answer:'at',
+    reason:'정확한 시각 앞에는 전치사 <b>at</b>을 써요. (at 7 o\'clock)'
+  },
+  {
+    type:'B', lesson:'L20',
+    sentence:'I want <span class="blank"></span> Japan someday.',
+    hint:'나는 언젠가 일본을 방문하고 싶어요.',
+    preHint:'나는 언젠가 일본을 방문하고 싶어요.',
+    choices:['to visit','visiting','visit'],
+    answer:'to visit',
+    reason:'want 뒤에는 <b>to + 동사원형</b>(to부정사)이 와요. → want to visit'
+  },
+  {
+    type:'B', lesson:'L21',
+    sentence:'They enjoy <span class="blank"></span> soccer after school.',
+    hint:'그들은 방과 후에 축구하는 것을 즐겨요.',
+    preHint:'그들은 방과 후에 축구하는 것을 즐겨요.',
+    choices:['playing','to play','play'],
+    answer:'playing',
+    reason:'enjoy 뒤에는 동명사(<b>동사원형 + -ing</b>)가 와요. → enjoy playing'
+  },
+  {
+    type:'B', lesson:'L22',
+    sentence:'<span class="blank"></span> did she buy that bag?',
+    hint:'그녀는 그 가방을 어디서 샀어요?',
+    preHint:'그녀는 그 가방을 어디서 샀어요?',
+    choices:['Where','When','Who'],
+    answer:'Where',
+    reason:'장소를 묻는 의문사는 <b>Where</b>예요. "어디서 샀어요?"라고 물을 때 써요.'
+  },
+
+  // ===== C형: 틀린 단어 찾기 (5문제) =====
+  {
+    type:'C', lesson:'L12',
+    sentence:'He stoped the car near the school.',
+    hint:'그는 학교 근처에서 차를 세웠어요.',
+    choices:['stoped','near','school'],
+    answer:'stoped',
+    reason:'<b><s style="color:#c0392b">stoped</s></b> → <b style="color:#1a7a56">stopped</b><br>단모음+단자음으로 끝나는 동사는 자음을 한 번 더 쓰고 -ed를 붙여요.'
+  },
+  {
+    type:'C', lesson:'L13',
+    sentence:'She maked a delicious cake for us.',
+    hint:'그녀는 우리를 위해 맛있는 케이크를 만들었어요.',
+    choices:['maked','delicious','for'],
+    answer:'maked',
+    reason:'<b><s style="color:#c0392b">maked</s></b> → <b style="color:#1a7a56">made</b><br>make의 과거형은 불규칙 과거형 <b>made</b>예요.'
+  },
+  {
+    type:'C', lesson:'L16',
+    sentence:'She dances very beautiful on stage.',
+    hint:'그녀는 무대에서 아주 아름답게 춤을 춰요.',
+    choices:['beautiful','stage','dances'],
+    answer:'beautiful',
+    reason:'<b><s style="color:#c0392b">beautiful</s></b> → <b style="color:#1a7a56">beautifully</b><br>동사 dances를 꾸미려면 부사가 필요해요. beautiful(형용사)에 -ly를 붙여요.'
+  },
+  {
+    type:'C', lesson:'L18',
+    sentence:'The cat is sitting in front the door.',
+    hint:'고양이가 문 앞에 앉아 있어요.',
+    choices:['in front','sitting','door'],
+    answer:'in front',
+    reason:'<b><s style="color:#c0392b">in front</s></b> → <b style="color:#1a7a56">in front of</b><br>"~ 앞에"는 <b>in front of</b>라고 써야 해요. of를 빠뜨리면 안 돼요.'
+  },
+  {
+    type:'C', lesson:'L19',
+    sentence:'There is three cups on the table.',
+    hint:'테이블 위에 컵이 세 개 있어요.',
+    choices:['is','three','table'],
+    answer:'is',
+    reason:'<b><s style="color:#c0392b">is</s></b> → <b style="color:#1a7a56">are</b><br>three cups는 복수이므로 <b>There are</b>를 써야 해요.'
+  },
+  
+];
+
+const QUESTIONS = ALL_QUESTIONS;
+
+// ── 유틸 함수 ──────────────────────────────────────
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function shuffleNoFirstAnswer(arr, answer){
+  let result; let tries=0;
+  do { result=shuffle(arr); tries++; }
+  while(result[0].toLowerCase()===answer.toLowerCase() && tries<20);
+  return result;
+}
+
+// ── 상태 ──────────────────────────────────────────
+let queue=[], currentIndex=0, score=0, wrongList=[];
+
+function startQuiz(qs){
+  queue=qs; currentIndex=0; score=0; wrongList=[];
+  document.getElementById('quizCard').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  document.getElementById('reviewList').innerHTML='';
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=queue[currentIndex];
+  const total=queue.length;
+
+  // 진행바
+  const pct=Math.round((currentIndex/total)*100);
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressText').textContent=(currentIndex+1)+' / '+total;
+
+  // 번호
+  document.getElementById('qNum').textContent=currentIndex+1;
+
+  // 유형 배지 & 지시문
+  const typeBadge=document.getElementById('typeBadge');
+  const cardInst=document.getElementById('cardInstruction');
+  if(q.type==='A'){
+    typeBadge.textContent='A형';
+    typeBadge.className='type-badge type-a-bg';
+    cardInst.textContent='빈칸에 알맞은 단어를 고르세요!';
+    cardInst.className='card-instruction ci-a';
+  } else if(q.type==='B'){
+    typeBadge.textContent='B형';
+    typeBadge.className='type-badge type-b-bg';
+    cardInst.textContent='빈칸에 알맞은 표현을 고르세요!';
+    cardInst.className='card-instruction ci-b';
+  } else {
+    typeBadge.textContent='C형';
+    typeBadge.className='type-badge type-c-bg';
+    cardInst.textContent='아래 문장에서 틀린 단어를 찾아 고르세요!';
+    cardInst.className='card-instruction ci-c';
+  }
+
+  // preHint
+  const ph=document.getElementById('preHint');
+  if(q.preHint){
+    ph.style.display='block';
+    ph.textContent=q.preHint;
+  } else {
+    ph.style.display='none';
+  }
+
+  // 문장
+  document.getElementById('sentence').innerHTML=q.sentence;
+
+  // 선택지 셔플
+  const shuffled=shuffleNoFirstAnswer(q.choices, q.answer);
+  const choicesEl=document.getElementById('choices');
+  choicesEl.innerHTML='';
+  shuffled.forEach(ch=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.textContent=ch;
+    btn.addEventListener('click',()=>selectAnswer(ch, q));
+    choicesEl.appendChild(btn);
+  });
+
+  // 피드백·다음버튼 초기화
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected, q){
+  // 버튼 비활성화
+  document.querySelectorAll('.choice-btn').forEach(btn=>btn.disabled=true);
+
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct) score++;
+  else wrongList.push(q);
+
+  // 버튼 색 표시
+  document.querySelectorAll('.choice-btn').forEach(btn=>{
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase()) btn.classList.add('reveal-correct');
+    if(btn.textContent===selected && !correct) btn.classList.add('selected-wrong');
+  });
+
+  // 피드백
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(correct){
+    fb.className='feedback correct-fb';
+    fb.innerHTML='<span class="fb-title">⭕ 정답이에요!</span>'+
+      (q.reason||'')+
+      (q.hint?'<div class="fb-hint">💡 '+q.hint+'</div>':'');
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML='<span class="fb-title">❌ 틀렸어요!</span>'+
+      (q.reason||'')+
+      (q.hint?'<div class="fb-hint">💡 '+q.hint+'</div>':'');
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressText').textContent=queue.length+' / '+queue.length;
+  document.getElementById('quizCard').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+
+  const total=queue.length, pct=Math.round((score/total)*100);
+  let trophy='🎉',grade='',gradeClass='grade-A',comment='';
+  if(pct===100){trophy='🏆';grade='S';gradeClass='grade-S';comment='완벽한 실력이에요!';}
+  else if(pct>=87){grade='A';gradeClass='grade-A';comment='훌륭한 실력이에요!';}
+  else if(pct>=73){grade='B';gradeClass='grade-B';comment='잘 했어요! 조금만 더 연습해봐요.';}
+  else if(pct>=60){grade='C';gradeClass='grade-C';comment='틀린 문제를 다시 확인해봐요.';}
+  else{trophy='💪';grade='D';gradeClass='grade-D';comment='다시 한번 도전해봐요!';}
+
+  document.getElementById('trophy').textContent=trophy;
+  document.getElementById('scoreBig').textContent=score+' / '+total;
+  document.getElementById('scoreLabel').textContent='정답률 '+pct+'%';
+  const gb=document.getElementById('gradeBadge');
+  gb.textContent='등급 '+grade;
+  gb.className='grade-badge '+gradeClass;
+
+  const aWrong=wrongList.filter(q=>q.type==='A').length;
+  const bWrong=wrongList.filter(q=>q.type==='B').length;
+  const cWrong=wrongList.filter(q=>q.type==='C').length;
+  document.getElementById('resultDetail').innerHTML=
+    comment+'<br><br>'+
+    '• A형 오답: '+aWrong+'개<br>'+
+    '• B형 오답: '+bWrong+'개<br>'+
+    '• C형 오답: '+cWrong+'개';
+
+  document.getElementById('btnRetryWrong').style.display=wrongList.length>0?'block':'none';
+
+  // 오답 복습 목록
+  if(wrongList.length>0){
+    const rl=document.getElementById('reviewList');
+    rl.innerHTML='<div style="font-weight:900;font-size:15px;color:#c0392b;margin-bottom:6px;">📋 오답 복습</div>';
+    wrongList.forEach((q,i)=>{
+      const div=document.createElement('div');
+      div.className='review-item';
+      div.innerHTML=
+        '<div class="review-q">'+(i+1)+'. ['+q.lesson+' · '+q.type+'형] '+q.hint+'</div>'+
+        '<div class="review-wrong">내 답: ✗ (오답)</div>'+
+        '<div class="review-correct">정답: ✓ '+q.answer+'</div>';
+      rl.appendChild(div);
+    });
+  }
+}
+
+document.getElementById('btnRetryWrong').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('btnRetryAll').addEventListener('click',function(){startQuiz(shuffle([...QUESTIONS]));});
+
+startQuiz(shuffle([...QUESTIONS]));
+</script>
+</body>
+</html>

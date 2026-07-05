@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0016 조동사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-a:#4A90D9;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+    --hl:#D4891A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-a);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+
+  .instruction-box{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.6;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+  .card-instruction{font-size:15px;color:var(--accent-dark);font-weight:800;text-align:center;margin-bottom:14px;background:#EAF7F0;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+
+  .sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.75;margin:10px 0 20px;color:var(--text);}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+  .hl{color:var(--hl);border-bottom:2px solid var(--hl);font-weight:800;}
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:19px;font-weight:700;padding:14px 10px;border:2.5px solid #B8DEC8;background:#F0FAF4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--accent);background:#DFF5E8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+  .fb-hint{font-size:13px;color:#555;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08);font-style:italic;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">A형</span>
+    <h1>🔎 영문법 탐정단<br>조동사</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    빈칸에 알맞은 <strong>조동사</strong>를 고르세요!<br>
+    능력: can(현재) · could(과거)<br>
+    허가·추측: may &nbsp;·&nbsp; 충고: should / shouldn't
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">알맞은 조동사는?</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0016  조동사  A형  L14
+  can(3): 현재 능력
+  can't(1): 현재 능력 부정
+  could(2): 과거 능력
+  couldn't(1): 과거 능력 부정
+  may(2): 허가 / 추측
+  should(3): 충고
+  shouldn't(2): 충고 부정
+  ★ Rule 16D: can·may 동시 선택지 절대 금지 → 이중정답 방지
+  ★ 조동사 뒤 동사원형 확인 선택지 포함
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+
+  /* ── can: 현재 능력 (3문제) ── */
+  {
+    sentence:'She <span class="blank"></span> speak three languages fluently.',
+    options:['can','should','must'],
+    answer:'can',
+    hint:'그녀는 세 개 언어를 유창하게 말할 수 있어요.',
+    reason:'<strong>can</strong>은 현재의 능력을 나타낼 때 써요. → She <strong>can</strong> speak...'
+  },
+  {
+    sentence:'He <span class="blank"></span> see well without his glasses.',
+    options:["can't","shouldn't","may not"],
+    answer:"can't",
+    hint:'그는 안경 없이는 잘 볼 수 없어요.',
+    reason:'<strong>can\'t</strong>(= cannot)는 능력이 없음을 나타내요. → He <strong>can\'t</strong> see...'
+  },
+  {
+    sentence:'Wow! She <span class="blank"></span> dance so beautifully!',
+    options:['can','should','must'],
+    answer:'can',
+    hint:'와! 그녀는 정말 아름답게 춤출 수 있어요!',
+    reason:'<strong>can</strong>은 현재의 능력을 나타낼 때 써요. → She <strong>can</strong> dance...'
+  },
+
+  /* ── could / couldn't: 과거 능력 (3문제) ── */
+  {
+    sentence:'He <span class="blank"></span> run very fast <span class="hl">when he was young</span>.',
+    options:['could','can','should'],
+    answer:'could',
+    hint:'그는 어렸을 때 매우 빠르게 달릴 수 있었어요.',
+    reason:'<span style="color:#D4891A"><strong>when he was young</strong></span>은 과거 상황이에요. 과거의 능력은 <strong>could</strong>를 써요.'
+  },
+  {
+    sentence:'I <span class="blank"></span> sleep <span class="hl">last night</span>. I was too worried.',
+    options:["couldn't","can't","shouldn't"],
+    answer:"couldn't",
+    hint:'나는 어젯밤 잠을 자지 못했어요. 너무 걱정됐거든요.',
+    reason:'<span style="color:#D4891A"><strong>last night</strong></span>은 과거 신호어예요. 과거의 능력 부정은 <strong>couldn\'t</strong>를 써요.'
+  },
+  {
+    sentence:'She <span class="blank"></span> read <span class="hl">when she was 3</span>, but now she reads well.',
+    options:["couldn't","can't","shouldn't"],
+    answer:"couldn't",
+    hint:'그녀는 3살 때 글을 읽지 못했어요. 하지만 이제는 잘 읽어요.',
+    reason:'<span style="color:#D4891A"><strong>when she was 3</strong></span>은 과거예요. 과거의 불가능은 <strong>couldn\'t</strong>를 써요.'
+  },
+
+  /* ── may: 허가 / 추측 (2문제) ── */
+  {
+    sentence:'<span class="blank"></span> I use your phone, please?',
+    options:['May','Should','Must'],
+    answer:'May',
+    hint:'전화기를 써도 될까요?',
+    reason:'<strong>May I...?</strong>는 정중하게 허가를 구할 때 써요. (Can I도 가능하지만 May가 더 공손해요)'
+  },
+  {
+    sentence:'It <span class="blank"></span> rain tomorrow. The sky looks cloudy.',
+    options:['may','will','must'],
+    answer:'may',
+    hint:'내일 비가 올지도 몰라요. 하늘이 흐려 보여요.',
+    reason:'<strong>may</strong>는 확실하지 않은 추측을 나타내요. → It <strong>may</strong> rain... (아마 ~일지도)'
+  },
+
+  /* ── should / shouldn't: 충고 (4문제) ── */
+  {
+    sentence:'You look tired. You <span class="blank"></span> get some rest.',
+    options:['should','can','must'],
+    answer:'should',
+    hint:'피곤해 보여요. 좀 쉬어야 해요.',
+    reason:'<strong>should</strong>는 충고나 권고를 나타내요. → You <strong>should</strong> get some rest.'
+  },
+  {
+    sentence:'You <span class="blank"></span> eat so much junk food. It\'s bad for you.',
+    options:["shouldn't","can't","may not"],
+    answer:"shouldn't",
+    hint:'정크푸드를 너무 많이 먹으면 안 돼요. 건강에 나빠요.',
+    reason:'<strong>shouldn\'t</strong>는 ~하지 않는 것이 좋다는 충고예요. → You <strong>shouldn\'t</strong> eat...'
+  },
+  {
+    sentence:'You have an important exam. You <span class="blank"></span> study hard tonight.',
+    options:['should','could','may'],
+    answer:'should',
+    hint:'중요한 시험이 있어요. 오늘 밤 열심히 공부해야 해요.',
+    reason:'<strong>should</strong>는 충고나 권고를 나타내요. → You <strong>should</strong> study hard.'
+  },
+  {
+    sentence:'You <span class="blank"></span> stay up all night. It\'s bad for your health.',
+    options:["shouldn't","couldn't","can't"],
+    answer:"shouldn't",
+    hint:'밤새 깨어 있으면 안 돼요. 건강에 나빠요.',
+    reason:'<strong>shouldn\'t</strong>는 ~하지 않는 것이 좋다는 충고예요. → You <strong>shouldn\'t</strong> stay up...'
+  }
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').innerHTML=currentQ.sentence;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(isCorrect){
+    fb.className='feedback correct-fb';
+    fb.innerHTML=
+      '<span class="fb-title">🎉 정답이에요!</span>'+
+      currentQ.reason+
+      '<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML=
+      '<span class="fb-title">❌ 틀렸어요!</span>'+
+      currentQ.reason+
+      '<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

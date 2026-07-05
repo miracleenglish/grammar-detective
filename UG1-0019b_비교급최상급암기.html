@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0019b 비교급·최상급 암기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-mem:#E07B39;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-mem);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--type-mem),#C05A20);transition:width .3s ease;}
+
+  .instruction-box{background:var(--type-mem);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(224,123,57,0.15);}
+  .card-instruction{font-size:15px;color:var(--type-mem);font-weight:800;text-align:center;margin-bottom:16px;background:#FEF3EC;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:14px;text-align:center;}
+
+  /* 형용사 원급 카드 */
+  .adj-card{
+    background:linear-gradient(135deg,#FFF3EC,#FFE8D6);
+    border:2px solid #F5C4A0;border-radius:16px;
+    padding:18px 16px 12px;text-align:center;margin-bottom:14px;
+  }
+  .adj-label{font-size:12px;color:#C05A20;font-weight:800;letter-spacing:.8px;margin-bottom:4px;}
+  .adj-base{font-size:34px;font-weight:900;color:#2D2D2D;letter-spacing:1px;}
+  .adj-meaning{font-size:14px;color:#888;font-weight:600;margin-top:4px;}
+
+  /* 물음표 표시 */
+  .degree-badge{
+    display:inline-block;
+    background:#E07B39;color:#fff;
+    font-size:14px;font-weight:800;
+    padding:5px 16px;border-radius:999px;
+    margin:10px 0 16px;
+  }
+
+  /* 선택지 - 1열 (2단어 후보 대응) */
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:800;padding:14px 10px;border:2.5px solid #F5C4A0;background:#FFF8F3;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-mem);background:#FEE9D8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--type-mem);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--type-mem);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">암기형</span>
+    <h1>🔎 영문법 탐정단<br>비교급·최상급 암기</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    형용사의 <strong>비교급 / 최상급</strong>을 고르세요!<br>
+    📌 규칙: -er / -est · more/most<br>
+    📌 불규칙: good·bad·many·little 주의!
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">알맞은 형태를 고르세요!</div>
+    <div class="qnum" id="qnum">문제 1 / 16</div>
+
+    <div class="adj-card">
+      <div class="adj-label">원급 (Base)</div>
+      <div class="adj-base" id="adjBase"></div>
+      <div class="adj-meaning" id="adjMeaning"></div>
+    </div>
+
+    <div style="text-align:center">
+      <div class="degree-badge" id="degreeBadge"></div>
+    </div>
+
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0019b  비교급·최상급 암기  암기형  L15~16
+  규칙(4쌍): tall / big / beautiful / expensive
+  불규칙(4쌍): good / bad / many·much / little
+  각 형용사당 비교급·최상급 2문제 = 16문제
+  shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+
+  /* ── 규칙형 ── */
+  /* tall: 비교급·최상급 */
+  {base:'tall',     meaning:'키가 큰·높은', degree:'비교급 (Comparative)',
+   options:['taller','tallest','more tall','most tall'],    answer:'taller',
+   reason:'tall: 짧은 형용사 → <strong>tall + -er = taller</strong>'},
+  {base:'tall',     meaning:'키가 큰·높은', degree:'최상급 (Superlative)',
+   options:['tallest','taller','most tall','more tall'],    answer:'tallest',
+   reason:'tall: 짧은 형용사 → <strong>tall + -est = tallest</strong>'},
+
+  /* big: 비교급·최상급 (자음두번) */
+  {base:'big',      meaning:'큰', degree:'비교급 (Comparative)',
+   options:['bigger','bigest','more big','biggest'],        answer:'bigger',
+   reason:'big: 단모음+단자음 → 자음 두 번 + <strong>-er = bigger</strong>'},
+  {base:'big',      meaning:'큰', degree:'최상급 (Superlative)',
+   options:['biggest','bigger','most big','bigest'],        answer:'biggest',
+   reason:'big: 단모음+단자음 → 자음 두 번 + <strong>-est = biggest</strong>'},
+
+  /* beautiful: more/most */
+  {base:'beautiful',meaning:'아름다운', degree:'비교급 (Comparative)',
+   options:['more beautiful','most beautiful','beautifuler','less beautiful'], answer:'more beautiful',
+   reason:'beautiful: 긴 형용사 → <strong>more beautiful</strong> (beautifuler ×)'},
+  {base:'beautiful',meaning:'아름다운', degree:'최상급 (Superlative)',
+   options:['most beautiful','more beautiful','beautifulest','least beautiful'],answer:'most beautiful',
+   reason:'beautiful: 긴 형용사 → <strong>most beautiful</strong> (beautifulest ×)'},
+
+  /* expensive: more/most */
+  {base:'expensive',meaning:'비싼', degree:'비교급 (Comparative)',
+   options:['more expensive','most expensive','expensiver','less expensive'],  answer:'more expensive',
+   reason:'expensive: 긴 형용사 → <strong>more expensive</strong> (expensiver ×)'},
+  {base:'expensive',meaning:'비싼', degree:'최상급 (Superlative)',
+   options:['most expensive','more expensive','expensivest','least expensive'],answer:'most expensive',
+   reason:'expensive: 긴 형용사 → <strong>most expensive</strong> (expensivest ×)'},
+
+  /* ── 불규칙형 ── */
+  /* good: better / best */
+  {base:'good',     meaning:'좋은', degree:'비교급 (Comparative)',
+   options:['better','gooder','more good','best'],          answer:'better',
+   reason:'good → <strong>better</strong> (불규칙! gooder ×, more good ×)'},
+  {base:'good',     meaning:'좋은', degree:'최상급 (Superlative)',
+   options:['best','better','goodest','most good'],         answer:'best',
+   reason:'good → <strong>best</strong> (불규칙! goodest ×, most good ×)'},
+
+  /* bad: worse / worst */
+  {base:'bad',      meaning:'나쁜', degree:'비교급 (Comparative)',
+   options:['worse','badder','more bad','worst'],           answer:'worse',
+   reason:'bad → <strong>worse</strong> (불규칙! badder ×, more bad ×)'},
+  {base:'bad',      meaning:'나쁜', degree:'최상급 (Superlative)',
+   options:['worst','worse','baddest','most bad'],          answer:'worst',
+   reason:'bad → <strong>worst</strong> (불규칙! baddest ×, most bad ×)'},
+
+  /* many/much: more / most */
+  {base:'many / much', meaning:'많은', degree:'비교급 (Comparative)',
+   options:['more','many-er','most','mucher'],              answer:'more',
+   reason:'many/much → <strong>more</strong> (불규칙! mucher ×, many-er ×)'},
+  {base:'many / much', meaning:'많은', degree:'최상급 (Superlative)',
+   options:['most','more','many-est','much-est'],           answer:'most',
+   reason:'many/much → <strong>most</strong> (불규칙! much-est ×, many-est ×)'},
+
+  /* little: less / least */
+  {base:'little',   meaning:'적은·작은', degree:'비교급 (Comparative)',
+   options:['less','littler','more little','least'],        answer:'less',
+   reason:'little → <strong>less</strong> (불규칙! littler ×, more little ×)'},
+  {base:'little',   meaning:'적은·작은', degree:'최상급 (Superlative)',
+   options:['least','less','littlest','most little'],       answer:'least',
+   reason:'little → <strong>least</strong> (불규칙! littlest ×, most little ×)'}
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('adjBase').textContent=currentQ.base;
+  document.getElementById('adjMeaning').textContent=currentQ.meaning;
+  document.getElementById('degreeBadge').textContent=currentQ.degree+' → ?';
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className=isCorrect?'feedback correct-fb':'feedback wrong-fb';
+  fb.innerHTML=(isCorrect?'<span class="fb-title">🎉 정답이에요!</span>':'<span class="fb-title">❌ 틀렸어요!</span>')+currentQ.reason;
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

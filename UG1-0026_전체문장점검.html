@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0026 전체 문장 점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-c:#9B6DD1;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-c);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--type-c),#7B4DB1);transition:width .3s ease;}
+
+  .instruction-box{background:var(--type-c);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(155,109,209,0.13);}
+  .card-instruction{font-size:15px;color:var(--type-c);font-weight:800;text-align:center;margin-bottom:14px;background:#F3EDFB;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:10px;text-align:center;}
+
+  .err-sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.7;margin:0 0 6px;color:var(--text);background:#FFF8F0;border-radius:10px;padding:12px 10px;border-left:4px solid #F5A623;}
+  .lesson-tag{font-size:12px;color:#aaa;font-weight:700;text-align:center;margin-bottom:16px;letter-spacing:.3px;}
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:19px;font-weight:700;padding:14px 10px;border:2.5px solid #D9C5F5;background:#F8F3FE;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-c);background:#EEE5FC;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.7;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:8px;display:block;}
+  .err-mark{text-decoration:line-through;color:#E8604C;font-weight:800;}
+  .ok-mark{color:#276749;font-weight:800;}
+  .fb-hint{font-size:13px;color:#555;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08);font-style:italic;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:#7B4DB1;border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#5E3A8C;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--type-c);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:#7B4DB1;color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">C형</span>
+    <h1>🔎 영문법 탐정단<br>전체 문장 점검</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    아래 문장에서 <strong>틀린 단어</strong>를 찾아 고르세요!<br>
+    (L1~L22 전체 범위 종합 점검)
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">틀린 단어를 골라보세요!</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="err-sentence" id="errSentence"></div>
+    <div class="lesson-tag" id="lessonTag"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0026  전체 문장 점검  C형  L1~22 종합
+  ★ 규칙
+  - 선택지: 주어·고유명사 절대 금지
+  - 오류 강조 금지 (피드백에서만 취소선+빨강)
+  - 이중정답 방지: 오류 1개만
+  L1-5(×2) / L6-11(×2) / L12-14(×2) / L15-16(×2) / L17-18(×1) / L19-22(×3) = 12문제
+*/
+const ALL_QUESTIONS = [
+
+  /* ── L1~5: 명사·대명사 ── */
+  {
+    sentence:'There are two mouses in the kitchen.',
+    lessonTag:'L1 · 명사 불규칙 복수형',
+    options:['mouses','kitchen','two'],
+    answer:'mouses',
+    correct:'mice',
+    reason:'<span class="err-mark">mouses</span> → <span class="ok-mark">mice</span>: mouse의 복수형은 불규칙이에요. mouse → <strong>mice</strong>',
+    hint:'부엌에 생쥐가 두 마리 있어요.'
+  },
+  {
+    sentence:'We are proud of ours school.',
+    lessonTag:'L5 · 소유격 형용사 vs 대명사',
+    options:['ours','proud','school'],
+    answer:'ours',
+    correct:'our',
+    reason:'<span class="err-mark">ours</span> → <span class="ok-mark">our</span>: 명사(school) 앞에는 소유격 형용사 <strong>our</strong>를 써요. (ours는 명사 단독 사용)',
+    hint:'우리는 우리 학교가 자랑스러워요.'
+  },
+
+  /* ── L6~11: 현재 동사·빈도부사·진행형 ── */
+  {
+    sentence:'She always is tired after school.',
+    lessonTag:'L8 · 빈도부사 위치',
+    options:['always','tired','school'],
+    answer:'always',
+    correct:'(is always)',
+    reason:'<span class="err-mark">always</span> 위치 오류: 빈도부사는 <strong>be동사 뒤</strong>에 와야 해요. → She <strong>is always</strong> tired.',
+    hint:'그녀는 학교 후에 항상 피곤해요.'
+  },
+  {
+    sentence:'He don\'t like spicy food.',
+    lessonTag:'L7 · don\'t / doesn\'t',
+    options:["don't",'like','spicy'],
+    answer:"don't",
+    correct:"doesn't",
+    reason:'<span class="err-mark">don\'t</span> → <span class="ok-mark">doesn\'t</span>: He(3인칭 단수)의 부정문에는 <strong>doesn\'t</strong>를 써요.',
+    hint:'그는 매운 음식을 좋아하지 않아요.'
+  },
+
+  /* ── L12~14: 과거·조동사 ── */
+  {
+    sentence:'He writed a letter to his friend yesterday.',
+    lessonTag:'L13 · 불규칙 과거형',
+    options:['writed','letter','friend'],
+    answer:'writed',
+    correct:'wrote',
+    reason:'<span class="err-mark">writed</span> → <span class="ok-mark">wrote</span>: write의 과거형은 불규칙이에요. write → <strong>wrote</strong>',
+    hint:'그는 어제 친구에게 편지를 썼어요.'
+  },
+  {
+    sentence:'She can sings really well.',
+    lessonTag:'L14 · 조동사 + 동사원형',
+    options:['sings','really','well'],
+    answer:'sings',
+    correct:'sing',
+    reason:'<span class="err-mark">sings</span> → <span class="ok-mark">sing</span>: 조동사(can) 뒤에는 반드시 <strong>동사원형</strong>을 써요. (-s 없음)',
+    hint:'그녀는 노래를 정말 잘 해요.'
+  },
+
+  /* ── L15~16: 형용사·부사 ── */
+  {
+    sentence:'He drives very careful on the highway.',
+    lessonTag:'L16 · 부사 vs 형용사',
+    options:['careful','drives','highway'],
+    answer:'careful',
+    correct:'carefully',
+    reason:'<span class="err-mark">careful</span> → <span class="ok-mark">carefully</span>: 동사(drives)를 수식할 때는 부사를 써요. careful + <strong>-ly</strong> → <strong>carefully</strong>',
+    hint:'그는 고속도로에서 매우 조심스럽게 운전해요.'
+  },
+  {
+    sentence:'The movie was very bored.',
+    lessonTag:'L15 · 형용사 용법',
+    options:['bored','movie','very'],
+    answer:'bored',
+    correct:'boring',
+    reason:'<span class="err-mark">bored</span> → <span class="ok-mark">boring</span>: 사물(movie)이 지루함을 주는 것이므로 <strong>boring</strong>을 써요. (bored = 사람이 지루함을 느낌)',
+    hint:'그 영화는 매우 지루했어요.'
+  },
+
+  /* ── L17~18: 전치사 ── */
+  {
+    sentence:'She goes to the gym at the morning.',
+    lessonTag:'L17 · 시간 전치사',
+    options:['at','gym','morning'],
+    answer:'at',
+    correct:'in',
+    reason:'<span class="err-mark">at</span> → <span class="ok-mark">in</span>: 아침·오후·저녁에는 <strong>in</strong>을 써요. → <strong>in</strong> the morning (at the morning ×)',
+    hint:'그녀는 아침에 헬스장에 가요.'
+  },
+
+  /* ── L19~22: 문장 구조 ── */
+  {
+    sentence:'There is many students in the classroom.',
+    lessonTag:'L19 · There + Be 수 일치',
+    options:['is','many','classroom'],
+    answer:'is',
+    correct:'are',
+    reason:'<span class="err-mark">is</span> → <span class="ok-mark">are</span>: students는 복수예요. → There <strong>are</strong> many students.',
+    hint:'교실에 학생이 많이 있어요.'
+  },
+  {
+    sentence:'She wants going to the party tonight.',
+    lessonTag:'L20 · to부정사 목적어',
+    options:['going','party','wants'],
+    answer:'going',
+    correct:'to go',
+    reason:'<span class="err-mark">going</span> → <span class="ok-mark">to go</span>: <strong>want</strong> 뒤에는 to부정사를 써요. → wants <strong>to go</strong> (동명사 ×)',
+    hint:'그녀는 오늘 밤 파티에 가고 싶어해요.'
+  },
+  {
+    sentence:'What sport does he plays after school?',
+    lessonTag:'L22 · 의문사 의문문 동사원형',
+    options:['plays','sport','school'],
+    answer:'plays',
+    correct:'play',
+    reason:'<span class="err-mark">plays</span> → <span class="ok-mark">play</span>: Does 의문문 뒤에는 반드시 <strong>동사원형</strong>을 써요. (-s 없음)',
+    hint:'그는 방과 후에 어떤 운동을 해요?'
+  }
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('errSentence').textContent=currentQ.sentence;
+  document.getElementById('lessonTag').textContent=currentQ.lessonTag;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(isCorrect){
+    fb.className='feedback correct-fb';
+    fb.innerHTML='<span class="fb-title">🎉 찾았어요!</span>'+currentQ.reason+'<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML='<span class="fb-title">❌ 다시 확인해요!</span>'+currentQ.reason+'<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

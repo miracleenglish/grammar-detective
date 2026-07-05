@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG1-0013 동사 현재 문장 점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-c:#9B6DD1;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-c);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--type-c),#7B4DB1);transition:width .3s ease;}
+
+  .instruction-box{background:var(--type-c);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.55;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(155,109,209,0.13);}
+  .card-instruction{font-size:15px;color:var(--type-c);font-weight:800;text-align:center;margin-bottom:14px;background:#F3EDFB;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:10px;text-align:center;}
+
+  /* 오류 문장 — 강조 없이 표시 (Rule 24) */
+  .err-sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.7;margin:0 0 6px;color:var(--text);background:#FFF8F0;border-radius:10px;padding:12px 10px;border-left:4px solid #F5A623;}
+  .lesson-tag{font-size:12px;color:#aaa;font-weight:700;text-align:center;margin-bottom:16px;letter-spacing:.3px;}
+
+  /* 선택지 */
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:19px;font-weight:700;padding:14px 10px;border:2.5px solid #D9C5F5;background:#F8F3FE;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-c);background:#EEE5FC;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  /* 피드백 */
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.7;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:8px;display:block;}
+  .err-mark{text-decoration:line-through;color:#E8604C;font-weight:800;}
+  .ok-mark{color:#276749;font-weight:800;}
+  .fb-hint{font-size:13px;color:#555;margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08);font-style:italic;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:#7B4DB1;border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#5E3A8C;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--type-c);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:#7B4DB1;color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">C형</span>
+    <h1>🔎 영문법 탐정단<br>동사 현재 문장 점검</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    아래 문장에서 <strong>틀린 단어</strong>를 찾아 고르세요!<br>
+    (L6~L11 범위: be동사 / 일반동사 / 빈도부사 / 진행형 / will)
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">틀린 단어를 골라보세요!</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="err-sentence" id="errSentence"></div>
+    <div class="lesson-tag" id="lessonTag"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG1-0013  동사 현재 문장 점검  C형  L6~11
+  ★ 규칙 준수
+  - 선택지: 주어·고유명사 절대 금지
+  - 문제 표시 시 오류 단어 강조 금지 (Rule 24)
+  - 피드백: 취소선+빨강(오류) / 초록(정답)
+  - 이중정답 방지: 문장 내 오류 반드시 1개
+  L6×2 / L7×2 / L8×2 / L9×2 / L10×2 / L11×2 = 12문제
+*/
+const ALL_QUESTIONS = [
+
+  /* ── L6: be동사 현재형 (2문제) ── */
+  {
+    sentence:'The students is very quiet today.',
+    lessonTag:'L6 · be동사 현재형',
+    options:['is','quiet','today'],
+    answer:'is',
+    correct:'are',
+    reason:'<span class="err-mark">is</span> → <span class="ok-mark">are</span>: students는 복수 명사예요. 복수 주어에는 <strong>are</strong>를 써요.',
+    hint:'학생들이 오늘 매우 조용해요.'
+  },
+  {
+    sentence:'We isn\'t ready for the test yet.',
+    lessonTag:'L6 · be동사 부정형',
+    options:["isn't",'ready','yet'],
+    answer:"isn't",
+    correct:"aren't",
+    reason:'<span class="err-mark">isn\'t</span> → <span class="ok-mark">aren\'t</span>: We는 복수 주어예요. 복수에는 <strong>aren\'t</strong>(= are not)를 써요.',
+    hint:'우리는 아직 시험 준비가 안 됐어요.'
+  },
+
+  /* ── L7: 일반동사 현재형 (2문제) ── */
+  {
+    sentence:'She don\'t like cold weather.',
+    lessonTag:'L7 · don\'t / doesn\'t',
+    options:["don't",'like','weather'],
+    answer:"don't",
+    correct:"doesn't",
+    reason:'<span class="err-mark">don\'t</span> → <span class="ok-mark">doesn\'t</span>: She(3인칭 단수)의 부정문에는 <strong>doesn\'t</strong>를 써요.',
+    hint:'그녀는 추운 날씨를 좋아하지 않아요.'
+  },
+  {
+    sentence:'He plaies the guitar every weekend.',
+    lessonTag:'L7 · 3인칭 단수 변화형',
+    options:['plaies','guitar','every'],
+    answer:'plaies',
+    correct:'plays',
+    reason:'<span class="err-mark">plaies</span> → <span class="ok-mark">plays</span>: play는 모음(a)+y로 끝나서 y를 그대로 두고 <strong>-s</strong>만 붙여요.',
+    hint:'그는 매 주말마다 기타를 쳐요.'
+  },
+
+  /* ── L8: 빈도부사 위치 (2문제) ── */
+  {
+    sentence:'She always is tired after school.',
+    lessonTag:'L8 · 빈도부사 위치',
+    options:['always','tired','school'],
+    answer:'always',
+    correct:'(is always)',
+    reason:'<span class="err-mark">always</span> 위치 오류: 빈도부사는 <strong>be동사 뒤</strong>에 와요. → She <strong>is always</strong> tired.',
+    hint:'그녀는 학교 후에 항상 피곤해요.'
+  },
+  {
+    sentence:'He eats usually lunch at noon.',
+    lessonTag:'L8 · 빈도부사 위치',
+    options:['eats','usually','lunch'],
+    answer:'usually',
+    correct:'(usually eats)',
+    reason:'<span class="err-mark">usually</span> 위치 오류: 빈도부사는 <strong>일반동사 앞</strong>에 와요. → He <strong>usually eats</strong> lunch.',
+    hint:'그는 보통 정오에 점심을 먹어요.'
+  },
+
+  /* ── L9: 현재진행형 (2문제) ── */
+  {
+    sentence:'She is swiming in the pool right now.',
+    lessonTag:'L9 · -ing 철자',
+    options:['swiming','pool','right'],
+    answer:'swiming',
+    correct:'swimming',
+    reason:'<span class="err-mark">swiming</span> → <span class="ok-mark">swimming</span>: 단모음+단자음(m)으로 끝나는 동사: 자음을 두 번 쓰고 -ing를 붙여요.',
+    hint:'그녀는 지금 수영장에서 수영하고 있어요.'
+  },
+  {
+    sentence:'He is study hard for the exam.',
+    lessonTag:'L9 · is/are + -ing',
+    options:['study','hard','exam'],
+    answer:'study',
+    correct:'studying',
+    reason:'<span class="err-mark">study</span> → <span class="ok-mark">studying</span>: be동사(is) 뒤에는 반드시 <strong>동사원형+ing</strong> 형태를 써요.',
+    hint:'그는 시험 공부를 열심히 하고 있어요.'
+  },
+
+  /* ── L10: 현재단순 vs 현재진행 (2문제) ── */
+  {
+    sentence:'Look! It is snow outside. Let\'s make a snowman!',
+    lessonTag:'L10 · 현재진행형 (지금)',
+    options:['snow','outside','snowman'],
+    answer:'snow',
+    correct:'snowing',
+    reason:'<span class="err-mark">snow</span> → <span class="ok-mark">snowing</span>: "Look!"은 지금 일어나는 일의 신호예요. is 뒤에는 <strong>-ing</strong> 형태를 써요.',
+    hint:'봐요! 밖에 눈이 오고 있어요. 눈사람 만들어요!'
+  },
+  {
+    sentence:'She cooks dinner right now. It smells delicious.',
+    lessonTag:'L10 · 현재진행형 (right now)',
+    options:['cooks','dinner','delicious'],
+    answer:'cooks',
+    correct:'is cooking',
+    reason:'<span class="err-mark">cooks</span> → <span class="ok-mark">is cooking</span>: "right now"는 현재진행 신호예요. 지금 하고 있는 일은 <strong>is/are + -ing</strong>로 써요.',
+    hint:'그녀는 지금 저녁을 요리하고 있어요. 맛있는 냄새가 나요.'
+  },
+
+  /* ── L11: will 미래 (2문제) ── */
+  {
+    sentence:'I will visited my grandparents next weekend.',
+    lessonTag:'L11 · will + 동사원형',
+    options:['visited','grandparents','weekend'],
+    answer:'visited',
+    correct:'visit',
+    reason:'<span class="err-mark">visited</span> → <span class="ok-mark">visit</span>: will 뒤에는 반드시 <strong>동사원형</strong>을 써요. (과거형 ×)',
+    hint:'나는 다음 주말에 조부모님을 방문할 거예요.'
+  },
+  {
+    sentence:'Will she calls you back tonight?',
+    lessonTag:'L11 · Will 의문문',
+    options:['calls','back','tonight'],
+    answer:'calls',
+    correct:'call',
+    reason:'<span class="err-mark">calls</span> → <span class="ok-mark">call</span>: Will 의문문 뒤에는 반드시 <strong>동사원형</strong>을 써요. (3인칭 단수 -s ×)',
+    hint:'그녀가 오늘 밤 당신에게 다시 전화할까요?'
+  }
+
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('errSentence').textContent=currentQ.sentence;
+  document.getElementById('lessonTag').textContent=currentQ.lessonTag;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  if(isCorrect){
+    fb.className='feedback correct-fb';
+    fb.innerHTML=
+      '<span class="fb-title">🎉 찾았어요!</span>'+
+      currentQ.reason+
+      '<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  } else {
+    fb.className='feedback wrong-fb';
+    fb.innerHTML=
+      '<span class="fb-title">❌ 다시 확인해요!</span>'+
+      currentQ.reason+
+      '<div class="fb-hint">💡 '+currentQ.hint+'</div>';
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>
