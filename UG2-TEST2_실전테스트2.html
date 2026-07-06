@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG2-TEST2 실전테스트 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF3F0;--accent:#3A9D6E;--accent-dark:#2D7A57;
+    --test:#E8604C;--correct:#4CAF93;--wrong:#E8604C;
+    --type-a:#4A90D9;--type-b:#5BAD6F;--type-c:#9B6DD1;
+    --card-bg:#FFFFFF;--text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--test);color:#fff;font-weight:800;font-size:13px;padding:4px 14px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:#8B2010;margin:4px 0 0;line-height:1.4;}
+  .range-label{font-size:13px;color:#999;margin-top:4px;}
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #F5C4BC;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--test),#B03020);transition:width .3s ease;}
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(232,96,76,0.13);}
+  .card-instruction{font-size:15px;font-weight:800;text-align:center;margin-bottom:14px;border-radius:10px;padding:8px 10px;}
+  .ci-a{color:var(--type-a);background:#EBF4FD;}
+  .ci-b{color:var(--type-b);background:#EDF7EF;}
+  .ci-c{color:var(--type-c);background:#F3EDFB;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+  .sentence{font-size:18px;font-weight:700;text-align:center;line-height:1.9;margin:10px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:100px;border-bottom:2.5px solid #8B2010;margin:0 4px;vertical-align:bottom;height:1.3em;}
+  .kr-hint{font-size:14px;font-weight:700;color:#5A3020;text-align:center;margin-bottom:18px;background:#FFF0ED;border-radius:8px;padding:7px 12px;display:block;}
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #F5C4BC;background:#FFF8F7;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--test);background:#FDEAE6;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.correct-c{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.correct-c-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .feedback.wrong-fb{background:#F3F3F3;color:#555;border-left:4px solid #B0B0B0;}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+  .fb-fix{margin-top:8px;padding:8px 10px;background:#E7F7F0;border-radius:8px;color:#2D7A57;font-weight:700;font-size:13px;}
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--test);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#B03020;}
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:24px;font-weight:800;color:#8B2010;margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:16px;}
+  .type-stats{display:flex;gap:8px;justify-content:center;margin-bottom:20px;}
+  .stat-box{background:#FFF8F7;border:2px solid #F5C4BC;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;color:#8B2010;text-align:center;}
+  .stat-box .sn{font-size:22px;font-weight:800;display:block;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--test);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">TEST 2</span>
+    <h1>🔍 UG2 실전테스트 2</h1>
+    <div class="range-label">Lesson 11 ~ 22 범위</div>
+  </header>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction" id="cardInstruction"></div>
+    <div class="qnum" id="qnum">문제 1 / 15</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="kr-hint" id="krHint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="type-stats" id="typeStats"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG2-TEST2  실전테스트 2  L11~22
+  A형 6문제 + B형 5문제 + C형 4문제 = 15문제
+  TEST형 규칙: 상단 지시문 박스 없음 / krHint 한글 번역만
+  결과: A형·B형·C형별 오답 수 통계 표시 (규칙 37)
+*/
+const ALL_QUESTIONS = [
+  // ── A형 ──
+  {
+    type:'A', lesson:'L11',
+    sentence: 'The road looks very <span class="blank"></span> at night.',
+    krHint: '💬 그 도로는 밤에 매우 위험해 보여요.',
+    options: ['dangerous','danger','dangerously'],
+    answer: 'dangerous',
+    reason: 'look + <strong>형용사</strong> → dangerous (명사 danger, 부사 dangerously 불가)'
+  },
+  {
+    type:'A', lesson:'L12',
+    sentence: 'He drives the car very <span class="blank"></span>.',
+    krHint: '💬 그는 차를 매우 조심스럽게 운전해요.',
+    options: ['carefully','careful','carefuliy'],
+    answer: 'carefully',
+    reason: '동사(drives)를 수식 → 부사 <strong>carefully</strong>'
+  },
+  {
+    type:'A', lesson:'L13',
+    sentence: 'This test is <span class="blank"></span> than the last one.',
+    krHint: '💬 이번 시험이 지난번보다 더 어려워요.',
+    options: ['more difficult','difficulter','most difficult'],
+    answer: 'more difficult',
+    reason: '긴 형용사(difficult) 비교급: <strong>more</strong> + 원급 → <strong>more difficult</strong> than'
+  },
+  {
+    type:'A', lesson:'L15',
+    sentence: 'The concert is <span class="blank"></span> Saturday evening.',
+    krHint: '💬 콘서트는 토요일 저녁이에요.',
+    options: ['on','in','at'],
+    answer: 'on',
+    reason: '요일 앞에는 <strong>on</strong>을 써요. → <strong>on</strong> Saturday evening'
+  },
+  {
+    type:'A', lesson:'L17',
+    sentence: 'She enjoys <span class="blank"></span> in the pool.',
+    krHint: '💬 그녀는 수영장에서 수영하는 것을 즐겨요.',
+    options: ['swimming','to swim','swam'],
+    answer: 'swimming',
+    reason: 'enjoy 뒤에는 <strong>동명사(-ing)</strong>를 써요. → enjoys <strong>swimming</strong>'
+  },
+  {
+    type:'A', lesson:'L18',
+    sentence: 'She gave a gift <span class="blank"></span> me.',
+    krHint: '💬 그녀는 나에게 선물을 줬어요.',
+    options: ['to','for','at'],
+    answer: 'to',
+    reason: 'give는 <strong>to</strong>와 함께 써요. → gave a gift <strong>to</strong> me'
+  },
+  // ── B형 ──
+  {
+    type:'B', lesson:'L14',
+    sentence: 'She was hungry, <span class="blank"></span> she didn\'t eat anything.',
+    krHint: '💬 그녀는 배가 고팠지만 아무것도 먹지 않았어요.',
+    options: ['but','so','because'],
+    answer: 'but',
+    reason: '<strong>but</strong>은 대조를 나타내요. 배고픔 ↔ 아무것도 먹지 않음 → <strong>but</strong>'
+  },
+  {
+    type:'B', lesson:'L16',
+    sentence: 'The children ran <span class="blank"></span> the playground.',
+    krHint: '💬 아이들이 운동장 주변을 뛰어다녔어요.',
+    options: ['around','over','into'],
+    answer: 'around',
+    reason: '둘레를 돌아다니는 방향 → <strong>around</strong>'
+  },
+  {
+    type:'B', lesson:'L19',
+    sentence: 'I like the store <span class="blank"></span> sells fresh bread.',
+    krHint: '💬 저는 신선한 빵을 파는 가게를 좋아해요.',
+    options: ['which','who','what'],
+    answer: 'which',
+    reason: 'the store = 사물 → <strong>which</strong>를 써요.'
+  },
+  {
+    type:'B', lesson:'L20',
+    sentence: 'If it snows tomorrow, school <span class="blank"></span> cancelled.',
+    krHint: '💬 내일 눈이 오면 학교가 취소될 거예요.',
+    options: ['will be','is','was'],
+    answer: 'will be',
+    reason: 'First 조건문: 미래 가능성 → if + 현재, <strong>will</strong> → <strong>will be</strong> cancelled'
+  },
+  {
+    type:'B', lesson:'L21',
+    sentence: '<span class="blank"></span> is it from here to the station?',
+    krHint: '💬 A: "여기서 두 블록이에요." — 거리를 묻는 의문사',
+    options: ['How far','How long','How often'],
+    answer: 'How far',
+    reason: '<strong>How far</strong>는 거리를 물을 때 써요.'
+  },
+  // ── C형 ──
+  {
+    type:'C', lesson:'L13',
+    sentence: 'He is gooder at sports than his sister.',
+    krHint: '💬 그는 누나보다 운동을 더 잘해요.',
+    options: ['gooder','sports','sister'],
+    answer: 'gooder',
+    reason: '<del style="color:#E8604C">gooder</del> → <strong style="color:#2D7A57">better</strong> &nbsp; good의 불규칙 비교급은 better예요.',
+    fix: 'He is better at sports than his sister.'
+  },
+  {
+    type:'C', lesson:'L12',
+    sentence: 'She sings very beautiful.',
+    krHint: '💬 그녀는 매우 아름답게 노래해요.',
+    options: ['beautiful','sings','very'],
+    answer: 'beautiful',
+    reason: '<del style="color:#E8604C">beautiful</del> → <strong style="color:#2D7A57">beautifully</strong> &nbsp; 동사(sings) 수식 → 부사 필요',
+    fix: 'She sings very beautifully.'
+  },
+  {
+    type:'C', lesson:'L17',
+    sentence: 'He decided studying medicine at university.',
+    krHint: '💬 그는 대학에서 의학을 공부하기로 결심했어요.',
+    options: ['studying','decided','medicine'],
+    answer: 'studying',
+    reason: '<del style="color:#E8604C">studying</del> → <strong style="color:#2D7A57">to study</strong> &nbsp; decide 뒤에는 to부정사를 써요.',
+    fix: 'He decided to study medicine at university.'
+  },
+  {
+    type:'C', lesson:'L22',
+    sentence: 'Don\'t talking during the class.',
+    krHint: '💬 수업 중에는 말하지 마세요.',
+    options: ['talking','during','class'],
+    answer: 'talking',
+    reason: '<del style="color:#E8604C">talking</del> → <strong style="color:#2D7A57">talk</strong> &nbsp; Don\'t + <strong>동사원형</strong> (부정 명령문)',
+    fix: "Don't talk during the class."
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+let wrongByType={A:0,B:0,C:0}, totalByType={A:0,B:0,C:0};
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  wrongByType={A:0,B:0,C:0};totalByType={A:0,B:0,C:0};
+  queue.forEach(function(q){totalByType[q.type]=(totalByType[q.type]||0)+1;});
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  const total=queue.length;
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+total;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/total)*100)+'%';
+  if(currentQ.type==='C'){
+    document.getElementById('sentence').textContent=currentQ.sentence;
+  } else {
+    document.getElementById('sentence').innerHTML=currentQ.sentence;
+  }
+  document.getElementById('krHint').textContent=currentQ.krHint;
+
+  const ci=document.getElementById('cardInstruction');
+  if(currentQ.type==='A'){ci.className='card-instruction ci-a';ci.textContent='빈칸에 알맞은 말은?';}
+  else if(currentQ.type==='B'){ci.className='card-instruction ci-b';ci.textContent='알맞은 형태는?';}
+  else{ci.className='card-instruction ci-c';ci.textContent='오류가 있는 단어를 고르세요.';}
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';fb.innerHTML='';fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+  const isC=(currentQ.type==='C');
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()){
+      b.classList.add(isC?'correct-c':'correct');
+    } else if(b===btnEl&&!isCorrect){
+      b.classList.add('wrong');
+    }
+  });
+
+  if(isCorrect) score++;
+  else{wrongList.push(currentQ);wrongByType[currentQ.type]=(wrongByType[currentQ.type]||0)+1;}
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  let fbClass, fbTitle;
+  if(isCorrect && isC){fbClass='feedback correct-c-fb';fbTitle='🎉 오류를 찾았어요!';}
+  else if(isCorrect){fbClass='feedback correct-fb';fbTitle='🎉 정답이에요!';}
+  else if(isC){fbClass='feedback wrong-fb';fbTitle='❌ 다시 확인해 봐요!';}
+  else{fbClass='feedback wrong-fb';fbTitle='❌ 틀렸어요!';}
+  fb.className=fbClass;
+  let html='<span class="fb-title">'+fbTitle+'</span>'+currentQ.reason;
+  if(currentQ.fix) html+='<div class="fb-fix">✅ 올바른 문장: '+currentQ.fix+'</div>';
+  fb.innerHTML=html;
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+
+  const ts=document.getElementById('typeStats');
+  ts.innerHTML='';
+  const types=[
+    {key:'A',label:'A형',color:'#4A90D9'},
+    {key:'B',label:'B형',color:'#5BAD6F'},
+    {key:'C',label:'C형',color:'#9B6DD1'}
+  ];
+  types.forEach(function(t){
+    if(!totalByType[t.key]) return;
+    const wrong=wrongByType[t.key]||0;
+    const div=document.createElement('div');
+    div.className='stat-box';
+    div.innerHTML='<span class="sn" style="color:'+t.color+'">'+wrong+'</span>'+t.label+' 오답';
+    ts.appendChild(div);
+  });
+
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

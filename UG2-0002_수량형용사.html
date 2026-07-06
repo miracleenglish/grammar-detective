@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG2-0002 수량형용사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-a:#4A90D9;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-a);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+
+  .instruction-box{background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.6;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+  .card-instruction{font-size:15px;color:var(--accent-dark);font-weight:800;text-align:center;margin-bottom:14px;background:#EAF7F0;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+
+  .sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.8;margin:10px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+
+  .kr-hint{
+    font-size:14px;font-weight:700;color:#2D6640;
+    text-align:center;margin-bottom:18px;
+    background:#EAF7F0;border-radius:8px;
+    padding:7px 12px;display:block;
+  }
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #B8DEC8;background:#F0FAF4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--accent);background:#DFF5E8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">A형</span>
+    <h1>🔎 영문법 탐정단<br>수량형용사</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    한글 해석을 보고 알맞은 <strong>수량표현</strong>을 고르세요!<br>
+    📌 some / any &nbsp;|&nbsp; many / much &nbsp;|&nbsp; a few / a little / a lot of<br>
+    📌 측정표현: a glass of / a slice of / a loaf of / a bowl of
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">빈칸에 알맞은 수량표현은?</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="kr-hint" id="krHint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG2-0002  수량형용사  A형  L2
+  some/any · many/much · a few/a little/a lot of · 측정표현
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+  // ── some / any ──
+  {
+    sentence: 'I have <span class="blank"></span> milk in the fridge.',
+    krHint: '💬 냉장고에 우유가 좀 있어요.',
+    options: ['some','any','many'],
+    answer: 'some',
+    reason: '긍정문에서 "조금 있다"고 할 때는 <strong>some</strong>을 써요. → <strong>some</strong> milk'
+  },
+  {
+    sentence: 'She doesn\'t have <span class="blank"></span> free time.',
+    krHint: '💬 그녀는 여유 시간이 전혀 없어요.',
+    options: ['any','some','much'],
+    answer: 'any',
+    reason: '부정문에서 "전혀 없다"고 할 때는 <strong>any</strong>를 써요. → doesn\'t have <strong>any</strong>'
+  },
+  {
+    sentence: 'Are there <span class="blank"></span> apples in the basket?',
+    krHint: '💬 바구니에 사과가 좀 있나요?',
+    options: ['any','some','much'],
+    answer: 'any',
+    reason: '의문문에서는 <strong>any</strong>를 써요. → Are there <strong>any</strong> apples?'
+  },
+  // ── many / much ──
+  {
+    sentence: 'There are <span class="blank"></span> students in the classroom.',
+    krHint: '💬 교실에 학생이 많이 있어요.',
+    options: ['many','much','a little'],
+    answer: 'many',
+    reason: '셀 수 있는 명사(students)가 많을 때는 <strong>many</strong>를 써요. → <strong>many</strong> students'
+  },
+  {
+    sentence: 'We don\'t have <span class="blank"></span> time.',
+    krHint: '💬 우리는 시간이 많지 않아요.',
+    options: ['much','many','a few'],
+    answer: 'much',
+    reason: '셀 수 없는 명사(time)가 많을 때는 <strong>much</strong>를 써요. → <strong>much</strong> time'
+  },
+  // ── a few / a little ──
+  {
+    sentence: 'I need <span class="blank"></span> more minutes.',
+    krHint: '💬 몇 분만 더 필요해요.',
+    options: ['a few','a little','much'],
+    answer: 'a few',
+    reason: '셀 수 있는 명사(minutes)가 조금 있을 때는 <strong>a few</strong>를 써요. → <strong>a few</strong> minutes'
+  },
+  {
+    sentence: 'Add <span class="blank"></span> salt to the soup.',
+    krHint: '💬 수프에 소금을 조금 넣어요.',
+    options: ['a little','a few','many'],
+    answer: 'a little',
+    reason: '셀 수 없는 명사(salt)가 조금 있을 때는 <strong>a little</strong>을 써요. → <strong>a little</strong> salt'
+  },
+  // ── a lot of ──
+  {
+    sentence: 'She has <span class="blank"></span> homework this week.',
+    krHint: '💬 그녀는 이번 주에 숙제가 아주 많아요.',
+    options: ['a lot of','many','a few'],
+    answer: 'a lot of',
+    reason: 'homework는 셀 수 없는 명사예요. 가산·불가산 모두 쓸 수 있는 <strong>a lot of</strong>를 써요.'
+  },
+  // ── 측정표현 (Measurement Words) ──
+  {
+    sentence: 'Can I have a <span class="blank"></span> of water?',
+    krHint: '💬 물 한 잔 마셔도 될까요?',
+    options: ['glass','cup','slice'],
+    answer: 'glass',
+    reason: '물·주스 같은 차가운 음료는 <strong>a glass of</strong>를 써요. → a <strong>glass</strong> of water'
+  },
+  {
+    sentence: 'She ate a <span class="blank"></span> of chocolate cake.',
+    krHint: '💬 그녀는 초콜릿 케이크 한 조각을 먹었어요.',
+    options: ['slice','glass','loaf'],
+    answer: 'slice',
+    reason: '케이크·빵·피자 한 조각은 <strong>a slice of</strong>를 써요. → a <strong>slice</strong> of cake'
+  },
+  {
+    sentence: 'Dad bought a <span class="blank"></span> of bread.',
+    krHint: '💬 아빠가 빵 한 덩어리를 사셨어요.',
+    options: ['loaf','bowl','cup'],
+    answer: 'loaf',
+    reason: '빵 한 덩어리(한 개)는 <strong>a loaf of</strong>를 써요. → a <strong>loaf</strong> of bread'
+  },
+  {
+    sentence: 'She had a <span class="blank"></span> of soup for lunch.',
+    krHint: '💬 그녀는 점심으로 수프 한 그릇을 먹었어요.',
+    options: ['bowl','slice','glass'],
+    answer: 'bowl',
+    reason: '수프·밥·시리얼 한 그릇은 <strong>a bowl of</strong>를 써요. → a <strong>bowl</strong> of soup'
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').innerHTML=currentQ.sentence;
+  document.getElementById('krHint').textContent=currentQ.krHint;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className=isCorrect?'feedback correct-fb':'feedback wrong-fb';
+  fb.innerHTML=(isCorrect?'<span class="fb-title">🎉 정답이에요!</span>':'<span class="fb-title">❌ 틀렸어요!</span>')+currentQ.reason;
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

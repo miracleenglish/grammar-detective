@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG2-0022 관계절 who·which</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;
+    --type-b:#5BAD6F;--correct:#4CAF93;--wrong:#E8604C;
+    --card-bg:#FFFFFF;--text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-b);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+  .instruction-box{background:var(--type-b);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.6;text-align:center;}
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+  .card-instruction{font-size:15px;color:var(--type-b);font-weight:800;text-align:center;margin-bottom:14px;background:#EDF7EF;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+  .sentence{font-size:18px;font-weight:700;text-align:center;line-height:1.9;margin:10px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+  .kr-hint{font-size:14px;font-weight:700;color:#2D6640;text-align:center;margin-bottom:18px;background:#EAF7F0;border-radius:8px;padding:7px 12px;display:block;}
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #B8DEC8;background:#F0FAF4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-b);background:#DFF5E8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">B형</span>
+    <h1>🔎 영문법 탐정단<br>관계절 who · which</h1>
+  </header>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="instruction-box">
+    문장을 보고 알맞은 <strong>관계대명사</strong>를 고르세요!<br>
+    📌 <strong>who</strong> → 사람을 가리킬 때<br>
+    📌 <strong>which</strong> → 동물·사물을 가리킬 때
+  </div>
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">빈칸에 who 또는 which?</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="kr-hint" id="krHint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+<script>
+/*
+  UG2-0022  관계절 who·which  B형  L19
+  who(사람 6문제) / which(동물·사물 6문제)
+  이중정답 방지(규칙 40): 선행사 명확한 문장만 사용
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+  // ── who: 사람 ──
+  {
+    sentence: 'I know a girl <span class="blank"></span> wants to be a doctor.',
+    krHint: '💬 저는 의사가 되고 싶어 하는 소녀를 알아요.',
+    options: ['who','which','what'],
+    answer: 'who',
+    reason: 'a girl = 사람 → <strong>who</strong>를 써요. → a girl <strong>who</strong> wants to be a doctor'
+  },
+  {
+    sentence: 'He is the man <span class="blank"></span> fixed our car.',
+    krHint: '💬 그는 우리 차를 고쳐준 남자예요.',
+    options: ['who','which','what'],
+    answer: 'who',
+    reason: 'the man = 사람 → <strong>who</strong>를 써요. → the man <strong>who</strong> fixed our car'
+  },
+  {
+    sentence: 'She is a teacher <span class="blank"></span> loves her students.',
+    krHint: '💬 그녀는 학생들을 사랑하는 선생님이에요.',
+    options: ['who','which','whose'],
+    answer: 'who',
+    reason: 'a teacher = 사람 → <strong>who</strong>를 써요. → a teacher <strong>who</strong> loves her students'
+  },
+  {
+    sentence: 'I have a friend <span class="blank"></span> speaks three languages.',
+    krHint: '💬 저는 세 가지 언어를 하는 친구가 있어요.',
+    options: ['who','which','what'],
+    answer: 'who',
+    reason: 'a friend = 사람 → <strong>who</strong>를 써요. → a friend <strong>who</strong> speaks three languages'
+  },
+  {
+    sentence: 'The boy <span class="blank"></span> sits next to me is very smart.',
+    krHint: '💬 제 옆에 앉는 남자아이는 매우 똑똑해요.',
+    options: ['who','which','what'],
+    answer: 'who',
+    reason: 'the boy = 사람 → <strong>who</strong>를 써요. → the boy <strong>who</strong> sits next to me'
+  },
+  {
+    sentence: 'The woman <span class="blank"></span> lives across from us is a nurse.',
+    krHint: '💬 우리 맞은편에 사는 여성은 간호사예요.',
+    options: ['who','which','whose'],
+    answer: 'who',
+    reason: 'the woman = 사람 → <strong>who</strong>를 써요. → the woman <strong>who</strong> lives across from us'
+  },
+  // ── which: 동물·사물 ──
+  {
+    sentence: 'This is the book <span class="blank"></span> won the prize.',
+    krHint: '💬 이것이 상을 받은 책이에요.',
+    options: ['which','who','what'],
+    answer: 'which',
+    reason: 'the book = 사물 → <strong>which</strong>를 써요. → the book <strong>which</strong> won the prize'
+  },
+  {
+    sentence: 'I bought a bag <span class="blank"></span> is very light.',
+    krHint: '💬 저는 매우 가벼운 가방을 샀어요.',
+    options: ['which','who','what'],
+    answer: 'which',
+    reason: 'a bag = 사물 → <strong>which</strong>를 써요. → a bag <strong>which</strong> is very light'
+  },
+  {
+    sentence: 'Do you see the dog <span class="blank"></span> is running in the park?',
+    krHint: '💬 공원에서 달리고 있는 개가 보이나요?',
+    options: ['which','who','whose'],
+    answer: 'which',
+    reason: 'the dog = 동물 → <strong>which</strong>를 써요. → the dog <strong>which</strong> is running'
+  },
+  {
+    sentence: 'The movie <span class="blank"></span> we watched last night was great.',
+    krHint: '💬 어젯밤에 우리가 본 영화는 정말 좋았어요.',
+    options: ['which','who','what'],
+    answer: 'which',
+    reason: 'the movie = 사물 → <strong>which</strong>를 써요. → the movie <strong>which</strong> we watched'
+  },
+  {
+    sentence: 'This is the restaurant <span class="blank"></span> serves the best pizza.',
+    krHint: '💬 이곳이 최고의 피자를 내놓는 식당이에요.',
+    options: ['which','who','what'],
+    answer: 'which',
+    reason: 'the restaurant = 사물(장소) → <strong>which</strong>를 써요. → the restaurant <strong>which</strong> serves'
+  },
+  {
+    sentence: 'I love the dress <span class="blank"></span> she wore at the party.',
+    krHint: '💬 저는 그녀가 파티에서 입은 드레스가 너무 좋아요.',
+    options: ['which','who','what'],
+    answer: 'which',
+    reason: 'the dress = 사물 → <strong>which</strong>를 써요. → the dress <strong>which</strong> she wore'
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').innerHTML=currentQ.sentence;
+  document.getElementById('krHint').textContent=currentQ.krHint;
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';fb.innerHTML='';fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className=isCorrect?'feedback correct-fb':'feedback wrong-fb';
+  fb.innerHTML=(isCorrect?'<span class="fb-title">🎉 정답이에요!</span>':'<span class="fb-title">❌ 틀렸어요!</span>')+currentQ.reason;
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

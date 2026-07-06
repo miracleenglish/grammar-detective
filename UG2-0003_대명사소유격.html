@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG2-0003 대명사·소유격</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;
+    --accent:#3A9D6E;
+    --accent-dark:#2D7A57;
+    --type-b:#5BAD6F;
+    --correct:#4CAF93;
+    --wrong:#E8604C;
+    --card-bg:#FFFFFF;
+    --text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-b);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+
+  .instruction-box{background:var(--type-b);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.6;text-align:center;}
+
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+  .card-instruction{font-size:15px;color:var(--type-b);font-weight:800;text-align:center;margin-bottom:14px;background:#EDF7EF;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+
+  .sentence{font-size:19px;font-weight:700;text-align:center;line-height:1.8;margin:10px 0 6px;color:var(--text);}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);margin:0 4px;vertical-align:bottom;height:1.3em;}
+
+  .kr-hint{
+    font-size:14px;font-weight:700;color:#2D6640;
+    text-align:center;margin-bottom:18px;
+    background:#EAF7F0;border-radius:8px;
+    padding:7px 12px;display:block;
+  }
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #B8DEC8;background:#F0FAF4;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-b);background:#DFF5E8;}
+  .opt-btn.correct{background:var(--correct);border-color:var(--correct);color:#fff;}
+  .opt-btn.wrong{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.65;font-weight:500;}
+  .feedback.correct-fb{background:#E7F7F0;color:#2D7A57;border-left:4px solid var(--correct);}
+  .feedback.wrong-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:6px;display:block;}
+
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">B형</span>
+    <h1>🔎 영문법 탐정단<br>대명사 &amp; 소유격</h1>
+  </header>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="instruction-box">
+    문맥을 보고 알맞은 <strong>대명사 또는 소유격</strong> 형태를 고르세요!<br>
+    📌 주격 / 목적격 / 소유격 형용사 / 소유격 대명사 / 소유격 &#39;s
+  </div>
+
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">빈칸에 알맞은 형태는?</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="kr-hint" id="krHint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  UG2-0003  대명사 & 소유격  B형  L3
+  주격·목적격 대명사 / 소유격 형용사·대명사 / 소유격 's
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+  // ── 주격 대명사 ──
+  {
+    sentence: 'John is a great cook. <span class="blank"></span> makes dinner every night.',
+    krHint: '💬 존은 요리를 잘 해요. 그가 매일 밤 저녁을 만들어요.',
+    options: ['He','Him','His'],
+    answer: 'He',
+    reason: '문장의 주어 자리에는 주격 대명사를 써요. John → <strong>He</strong>'
+  },
+  {
+    sentence: 'Jake and Beth are classmates. <span class="blank"></span> always sit together.',
+    krHint: '💬 제이크와 베스는 반 친구들이에요. 그들은 항상 함께 앉아요.',
+    options: ['They','Them','Their'],
+    answer: 'They',
+    reason: '문장의 주어 자리에는 주격 대명사를 써요. Jake and Beth → <strong>They</strong>'
+  },
+  {
+    sentence: 'My brother and I study hard. <span class="blank"></span> want to get good grades.',
+    krHint: '💬 남동생과 저는 열심히 공부해요. 우리는 좋은 점수를 받고 싶어요.',
+    options: ['We','Us','Our'],
+    answer: 'We',
+    reason: '문장의 주어 자리에는 주격 대명사를 써요. My brother and I → <strong>We</strong>'
+  },
+  // ── 목적격 대명사 ──
+  {
+    sentence: 'Sara is a great singer. Everyone likes <span class="blank"></span>.',
+    krHint: '💬 사라는 노래를 잘 해요. 모두가 그녀를 좋아해요.',
+    options: ['her','she','hers'],
+    answer: 'her',
+    reason: '동사 뒤 목적어 자리에는 목적격 대명사를 써요. Sara → <strong>her</strong>'
+  },
+  {
+    sentence: 'Our teacher is very kind. She always helps <span class="blank"></span>.',
+    krHint: '💬 우리 선생님은 매우 친절해요. 그녀는 항상 저희를 도와줘요.',
+    options: ['us','we','our'],
+    answer: 'us',
+    reason: '동사 뒤 목적어 자리에는 목적격 대명사를 써요. (My brother and I →) <strong>us</strong>'
+  },
+  {
+    sentence: 'The children were very noisy. Mom told <span class="blank"></span> to be quiet.',
+    krHint: '💬 아이들이 매우 시끄러웠어요. 엄마가 그들에게 조용히 하라고 했어요.',
+    options: ['them','they','their'],
+    answer: 'them',
+    reason: '동사 뒤 목적어 자리에는 목적격 대명사를 써요. the children → <strong>them</strong>'
+  },
+  // ── 소유격 형용사 ──
+  {
+    sentence: 'My dad loves taking pictures. <span class="blank"></span> camera is very expensive.',
+    krHint: '💬 아빠는 사진 찍는 것을 좋아해요. 그의 카메라는 아주 비싸요.',
+    options: ['His','Him','He'],
+    answer: 'His',
+    reason: '명사 앞에서 소유를 나타낼 때는 소유격 형용사를 써요. My dad → <strong>His</strong>'
+  },
+  {
+    sentence: 'We moved to a new house. <span class="blank"></span> living room is very big.',
+    krHint: '💬 우리는 새 집으로 이사했어요. 우리 거실이 아주 넓어요.',
+    options: ['Our','Us','We'],
+    answer: 'Our',
+    reason: '명사 앞에서 소유를 나타낼 때는 소유격 형용사를 써요. We → <strong>Our</strong>'
+  },
+  // ── 소유격 대명사 ──
+  {
+    sentence: 'This pen isn\'t yours. It\'s <span class="blank"></span>.',
+    krHint: '💬 이 펜은 네 것이 아니에요. 그건 제 거예요.',
+    options: ['mine','my','me'],
+    answer: 'mine',
+    reason: '명사 없이 혼자 쓰는 소유격은 소유격 대명사예요. → It\'s <strong>mine</strong>.'
+  },
+  {
+    sentence: 'This coat isn\'t mine. It must be <span class="blank"></span>.',
+    krHint: '💬 이 코트는 제 것이 아니에요. 에이미 것일 거예요.',
+    options: ['hers','her','she'],
+    answer: 'hers',
+    reason: '명사 없이 혼자 쓰는 소유격은 소유격 대명사예요. Amy → <strong>hers</strong>'
+  },
+  // ── 소유격 's ──
+  {
+    sentence: 'Look at <span class="blank"></span> new shoes. She got them for her birthday.',
+    krHint: '💬 케이트의 새 신발을 봐요. 생일 선물로 받았어요.',
+    options: ["Kate's",'Kate','Kates'],
+    answer: "Kate's",
+    reason: '사람 이름에 <strong>\'s</strong>를 붙이면 소유를 나타내요. → <strong>Kate\'s</strong> new shoes'
+  },
+  {
+    sentence: 'I borrowed <span class="blank"></span> bike yesterday. It\'s really fast.',
+    krHint: '💬 저는 어제 톰의 자전거를 빌렸어요. 정말 빨라요.',
+    options: ["Tom's",'Toms','Tom'],
+    answer: "Tom's",
+    reason: '사람 이름에 <strong>\'s</strong>를 붙이면 소유를 나타내요. → <strong>Tom\'s</strong> bike'
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').innerHTML=currentQ.sentence;
+  document.getElementById('krHint').textContent=currentQ.krHint;
+
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';
+  fb.innerHTML='';
+  fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className=isCorrect?'feedback correct-fb':'feedback wrong-fb';
+  fb.innerHTML=(isCorrect?'<span class="fb-title">🎉 정답이에요!</span>':'<span class="fb-title">❌ 틀렸어요!</span>')+currentQ.reason;
+
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>

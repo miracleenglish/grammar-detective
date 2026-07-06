@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>영문법 탐정단 - UG2-0017 형용사·부사·비교·접속 점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;
+    --type-c:#9B6DD1;--correct:#4CAF93;--wrong:#E8604C;
+    --card-bg:#FFFFFF;--text:#2A2A2A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Noto Sans KR','Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;}
+  .app{width:100%;max-width:480px;padding:16px;padding-bottom:40px;}
+  header{text-align:center;margin-bottom:14px;}
+  .badge{display:inline-block;background:var(--type-c);color:#fff;font-weight:800;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:6px;letter-spacing:.5px;}
+  h1{font-size:18px;font-weight:800;color:var(--accent-dark);margin:4px 0 0;line-height:1.4;}
+  .progress-wrap{background:#fff;border-radius:999px;height:12px;overflow:hidden;margin:14px 0 18px;box-shadow:inset 0 0 0 2px #B8DEC8;}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));transition:width .3s ease;}
+  .instruction-box{background:var(--type-c);color:#fff;font-weight:700;font-size:14px;padding:12px 14px;border-radius:14px;margin-bottom:14px;line-height:1.6;text-align:center;}
+  .card{background:var(--card-bg);border-radius:20px;padding:22px 18px;box-shadow:0 4px 16px rgba(45,122,87,0.13);}
+  .card-instruction{font-size:15px;color:var(--type-c);font-weight:800;text-align:center;margin-bottom:14px;background:#F3EDFB;border-radius:10px;padding:8px 10px;}
+  .qnum{font-size:12.5px;color:#999;font-weight:700;margin-bottom:6px;text-align:center;}
+  .sentence{font-size:18px;font-weight:700;text-align:center;line-height:1.9;margin:10px 0 6px;color:var(--text);}
+  .kr-hint{font-size:14px;font-weight:700;color:#2D6640;text-align:center;margin-bottom:18px;background:#EAF7F0;border-radius:8px;padding:7px 12px;display:block;}
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .opt-btn{font-family:'Nunito','Noto Sans KR',sans-serif;font-size:18px;font-weight:700;padding:14px 10px;border:2.5px solid #D8C4F0;background:#F8F3FD;border-radius:14px;cursor:pointer;transition:.15s;color:var(--text);text-align:center;}
+  .opt-btn:hover:not(:disabled){border-color:var(--type-c);background:#EFE6FA;}
+  .opt-btn.correct{background:var(--wrong);border-color:var(--wrong);color:#fff;}
+  .opt-btn.wrong{background:#B0B0B0;border-color:#B0B0B0;color:#fff;}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{display:none;margin-top:14px;padding:14px;border-radius:14px;font-size:14px;line-height:1.75;font-weight:500;}
+  .feedback.correct-fb{background:#FDEAE6;color:#B84534;border-left:4px solid var(--wrong);}
+  .feedback.wrong-fb{background:#F3F3F3;color:#555;border-left:4px solid #B0B0B0;}
+  .fb-title{font-size:15px;font-weight:800;margin-bottom:8px;display:block;}
+  .fb-fix{margin-top:8px;padding:8px 10px;background:#E7F7F0;border-radius:8px;color:#2D7A57;font-weight:700;font-size:13.5px;}
+  .next-btn{display:none;width:100%;margin-top:14px;padding:14px;font-size:16px;font-weight:800;color:#fff;background:var(--accent-dark);border:none;border-radius:14px;cursor:pointer;font-family:inherit;}
+  .next-btn:hover{background:#22604A;}
+  .result-screen{display:none;text-align:center;}
+  .result-screen .stars{font-size:44px;margin:18px 0 6px;}
+  .result-screen .score{font-size:22px;font-weight:800;color:var(--accent-dark);margin-bottom:4px;}
+  .result-screen .score-sub{font-size:14px;color:#888;margin-bottom:24px;}
+  .result-btns{display:flex;flex-direction:column;gap:10px;}
+  .result-btn{padding:14px;font-size:15.5px;font-weight:800;border-radius:14px;border:none;cursor:pointer;font-family:inherit;}
+  .btn-retry-wrong{background:var(--wrong);color:#fff;}
+  .btn-retry-all{background:var(--accent-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="badge">C형</span>
+    <h1>🔎 영문법 탐정단<br>형용사·부사·비교·접속 점검</h1>
+  </header>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="instruction-box">
+    문장에서 <strong>틀린 단어</strong>를 찾아 고르세요!<br>
+    📌 형용사 · 부사 · 비교급·최상급 · 접속사
+  </div>
+  <div id="quizScreen" class="card">
+    <div class="card-instruction">오류가 있는 단어를 고르세요.</div>
+    <div class="qnum" id="qnum">문제 1 / 12</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="kr-hint" id="krHint"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn">다음 문제 →</button>
+  </div>
+  <div id="resultScreen" class="card result-screen">
+    <div class="stars" id="stars"></div>
+    <div class="score" id="scoreText"></div>
+    <div class="score-sub" id="scoreSub"></div>
+    <div class="result-btns">
+      <button class="result-btn btn-retry-wrong" id="retryWrongBtn">❌ 오답만 다시 풀기</button>
+      <button class="result-btn btn-retry-all" id="retryAllBtn">🔄 전체 다시 풀기</button>
+    </div>
+  </div>
+</div>
+<script>
+/*
+  UG2-0017  형용사·부사·비교·접속 점검  C형  L11~14
+  형용사(3) / 부사(3) / 비교·최상급(3) / 접속사(3)
+  선택지에 주어 절대 금지 / 오류 1개 / 수정 후 완전히 올바른 문장
+  12문제 / shuffleNoFirstAnswer() 적용
+*/
+const ALL_QUESTIONS = [
+  // ── L11 형용사 ──
+  {
+    sentence: 'She is a very friend person.',
+    krHint: '💬 그녀는 매우 친절한 사람이에요.',
+    options: ['friend','very','person'],
+    answer: 'friend',
+    reason: '<del style="color:#E8604C">friend</del> → <strong style="color:#2D7A57">friendly</strong> &nbsp; 명사(friend)는 형용사 자리에 쓸 수 없어요. 형용사형은 friendly예요.',
+    fix: 'She is a very friendly person.'
+  },
+  {
+    sentence: 'The road looks very danger at night.',
+    krHint: '💬 그 도로는 밤에 매우 위험해 보여요.',
+    options: ['danger','looks','night'],
+    answer: 'danger',
+    reason: '<del style="color:#E8604C">danger</del> → <strong style="color:#2D7A57">dangerous</strong> &nbsp; danger는 명사예요. 형용사형은 dangerous예요.',
+    fix: 'The road looks very dangerous at night.'
+  },
+  {
+    sentence: 'He got very nervously before the speech.',
+    krHint: '💬 그는 연설 전에 매우 긴장했어요.',
+    options: ['nervously','speech','before'],
+    answer: 'nervously',
+    reason: '<del style="color:#E8604C">nervously</del> → <strong style="color:#2D7A57">nervous</strong> &nbsp; get + 형용사 → nervous (부사nervously는 쓸 수 없어요)',
+    fix: 'He got very nervous before the speech.'
+  },
+  // ── L12 부사 ──
+  {
+    sentence: 'She sings very beautiful.',
+    krHint: '💬 그녀는 매우 아름답게 노래해요.',
+    options: ['beautiful','sings','very'],
+    answer: 'beautiful',
+    reason: '<del style="color:#E8604C">beautiful</del> → <strong style="color:#2D7A57">beautifully</strong> &nbsp; 동사(sings)를 수식할 때는 부사를 써요. beautiful → beautifully',
+    fix: 'She sings very beautifully.'
+  },
+  {
+    sentence: 'He drove the car careful.',
+    krHint: '💬 그는 차를 조심스럽게 운전했어요.',
+    options: ['careful','drove','car'],
+    answer: 'careful',
+    reason: '<del style="color:#E8604C">careful</del> → <strong style="color:#2D7A57">carefully</strong> &nbsp; 동사(drove)를 수식할 때는 부사를 써요. careful → carefully',
+    fix: 'He drove the car carefully.'
+  },
+  {
+    sentence: 'She plays the violin good.',
+    krHint: '💬 그녀는 바이올린을 잘 연주해요.',
+    options: ['good','plays','violin'],
+    answer: 'good',
+    reason: '<del style="color:#E8604C">good</del> → <strong style="color:#2D7A57">well</strong> &nbsp; good(형용사)의 부사형은 불규칙이에요. good → well',
+    fix: 'She plays the violin well.'
+  },
+  // ── L13 비교급·최상급 ──
+  {
+    sentence: 'He is gooder at math than me.',
+    krHint: '💬 그는 저보다 수학을 더 잘해요.',
+    options: ['gooder','math','than'],
+    answer: 'gooder',
+    reason: '<del style="color:#E8604C">gooder</del> → <strong style="color:#2D7A57">better</strong> &nbsp; good의 불규칙 비교급은 better예요.',
+    fix: 'He is better at math than me.'
+  },
+  {
+    sentence: 'This is the baddest movie I\'ve ever seen.',
+    krHint: '💬 이건 내가 본 영화 중 최악이에요.',
+    options: ['baddest','movie','ever'],
+    answer: 'baddest',
+    reason: '<del style="color:#E8604C">baddest</del> → <strong style="color:#2D7A57">worst</strong> &nbsp; bad의 불규칙 최상급은 worst예요.',
+    fix: "This is the worst movie I've ever seen."
+  },
+  {
+    sentence: 'This bag is heavier as mine.',
+    krHint: '💬 이 가방이 제 것보다 더 무거워요.',
+    options: ['as','heavier','mine'],
+    answer: 'as',
+    reason: '<del style="color:#E8604C">as</del> → <strong style="color:#2D7A57">than</strong> &nbsp; 비교급 뒤에는 as가 아닌 than을 써요. → heavier than',
+    fix: 'This bag is heavier than mine.'
+  },
+  // ── L14 접속사 ──
+  {
+    sentence: 'She was tired, because she went to bed early.',
+    krHint: '💬 그녀는 피곤해서 일찍 잠자리에 들었어요.',
+    options: ['because','tired','early'],
+    answer: 'because',
+    reason: '<del style="color:#E8604C">because</del> → <strong style="color:#2D7A57">so</strong> &nbsp; 피곤한 것이 원인 → 일찍 잠든 것이 결과. "원인, so 결과" 구조예요.',
+    fix: 'She was tired, so she went to bed early.'
+  },
+  {
+    sentence: 'She was hungry, so she didn\'t eat anything.',
+    krHint: '💬 그녀는 배가 고팠지만 아무것도 먹지 않았어요.',
+    options: ['so','hungry','eat'],
+    answer: 'so',
+    reason: '<del style="color:#E8604C">so</del> → <strong style="color:#2D7A57">but</strong> &nbsp; 배가 고픈데 먹지 않은 것은 대조 관계예요. so(결과) → but(대조)',
+    fix: "She was hungry, but she didn't eat anything."
+  },
+  {
+    sentence: 'Hurry up, because you\'ll be late!',
+    krHint: '💬 서두르세요, 안 그러면 늦을 거예요!',
+    options: ['because','up','late'],
+    answer: 'because',
+    reason: '<del style="color:#E8604C">because</del> → <strong style="color:#2D7A57">or</strong> &nbsp; "명령문, or ~"는 "안 그러면 ~"이라는 뜻이에요.',
+    fix: "Hurry up, or you'll be late!"
+  }
+];
+
+let queue=[], currentIndex=0, currentQ=null, wrongList=[], score=0, answered=false;
+
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+
+function startQuiz(list){
+  queue=list;currentIndex=0;score=0;wrongList=[];
+  document.getElementById('quizScreen').style.display='block';
+  document.getElementById('resultScreen').style.display='none';
+  showQuestion();
+}
+
+function showQuestion(){
+  answered=false;
+  currentQ=queue[currentIndex];
+  document.getElementById('qnum').textContent='문제 '+(currentIndex+1)+' / '+queue.length;
+  document.getElementById('progressBar').style.width=Math.round((currentIndex/queue.length)*100)+'%';
+  document.getElementById('sentence').textContent=currentQ.sentence;
+  document.getElementById('krHint').textContent=currentQ.krHint;
+  const optWrap=document.getElementById('options');
+  optWrap.innerHTML='';
+  const shuffled=shuffleNoFirstAnswer(currentQ.options,currentQ.answer);
+  shuffled.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';btn.textContent=opt;
+    btn.onclick=function(){selectAnswer(opt,btn);};
+    optWrap.appendChild(btn);
+  });
+  const fb=document.getElementById('feedback');
+  fb.style.display='none';fb.innerHTML='';fb.className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+}
+
+function selectAnswer(selected,btnEl){
+  if(answered)return;
+  answered=true;
+  const isCorrect=selected.toLowerCase()===currentQ.answer.toLowerCase();
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent.toLowerCase()===currentQ.answer.toLowerCase()) b.classList.add('correct');
+    else if(b===btnEl&&!isCorrect) b.classList.add('wrong');
+  });
+  if(isCorrect) score++;
+  else wrongList.push(currentQ);
+  const fb=document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className=isCorrect?'feedback correct-fb':'feedback wrong-fb';
+  fb.innerHTML=(isCorrect?'<span class="fb-title">🎉 오류를 찾았어요!</span>':'<span class="fb-title">❌ 다시 확인해 봐요!</span>')
+    +currentQ.reason
+    +'<div class="fb-fix">✅ 올바른 문장: '+currentQ.fix+'</div>';
+  const nb=document.getElementById('nextBtn');
+  nb.style.display='block';
+  nb.textContent=(currentIndex===queue.length-1)?'결과 보기 🏁':'다음 문제 →';
+}
+
+document.getElementById('nextBtn').addEventListener('click',function(){
+  if(currentIndex<queue.length-1){currentIndex++;showQuestion();}
+  else showResult();
+});
+
+function showResult(){
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('quizScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  const total=queue.length, pct=Math.round((score/total)*100);
+  document.getElementById('stars').textContent=pct===100?'⭐⭐⭐':pct>=80?'⭐⭐':'⭐';
+  document.getElementById('scoreText').textContent=score+' / '+total+'개 정답!';
+  document.getElementById('scoreSub').textContent=pct+'점이에요.';
+  document.getElementById('retryWrongBtn').style.display=wrongList.length>0?'block':'none';
+}
+
+document.getElementById('retryWrongBtn').addEventListener('click',function(){startQuiz(shuffle(wrongList));});
+document.getElementById('retryAllBtn').addEventListener('click',function(){startQuiz(shuffle(ALL_QUESTIONS));});
+
+startQuiz(shuffle(ALL_QUESTIONS));
+</script>
+</body>
+</html>
