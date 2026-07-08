@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0006 현재진행형과 단순 비교</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-b:#5BAD6F;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-b);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-b);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .hl{color:var(--accent-dark);text-decoration:underline;}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 현재진행형과 단순비교</h1>
+<p class="subtitle">UG3 · Lesson 5 · B형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 표현을 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">B형</div>
+  <div class="card-instruction">빈칸에 알맞은 표현을 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+const ALL_QUESTIONS = [
+  // ── 현재진행형: 지금 일어나는 동작 ──
+  {
+    sentence: 'Listen! The birds <span class="blank"></span> outside.',
+    answer: 'are singing',
+    options: ['sing', 'are singing', 'sings', 'sang'],
+    krHint: '들어봐요! 새들이 밖에서 노래하고 있어요.',
+    feedback: '지금 이 순간 일어나는 동작은 현재진행형(are + -ing)으로 써요. "Listen!"이 신호예요.'
+  },
+  {
+    sentence: 'Look! It <span class="blank"></span> outside. Take an umbrella.',
+    answer: 'is raining',
+    options: ['rains', 'is raining', 'rained', 'rain'],
+    krHint: '봐요! 밖에 비가 오고 있어요. 우산을 가져가요.',
+    feedback: '"Look!"은 지금 이 순간을 나타내는 신호예요. 현재진행형 is raining을 써요.'
+  },
+  {
+    sentence: 'We <span class="blank"></span> a movie at the moment. Please be quiet.',
+    answer: 'are watching',
+    options: ['watch', 'watches', 'are watching', 'watched'],
+    krHint: '우리는 지금 영화를 보고 있어요. 조용히 해줘요.',
+    feedback: '"at the moment"는 현재진행형 신호예요. are watching을 써요.'
+  },
+  // ── 현재단순형: 습관·반복 ──
+  {
+    sentence: 'My dad <span class="blank"></span> to work by subway every morning.',
+    answer: 'travels',
+    options: ['is traveling', 'travels', 'travel', 'traveled'],
+    krHint: '아빠는 매일 아침 지하철로 출근해요.',
+    feedback: '"every morning"은 습관·반복을 나타내요. 현재단순형 travels를 써요.'
+  },
+  {
+    sentence: 'Cats <span class="blank"></span> a lot during the day.',
+    answer: 'sleep',
+    options: ['are sleeping', 'sleep', 'sleeps', 'slept'],
+    krHint: '고양이는 낮에 많이 자요.',
+    feedback: '일반적 사실·습관은 현재단순형으로 써요. 복수 주어 Cats에는 sleep을 써요.'
+  },
+  {
+    sentence: 'The library <span class="blank"></span> at nine o\'clock every morning.',
+    answer: 'opens',
+    options: ['is opening', 'open', 'opens', 'opened'],
+    krHint: '도서관은 매일 아침 9시에 문을 열어요.',
+    feedback: '고정된 일정·습관은 현재단순형으로 써요. 단수 주어 The library에는 opens를 써요.'
+  },
+  // ── Non-action verbs (진행형 불가) ──
+  {
+    sentence: 'I <span class="blank"></span> a great idea right now!',
+    answer: 'have',
+    options: ['am having', 'have', 'has', 'had'],
+    krHint: '나는 지금 좋은 생각이 있어요!',
+    feedback: 'have(소유)는 상태동사라 진행형을 쓸 수 없어요. 지금이어도 have를 써요.'
+  },
+  {
+    sentence: 'This soup <span class="blank"></span> really delicious.',
+    answer: 'smells',
+    options: ['is smelling', 'smell', 'smells', 'smelled'],
+    krHint: '이 수프는 정말 맛있는 냄새가 나요.',
+    feedback: 'smell(감각)은 상태동사라 진행형을 쓸 수 없어요. 단수 주어에는 smells를 써요.'
+  },
+  {
+    sentence: 'Do you <span class="blank"></span> what she is saying?',
+    answer: 'understand',
+    options: ['are understanding', 'understands', 'understand', 'understood'],
+    krHint: '그녀가 말하는 것을 이해해요?',
+    feedback: 'understand(이해)는 상태동사라 진행형을 쓸 수 없어요. 의문문이므로 동사원형 understand를 써요.'
+  },
+  // ── 혼합 판단 ──
+  {
+    sentence: 'She usually <span class="blank"></span> coffee, but today she <span class="blank"></span> tea.',
+    answer: 'drinks / is drinking',
+    options: ['drinks / is drinking', 'is drinking / drinks', 'drink / is drinking', 'drinks / drinks'],
+    krHint: '그녀는 보통 커피를 마시지만, 오늘은 차를 마시고 있어요.',
+    feedback: '"usually"(습관) → 현재단순형 drinks, "today"(지금) → 현재진행형 is drinking을 써요.'
+  },
+  {
+    sentence: 'Tom <span class="blank"></span> soccer every Saturday, but right now he <span class="blank"></span> his homework.',
+    answer: 'plays / is doing',
+    options: ['plays / is doing', 'is playing / does', 'play / is doing', 'plays / does'],
+    krHint: '톰은 매주 토요일마다 축구를 하지만, 지금은 숙제를 하고 있어요.',
+    feedback: '"every Saturday"(습관) → plays, "right now"(진행 중) → is doing을 써요.'
+  },
+  {
+    sentence: 'I <span class="blank"></span> my grandmother lives in Busan. She <span class="blank"></span> a big house there.',
+    answer: 'know / has',
+    options: ['know / has', 'am knowing / is having', 'knows / has', 'know / have'],
+    krHint: '나는 할머니가 부산에 사신다는 것을 알아요. 할머니는 거기에 큰 집이 있어요.',
+    feedback: 'know(앎)와 have(소유)는 모두 상태동사라 진행형 불가예요. 주어가 I이면 know, she이면 has예요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

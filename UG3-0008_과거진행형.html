@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0008 과거진행형</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-b:#5BAD6F;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-b);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-b);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .hl{color:var(--accent-dark);text-decoration:underline;}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 과거진행형</h1>
+<p class="subtitle">UG3 · Lesson 7 · B형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 표현을 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">B형</div>
+  <div class="card-instruction">빈칸에 알맞은 표현을 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+const ALL_QUESTIONS = [
+  // ── 과거진행형 기본 ──
+  {
+    sentence: 'At 8 p.m. last night, I <span class="blank"></span> my favorite show.',
+    answer: 'was watching',
+    options: ['watched', 'was watching', 'watch', 'were watching'],
+    krHint: '어젯밤 8시에 나는 좋아하는 프로그램을 보고 있었어요.',
+    feedback: '특정 과거 시점에 진행 중이던 동작은 과거진행형(was/were + -ing)으로 써요.'
+  },
+  {
+    sentence: 'The kids <span class="blank"></span> in the garden when it started to rain.',
+    answer: 'were playing',
+    options: ['was playing', 'were playing', 'are playing', 'will be playing'],
+    krHint: '비가 내리기 시작했을 때 아이들은 정원에서 놀고 있었어요.',
+    feedback: '복수 주어 The kids의 과거진행형은 were + -ing예요.'
+  },
+  {
+    sentence: 'My dad <span class="blank"></span> dinner when I got home.',
+    answer: 'was cooking',
+    options: ['is cooking', 'was cooking', 'were cooking', 'will be cooking'],
+    krHint: '내가 집에 왔을 때 아빠는 저녁을 요리하고 있었어요.',
+    feedback: '단수 주어 My dad의 과거진행형은 was + -ing예요.'
+  },
+  // ── when 절: 과거진행 + 과거단순 ──
+  {
+    sentence: 'I <span class="blank"></span> a book <span class="hl">when</span> the phone <span class="blank"></span>.',
+    answer: 'was reading / rang',
+    options: ['was reading / rang', 'read / was ringing', 'was reading / was ringing', 'read / rang'],
+    krHint: '전화가 울렸을 때 나는 책을 읽고 있었어요.',
+    feedback: '"when"절의 짧은 동작(전화가 울림)은 과거단순, 배경이 되는 긴 동작(책 읽는 중)은 과거진행형이에요.'
+  },
+  {
+    sentence: 'She <span class="blank"></span> her bike <span class="hl">when</span> she <span class="blank"></span> a flat tire.',
+    answer: 'was riding / got',
+    options: ['was riding / got', 'rode / was getting', 'was riding / was getting', 'rode / got'],
+    krHint: '그녀는 자전거를 타고 있었는데 타이어에 펑크가 났어요.',
+    feedback: '배경 동작(자전거 타는 중) → 과거진행, 순간 사건(펑크남) → 과거단순이에요.'
+  },
+  // ── while 절: 과거진행 + 과거진행 ──
+  {
+    sentence: '<span class="blank"></span> Mom was cooking, Dad was washing the dishes.',
+    answer: 'While',
+    options: ['While', 'When', 'After', 'Before'],
+    krHint: '엄마가 요리하는 동안 아빠는 설거지를 하고 있었어요.',
+    feedback: '두 동작이 동시에 진행될 때는 while을 써요. while + 과거진행형, 과거진행형'
+  },
+  {
+    sentence: '<span class="blank"></span> I was watching TV, my sister was doing her homework.',
+    answer: 'While',
+    options: ['While', 'When', 'Until', 'Because'],
+    krHint: '내가 TV를 보는 동안 언니는 숙제를 하고 있었어요.',
+    feedback: '두 동작이 동시에 진행될 때는 while을 써요. While I was -ing, she was -ing.'
+  },
+  // ── 과거단순 vs 과거진행 구별 ──
+  {
+    sentence: 'She <span class="blank"></span> her diary every night last year.',
+    answer: 'wrote',
+    options: ['was writing', 'wrote', 'write', 'were writing'],
+    krHint: '그녀는 작년에 매일 밤 일기를 썼어요.',
+    feedback: '"every night last year"처럼 과거의 반복 습관은 과거단순형을 써요. 과거진행형은 특정 순간에 진행 중이던 동작에 써요.'
+  },
+  {
+    sentence: 'At noon, the students <span class="blank"></span> lunch in the cafeteria.',
+    answer: 'were having',
+    options: ['had', 'were having', 'have', 'was having'],
+    krHint: '정오에 학생들은 식당에서 점심을 먹고 있었어요.',
+    feedback: '"At noon"이라는 특정 시점에 진행 중이던 동작은 과거진행형이에요.'
+  },
+  // ── 부정·의문 ──
+  {
+    sentence: '<span class="blank"></span> you sleeping when I called you last night?',
+    answer: 'Were',
+    options: ['Were', 'Was', 'Did', 'Are'],
+    krHint: '내가 어젯밤에 전화했을 때 자고 있었어요?',
+    feedback: '과거진행형 의문문은 Was/Were로 시작해요. 주어 you에는 Were를 써요.'
+  },
+  {
+    sentence: 'The baby <span class="blank"></span> during the party. She slept quietly.',
+    answer: 'wasn\'t crying',
+    options: ['didn\'t cry', 'wasn\'t crying', 'weren\'t crying', 'isn\'t crying'],
+    krHint: '아기는 파티 동안 울고 있지 않았어요. 조용히 자고 있었어요.',
+    feedback: '단수 주어 The baby의 과거진행형 부정은 wasn\'t + -ing예요.'
+  },
+  {
+    sentence: 'I called you at 3 p.m. What <span class="blank"></span> you doing then?',
+    answer: 'were',
+    options: ['were', 'was', 'did', 'are'],
+    krHint: '오후 3시에 전화했어요. 그때 뭘 하고 있었어요?',
+    feedback: '과거진행형 의문문: What were you doing ~? 주어 you에는 were를 써요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

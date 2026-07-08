@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0009 미래시제</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-b:#5BAD6F;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .pre-hint{width:100%;max-width:480px;background:#E8F4FD;border:1.5px solid #A8D4F0;border-radius:8px;padding:10px 14px;font-size:14px;color:#1a5276;margin-bottom:10px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-b);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-b);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .hl{color:var(--accent-dark);text-decoration:underline;}
+  .blank{display:inline-block;min-width:100px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 미래시제</h1>
+<p class="subtitle">UG3 · Lesson 8 · B형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 표현을 고르세요!</div>
+<div class="pre-hint" id="pre-hint" style="display:none"></div>
+<div class="card" id="quiz-card">
+  <div class="badge">B형</div>
+  <div class="card-instruction">빈칸에 알맞은 표현을 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// ※ will vs be going to: 구조로만 구별
+//   - be going to: 문장에 be동사(am/is/are) 포함 → going to가 구조상 자연스러운 형태
+//   - will: be동사 없는 자리 → will + 동사원형
+//   - 두 표현을 같은 선택지에 절대 함께 넣지 않음 (Rule 38 준수)
+const ALL_QUESTIONS = [
+  // ── be going to: 이미 계획된 일 ──
+  {
+    sentence: 'Look at those dark clouds. It <span class="blank"></span> rain soon.',
+    answer: 'is going to',
+    options: ['is going to', 'is gone to', 'is going', 'goes to'],
+    krHint: '저 먹구름을 봐요. 곧 비가 올 것 같아요.',
+    feedback: '눈에 보이는 증거가 있는 예측은 be going to를 써요. 주어 It → is going to'
+  },
+  {
+    sentence:'We <span class="blank"></span> visit our grandparents next weekend.',
+    answer: 'are going to',
+    options: ['are going to', 'are gone to', 'going to', 'are go to'],
+    krHint: '우리는 다음 주말에 조부모님을 방문할 거예요.',
+    feedback: '이미 계획된 일은 be going to를 써요. 주어 We → are going to'
+  },
+  {
+    sentence: 'My sister <span class="blank"></span> start a new job next month.',
+    answer: 'is going to',
+    options: ['is going to', 'is going', 'going to', 'is gone to'],
+    krHint: '언니는 다음 달에 새 직장을 시작할 거예요.',
+    feedback: '이미 결정된 계획은 be going to를 써요. 단수 주어 My sister → is going to'
+  },
+  {
+    sentence: 'I <span class="blank"></span> study harder for the next exam.',
+    answer: 'am going to',
+    options: ['am going to', 'am gone to', 'going to', 'am going'],
+    krHint: '나는 다음 시험을 위해 더 열심히 공부할 거예요.',
+    feedback: '결심·계획은 be going to를 써요. 주어 I → am going to'
+  },
+  // ── will: 즉흥 결정·약속·예측 ──
+  {
+    sentence: 'A: The phone is ringing! B: I <span class="blank"></span> get it!',
+    answer: 'will',
+    options: ['will', 'wills', 'am will', 'willing'],
+    krHint: 'A: 전화가 울려요! B: 제가 받을게요!',
+    feedback: '지금 막 결정한 즉흥적 행동은 will을 써요. will + 동사원형'
+  },
+  {
+    sentence: 'Don\'t worry. I <span class="blank"></span> help you with your project.',
+    answer: 'will',
+    options: ['will', 'wills', 'am willing', 'going to'],
+    krHint: '걱정 마요. 프로젝트 도와줄게요.',
+    feedback: '즉흥적 약속은 will을 써요. will + 동사원형'
+  },
+  {
+    sentence: 'I think it <span class="blank"></span> be a sunny day tomorrow.',
+    answer: 'will',
+    options: ['will', 'wills', 'is going', 'willing'],
+    krHint: '내일은 화창한 날씨일 것 같아요.',
+    feedback: '"I think"는 근거 없는 예측 신호예요. 예측에는 will을 써요.'
+  },
+  {
+    sentence: 'She <span class="blank"></span> probably win the competition. She\'s very talented.',
+    answer: 'will',
+    options: ['will', 'wills', 'going to', 'is will'],
+    krHint: '그녀는 아마 대회에서 우승할 거예요. 정말 재능 있거든요.',
+    feedback: 'probably(아마도)와 함께 쓰는 예측은 will을 써요.'
+  },
+  // ── 부정·의문 ──
+  {
+    sentence: 'I promise I <span class="blank"></span> tell anyone your secret.',
+    answer: 'won\'t',
+    options: ['won\'t', 'willn\'t', 'not will', 'am not'],
+    krHint: '약속할게요. 아무에게도 비밀을 말하지 않을 거예요.',
+    feedback: 'will의 부정형은 won\'t(= will not)예요. 즉흥적 약속·결심의 부정은 won\'t + 동사원형이에요.'
+  },
+  {
+    sentence: '<span class="blank"></span> you come to my birthday party next Saturday?',
+    answer: 'Will',
+    options: ['Will', 'Wills', 'Do', 'Are'],
+    krHint: '다음 주 토요일 내 생일 파티에 올 거예요?',
+    feedback: 'will의 의문문은 Will + 주어 + 동사원형이에요.'
+  },
+  {
+    sentence: '<span class="blank"></span> they going to move to a new city?',
+    answer: 'Are',
+    options: ['Are', 'Is', 'Will', 'Do'],
+    krHint: '그들은 새 도시로 이사 갈 건가요?',
+    feedback: 'be going to의 의문문은 be동사를 문장 앞으로 빼요. 복수 주어 they → Are they going to ~?'
+  },
+  {
+    sentence: 'A: The bag is so heavy! B: I <span class="blank"></span> carry it for you.',
+    answer: 'will',
+    options: ['will', 'wills', 'am willing', 'going to'],
+    krHint: 'A: 가방이 너무 무거워요! B: 제가 들어드릴게요.',
+    feedback: '상황을 보고 즉석에서 한 제안은 will을 써요. will + 동사원형'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';document.getElementById('pre-hint').style.display='none';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const ph=document.getElementById('pre-hint');
+  if(q.preHint){ph.textContent=q.preHint;ph.style.display='';}else{ph.style.display='none';}
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  document.getElementById('pre-hint').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0001 명사와 관사</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #E8F5EC;
+    --accent: #3A9D6E;
+    --accent-dark: #2D7A57;
+    --correct: #4CAF93;
+    --wrong: #E8604C;
+    --badge-a: #4A90D9;
+    --card-bg: #ffffff;
+    --text: #2d2d2d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Nunito', 'Noto Sans KR', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; }
+  h1 { font-size: 20px; font-weight: 800; color: var(--accent-dark); margin: 12px 0 4px; text-align: center; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 12px; text-align: center; }
+  .progress-wrap { width: 100%; max-width: 480px; background: #d0ebd8; border-radius: 8px; height: 10px; margin-bottom: 14px; }
+  .progress-bar { height: 10px; background: var(--accent); border-radius: 8px; transition: width .4s; }
+  .instruction-box { width: 100%; max-width: 480px; background: #fff8e1; border-left: 4px solid #f5a623; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: #7a5800; margin-bottom: 14px; font-weight: 600; }
+  .card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.10); padding: 22px 20px 18px; width: 100%; max-width: 480px; }
+  .card-instruction { font-size: 17px; font-weight: 700; color: var(--badge-a); margin-bottom: 14px; text-align: center; }
+  .question-text { font-size: 19px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 6px; line-height: 1.5; }
+  .question-text .hl { color: var(--accent-dark); text-decoration: underline; }
+  .blank { display: inline-block; min-width: 70px; border-bottom: 2.5px solid var(--accent-dark); }
+  .kr-hint { font-size: 14px; color: #888; text-align: center; margin-bottom: 16px; }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .opt-btn { background: #f0f9f4; border: 2px solid #b2dfc5; border-radius: 12px; padding: 12px 8px; font-size: 18px; font-weight: 700; color: var(--text); cursor: pointer; transition: all .18s; font-family: 'Nunito','Noto Sans KR',sans-serif; }
+  .opt-btn:hover { background: #d8f0e4; border-color: var(--accent); }
+  .opt-btn.correct { background: #e0f7ef; border-color: var(--correct); color: var(--correct); }
+  .opt-btn.wrong { background: #fdecea; border-color: var(--wrong); color: var(--wrong); }
+  .opt-btn:disabled { cursor: default; }
+  .feedback { margin-top: 14px; padding: 12px 14px; border-radius: 10px; font-size: 14px; line-height: 1.6; display: none; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #e0f7ef; color: #1a6645; border: 1.5px solid var(--correct); }
+  .feedback.wrong { background: #fdecea; color: #8b1a0e; border: 1.5px solid var(--wrong); }
+  .next-btn { margin-top: 16px; width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: 12px; font-size: 17px; font-weight: 800; cursor: pointer; display: none; font-family: 'Nunito','Noto Sans KR',sans-serif; }
+  .next-btn.show { display: block; }
+  .result-card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.10); padding: 28px 20px; width: 100%; max-width: 480px; text-align: center; display: none; }
+  .result-card.show { display: block; }
+  .stars { font-size: 36px; margin: 8px 0; }
+  .score-txt { font-size: 22px; font-weight: 800; color: var(--accent-dark); margin: 8px 0; }
+  .result-btn { margin-top: 10px; width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Nunito','Noto Sans KR',sans-serif; }
+  .retry-wrong { background: #fff0ed; color: var(--wrong); border: 2px solid var(--wrong); }
+  .retry-all { background: var(--bg); color: var(--accent-dark); border: 2px solid var(--accent); margin-top: 8px; }
+  .badge { display: inline-block; background: var(--badge-a); color: #fff; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; }
+  .wrong-list { text-align: left; margin-top: 16px; }
+  .wrong-item { background: #fff4f4; border-left: 3px solid var(--wrong); border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; font-size: 13px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<h1>🔍 명사와 관사</h1>
+<p class="subtitle">UG3 · Lesson 1 · A형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 단어를 고르세요!</div>
+
+<div class="card" id="quiz-card">
+  <div class="badge">A형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+  // ── 가산명사 복수형 (규칙) ──
+  {
+    sentence: 'There are three <span class="blank"></span> in the garden.',
+    answer: 'butterflies',
+    options: ['butterflys', 'butterflies', 'butterflyes', 'butterfly'],
+    krHint: '정원에 나비가 세 마리 있어요.',
+    feedback: '자음+y로 끝나는 명사는 y를 i로 바꾸고 -es를 붙여요. butterfly → butterflies'
+  },
+  {
+    sentence: 'She has two <span class="blank"></span> at home.',
+    answer: 'knives',
+    options: ['knifes', 'knives', 'knivers', 'knife'],
+    krHint: '그녀는 집에 칼이 두 개 있어요.',
+    feedback: '-f/-fe로 끝나는 명사는 f/fe를 v로 바꾸고 -es를 붙여요. knife → knives'
+  },
+  {
+    sentence: 'We saw five <span class="blank"></span> at the zoo.',
+    answer: 'wolves',
+    options: ['wolfs', 'wolves', 'wolfes', 'wolf'],
+    krHint: '우리는 동물원에서 늑대를 다섯 마리 봤어요.',
+    feedback: '-f/-fe로 끝나는 명사는 f를 v로 바꾸고 -es를 붙여요. wolf → wolves'
+  },
+  // ── 가산명사 복수형 (불규칙) ──
+  {
+    sentence: 'Two <span class="blank"></span> are running in the yard.',
+    answer: 'children',
+    options: ['childs', 'childrens', 'children', 'child'],
+    krHint: '마당에서 아이 두 명이 뛰고 있어요.',
+    feedback: 'child의 불규칙 복수형은 children이에요.'
+  },
+  {
+    sentence: 'I can see three <span class="blank"></span> near the pond.',
+    answer: 'geese',
+    options: ['gooses', 'geeses', 'goose', 'geese'],
+    krHint: '연못 근처에 거위 세 마리가 보여요.',
+    feedback: 'goose의 불규칙 복수형은 geese예요.'
+  },
+  {
+    sentence: 'The dentist checked all my <span class="blank"></span>.',
+    answer: 'teeth',
+    options: ['tooths', 'teeths', 'teeth', 'toothes'],
+    krHint: '치과 의사가 내 치아를 모두 확인했어요.',
+    feedback: 'tooth의 불규칙 복수형은 teeth예요.'
+  },
+  // ── 불가산명사 ──
+  {
+    sentence: 'My dad always drinks <span class="blank"></span> after dinner.',
+    answer: 'coffee',
+    options: ['a coffee', 'coffees', 'coffee', 'the coffees'],
+    krHint: '우리 아빠는 저녁 식사 후에 항상 커피를 마셔요.',
+    feedback: 'coffee는 불가산명사라 복수형이나 부정관사 a를 쓰지 않아요.'
+  },
+  {
+    sentence: 'She put some <span class="blank"></span> in the soup.',
+    answer: 'salt',
+    options: ['salts', 'a salt', 'salt', 'the salts'],
+    krHint: '그녀는 수프에 소금을 좀 넣었어요.',
+    feedback: 'salt는 불가산명사예요. some salt처럼 그대로 씁니다.'
+  },
+  // ── 관사 a / an ──
+  {
+    sentence: 'She found <span class="blank"></span> old coin on the floor.',
+    answer: 'an',
+    options: ['a', 'an', 'the', 'Ø'],
+    krHint: '그녀는 바닥에서 오래된 동전을 하나 발견했어요.',
+    feedback: 'old는 모음(o)으로 시작하므로 an을 써요. an old coin'
+  },
+  {
+    sentence: 'I want to be <span class="blank"></span> engineer someday.',
+    answer: 'an',
+    options: ['a', 'an', 'the', 'Ø'],
+    krHint: '나는 언젠가 엔지니어가 되고 싶어요.',
+    feedback: 'engineer는 모음(e)으로 시작하므로 an을 써요.'
+  },
+  // ── 관사 the / Ø ──
+  {
+    sentence: 'He plays <span class="blank"></span> soccer every afternoon.',
+    answer: 'Ø',
+    options: ['a', 'an', 'the', 'Ø'],
+    krHint: '그는 매일 오후에 축구를 해요.',
+    feedback: '스포츠·운동 앞에는 관사를 쓰지 않아요. play soccer (Ø)'
+  },
+  {
+    sentence: 'Please close <span class="blank"></span> window. It\'s cold.',
+    answer: 'the',
+    options: ['a', 'an', 'the', 'Ø'],
+    krHint: '창문을 닫아줘요. 추워요.',
+    feedback: '서로 알고 있는 특정 사물 앞에는 the를 써요.'
+  }
+];
+
+let queue = [], wrongList = [], current = 0, score = 0, answered = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function shuffleNoFirstAnswer(arr, answer) {
+  let result, tries = 0;
+  do { result = shuffle(arr); tries++; }
+  while (result[0].toLowerCase() === answer.toLowerCase() && tries < 20);
+  return result;
+}
+
+function startQuiz(qs) {
+  queue = qs; current = 0; score = 0; wrongList = []; answered = false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display = '';
+  document.getElementById('instruction-box') && (document.getElementById('instruction-box').style.display = '');
+  showQ();
+}
+
+function showQ() {
+  answered = false;
+  const q = queue[current];
+  document.getElementById('prog').style.width = (current / queue.length * 100) + '%';
+  document.getElementById('q-text').innerHTML = q.sentence;
+  document.getElementById('kr-hint').textContent = q.krHint;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('next-btn').className = 'next-btn';
+  const opts = shuffleNoFirstAnswer(q.options, q.answer);
+  const box = document.getElementById('options');
+  box.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt === 'Ø' ? 'Ø (없음)' : opt;
+    btn.addEventListener('click', () => selectAnswer(opt, q));
+    box.appendChild(btn);
+  });
+  const nb = document.getElementById('next-btn');
+  nb.textContent = current === queue.length - 1 ? '결과 보기 🏁' : '다음 문제 →';
+}
+
+function selectAnswer(selected, q) {
+  if (answered) return;
+  answered = true;
+  const correct = selected.toLowerCase() === q.answer.toLowerCase();
+  if (correct) score++;
+  else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.disabled = true;
+    const val = btn.textContent === 'Ø (없음)' ? 'Ø' : btn.textContent;
+    if (val.toLowerCase() === q.answer.toLowerCase()) btn.classList.add('correct');
+    else if (val === selected) btn.classList.add('wrong');
+  });
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.textContent = (correct ? '✅ 정답! ' : '❌ 오답. ') + q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+document.getElementById('next-btn').addEventListener('click', () => {
+  current++;
+  if (current < queue.length) showQ();
+  else showResult();
+});
+
+function showResult() {
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('quiz-card').style.display = 'none';
+  const rc = document.getElementById('result-card');
+  rc.classList.add('show');
+  const pct = score / queue.length;
+  document.getElementById('stars').textContent = pct >= .9 ? '⭐⭐⭐' : pct >= .6 ? '⭐⭐' : '⭐';
+  document.getElementById('score-txt').textContent = `${score} / ${queue.length} 정답`;
+  const wl = document.getElementById('wrong-list');
+  wl.innerHTML = '';
+  if (wrongList.length) {
+    const h = document.createElement('p');
+    h.style.cssText = 'font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent = '틀린 문제:';
+    wl.appendChild(h);
+    wrongList.forEach(q => {
+      const d = document.createElement('div');
+      d.className = 'wrong-item';
+      d.innerHTML = `<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;
+      wl.appendChild(d);
+    });
+  }
+  const rwb = document.getElementById('retry-wrong-btn');
+  if (wrongList.length) {
+    rwb.style.display = '';
+    rwb.onclick = () => startQuiz(shuffle(wrongList));
+  } else rwb.style.display = 'none';
+}
+
+document.getElementById('retry-all-btn').addEventListener('click', () => startQuiz(shuffle([...ALL_QUESTIONS])));
+
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

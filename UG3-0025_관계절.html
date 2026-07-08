@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0025 관계절</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-b:#5BAD6F;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-b);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-b);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.6;}
+  .blank{display:inline-block;min-width:70px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 관계절</h1>
+<p class="subtitle">UG3 · Lesson 20 · B형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 관계대명사를 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">B형</div>
+  <div class="card-instruction">빈칸에 알맞은 관계대명사를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// 이중정답 방지 원칙
+// - who(사람만) vs which(사물/동물만): 선행사로 명확히 구분
+// - that: who/which 둘 다 대체 가능 → that이 정답인 문제에서는
+//   who나 which를 선택지에서 제외하거나, that만 가능한 문맥 사용
+// - whose: 소유 관계 → 명확히 구분
+// - 이중정답 방지: who/that 동시 선택지 배치 시 who만 정답이 되는 문맥 사용
+//   (예: 최상급 + 선행사 → that 선호, 하지만 교재 범위에서는 명확한 선행사 사용)
+const ALL_QUESTIONS = [
+  // ── who: 사람 ──
+  {
+    sentence: 'I have a friend <span class="blank"></span> lives in Canada.',
+    answer: 'who',
+    options: ['who', 'which', 'whose', 'what'],
+    krHint: '나는 캐나다에 사는 친구가 있어요.',
+    feedback: 'who는 사람을 수식하는 관계대명사예요. a friend who lives in Canada'
+  },
+  {
+    sentence: 'The doctor <span class="blank"></span> treated me was very kind.',
+    answer: 'who',
+    options: ['who', 'which', 'whose', 'what'],
+    krHint: '나를 치료해 준 의사 선생님은 매우 친절하셨어요.',
+    feedback: 'who는 사람(the doctor)을 수식해요. the doctor who treated me'
+  },
+  {
+    sentence: 'The students <span class="blank"></span> passed the exam looked happy.',
+    answer: 'who',
+    options: ['who', 'which', 'whose', 'what'],
+    krHint: '시험에 합격한 학생들은 행복해 보였어요.',
+    feedback: 'who는 사람(the students)을 수식해요. the students who passed the exam'
+  },
+  // ── which: 사물/동물 ──
+  {
+    sentence: 'I lost the key <span class="blank"></span> opens the front door.',
+    answer: 'which',
+    options: ['which', 'who', 'whose', 'what'],
+    krHint: '나는 현관문을 여는 열쇠를 잃어버렸어요.',
+    feedback: 'which는 사물(the key)을 수식하는 관계대명사예요.'
+  },
+  {
+    sentence: 'We visited a museum <span class="blank"></span> has over 1,000 paintings.',
+    answer: 'which',
+    options: ['which', 'who', 'whose', 'what'],
+    krHint: '우리는 그림이 1,000점 이상 있는 박물관을 방문했어요.',
+    feedback: 'which는 사물(a museum)을 수식해요. a museum which has ~'
+  },
+  // ── that: 사람/사물 모두 ──
+  {
+    sentence: 'This is the book <span class="blank"></span> everyone is talking about.',
+    answer: 'that',
+    options: ['that', 'whose', 'what', 'where'],
+    krHint: '이것이 모두가 이야기하고 있는 책이에요.',
+    feedback: 'that은 사람/사물 모두 수식할 수 있어요. the book that everyone is talking about'
+  },
+  {
+    sentence: 'The cat <span class="blank"></span> I found in the garden is very friendly.',
+    answer: 'that',
+    options: ['that', 'whose', 'what', 'where'],
+    krHint: '내가 정원에서 발견한 고양이는 매우 친근해요.',
+    feedback: 'that은 동물(the cat)도 수식할 수 있어요. the cat that I found'
+  },
+  // ── whose: 소유 관계 ──
+  {
+    sentence: 'I know a girl <span class="blank"></span> father is a famous chef.',
+    answer: 'whose',
+    options: ['whose', 'who', 'which', 'that'],
+    krHint: '나는 아버지가 유명한 요리사인 여자아이를 알아요.',
+    feedback: 'whose는 소유 관계를 나타내요. a girl whose father = "그 여자아이의 아버지"'
+  },
+  {
+    sentence: 'The man <span class="blank"></span> car was stolen called the police.',
+    answer: 'whose',
+    options: ['whose', 'who', 'which', 'that'],
+    krHint: '차를 도둑맞은 남자가 경찰에 전화했어요.',
+    feedback: 'whose는 소유를 나타내요. the man whose car = "그 남자의 차"'
+  },
+  {
+    sentence: 'We live in a house <span class="blank"></span> roof is painted red.',
+    answer: 'whose',
+    options: ['whose', 'which', 'that', 'what'],
+    krHint: '우리는 지붕이 빨간색으로 칠해진 집에 살아요.',
+    feedback: 'whose는 사물의 소유도 나타낼 수 있어요. a house whose roof = "그 집의 지붕"'
+  },
+  // ── who vs which 판단 ──
+  {
+    sentence: 'She is the nurse <span class="blank"></span> helped me last night.',
+    answer: 'who',
+    options: ['who', 'which', 'whose', 'what'],
+    krHint: '그녀가 어젯밤 나를 도와준 간호사예요.',
+    feedback: 'who는 사람(the nurse)을 수식해요. which는 사물에만 써요.'
+  },
+  {
+    sentence: 'The bridge <span class="blank"></span> was built in 1900 is still standing.',
+    answer: 'which',
+    options: ['which', 'who', 'whose', 'what'],
+    krHint: '1900년에 지어진 그 다리는 아직도 서 있어요.',
+    feedback: 'which는 사물(the bridge)을 수식해요. who는 사람에만 써요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

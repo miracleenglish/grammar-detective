@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0018 비교·접속사 문장 점검</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-c:#9B6DD1;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-c);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-c);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.6;}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 14px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;text-align:left;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 비교·접속사 문장 점검</h1>
+<p class="subtitle">UG3 · L13~14 · C형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 아래 문장에서 틀린 단어를 찾아 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">C형</div>
+  <div class="card-instruction">아래 문장에서 틀린 단어를 찾아 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// C형 설계 원칙
+// - 주어·고유명사 선택지 절대 금지
+// - 문장당 오류 정확히 1개
+// - textContent 사용 (innerHTML 금지)
+// - 이중정답 방지: 선택지 중 하나만 수정해도 문장이 완벽히 맞아야 함
+const ALL_QUESTIONS = [
+  // ── L13: 비교급 오류 ──
+  {
+    sentence: 'This mountain is more higher than that one.',
+    answer: 'more higher',
+    correction: 'higher',
+    options: ['more higher', 'than', 'that'],
+    krHint: '이 산이 저 산보다 더 높아요.',
+    feedback: '짧은 형용사(high)에는 -er만 써요. more와 -er을 함께 쓰면 안 돼요. higher가 맞아요.'
+  },
+  {
+    sentence: 'She runs more faster than anyone in the class.',
+    answer: 'more faster',
+    correction: 'faster',
+    options: ['more faster', 'than', 'anyone'],
+    krHint: '그녀는 반에서 누구보다도 더 빨리 달려요.',
+    feedback: '짧은 부사(fast)에는 -er만 써요. more faster → faster'
+  },
+  {
+    sentence: 'This is the most cheap restaurant in town.',
+    answer: 'most cheap',
+    correction: 'cheapest',
+    options: ['most cheap', 'restaurant', 'town'],
+    krHint: '이 식당이 마을에서 가장 저렴해요.',
+    feedback: '짧은 형용사(cheap)의 최상급은 -est를 써요. most cheap → cheapest'
+  },
+  {
+    sentence: 'My brother is gooder at math than me.',
+    answer: 'gooder',
+    correction: 'better',
+    options: ['gooder', 'math', 'than'],
+    krHint: '오빠가 나보다 수학을 더 잘해요.',
+    feedback: 'good의 비교급은 불규칙 변화예요. gooder → better'
+  },
+  {
+    sentence: 'Today is much hotter as yesterday.',
+    answer: 'as',
+    correction: 'than',
+    options: ['much', 'hotter', 'as'],
+    krHint: '오늘이 어제보다 훨씬 더 더워요.',
+    feedback: '비교급 뒤에는 as가 아닌 than을 써요. hotter than이 맞아요.'
+  },
+  {
+    sentence: 'He is the more famous singer in the world.',
+    answer: 'more',
+    correction: 'most',
+    options: ['more', 'famous', 'world'],
+    krHint: '그는 세상에서 가장 유명한 가수예요.',
+    feedback: '"in the world"처럼 범위가 있으면 최상급을 써요. the most famous가 맞아요.'
+  },
+  // ── L14: 접속사 오류 ──
+  {
+    sentence: 'I was tired, and I stayed up until midnight.',
+    answer: 'and',
+    correction: 'but',
+    options: ['tired', 'and', 'until'],
+    krHint: '나는 피곤했지만 자정까지 깨어 있었어요.',
+    feedback: '피곤한데도 자지 않았으니 대조 관계예요. and → but'
+  },
+  {
+    sentence: 'She didn\'t eat dinner so she wasn\'t hungry.',
+    answer: 'so',
+    correction: 'because',
+    options: ['eat', 'so', 'hungry'],
+    krHint: '그녀는 배가 고프지 않았기 때문에 저녁을 먹지 않았어요.',
+    feedback: '저녁을 안 먹은 이유가 배가 안 고팠기 때문이에요. so(결과) → because(이유)'
+  },
+  {
+    sentence: 'Wash your hands after you eat your meal.',
+    answer: 'after',
+    correction: 'before',
+    options: ['Wash', 'after', 'meal'],
+    krHint: '식사 전에 손을 씻으세요.',
+    feedback: '손은 먹기 전에 씻어야 해요. after(후에) → before(전에)'
+  },
+  {
+    sentence: 'Study hard, because you will pass the exam.',
+    answer: 'because',
+    correction: 'and',
+    options: ['hard', 'because', 'pass'],
+    krHint: '열심히 공부하면 시험에 합격할 거예요.',
+    feedback: '"열심히 공부하다 → 합격하다"는 결과 관계예요. because(이유) → and (또는 "or you won\'t pass" 구조로도 가능하지만 여기서는 and가 적합)'
+  },
+  {
+    sentence: 'I was very tired, so I couldn\'t fall asleep.',
+    answer: 'so',
+    correction: 'but',
+    options: ['tired', 'so', 'asleep'],
+    krHint: '나는 매우 피곤했지만 잠들 수 없었어요.',
+    feedback: '피곤한데 잠들지 못했으므로 대조 관계예요. so(결과) → but(대조). "I was tired, but I couldn\'t fall asleep."'
+  },
+  {
+    sentence: 'He kept working although he finished the project.',
+    answer: 'although',
+    correction: 'after',
+    options: ['working', 'although', 'project'],
+    krHint: '그는 프로젝트를 끝낸 후에도 계속 일했어요.',
+    feedback: '시간 순서를 나타낼 때는 after(~한 후에)를 써요. although(비록 ~이지만) → after'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').textContent=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',()=>selectAnswer(opt,q));
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback
+    +(correct?'':` 틀린 단어: "${q.answer}" → 올바른 표현: "${q.correction}"`);
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(q=>{
+      const d=document.createElement('div');d.className='wrong-item';
+      d.textContent=q.sentence;
+      const info=document.createElement('div');info.style.marginTop='4px';
+      info.innerHTML=`<b>틀린 단어:</b> ${q.answer} → <b>정답:</b> ${q.correction}`;
+      d.appendChild(info);wl.appendChild(d);
+    });
+  }
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

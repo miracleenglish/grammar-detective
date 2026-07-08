@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0014 감각동사</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-a:#4A90D9;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-a);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-a);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .hl{color:var(--accent-dark);text-decoration:underline;}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 감각동사</h1>
+<p class="subtitle">UG3 · Lesson 12 · A형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 단어를 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">A형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// ※ 이중정답 방지 원칙
+// - looks/smells/sounds/tastes/feels: 문맥으로 하나만 자연스럽게 설계
+// - "looks like" vs "looks": 뒤에 명사/형용사로 명확히 구분
+// - seem + 형용사 vs seem + to부정사: 구조로 명확히 구분
+const ALL_QUESTIONS = [
+  // ── A: 감각동사 + 형용사 ──
+  {
+    sentence: 'This soup <span class="blank"></span> delicious. Can I have more?',
+    answer: 'tastes',
+    options: ['tastes', 'looks', 'sounds', 'feels'],
+    krHint: '이 수프는 맛있어요. 더 먹어도 될까요?',
+    feedback: '맛을 나타낼 때는 taste를 써요. The soup tastes delicious.'
+  },
+  {
+    sentence: 'The music <span class="blank"></span> beautiful. Who is playing?',
+    answer: 'sounds',
+    options: ['sounds', 'tastes', 'looks', 'feels'],
+    krHint: '음악이 아름답게 들려요. 누가 연주하고 있어요?',
+    feedback: '소리를 나타낼 때는 sound를 써요. The music sounds beautiful.'
+  },
+  {
+    sentence: 'These flowers <span class="blank"></span> wonderful. What kind are they?',
+    answer: 'smell',
+    options: ['smell', 'taste', 'sound', 'feel'],
+    krHint: '이 꽃들은 향기가 좋아요. 어떤 종류예요?',
+    feedback: '냄새를 나타낼 때는 smell을 써요. The flowers smell wonderful.'
+  },
+  {
+    sentence: 'This pillow <span class="blank"></span> so soft. I want to sleep on it.',
+    answer: 'feels',
+    options: ['feels', 'tastes', 'sounds', 'smells'],
+    krHint: '이 베개는 아주 부드러워요. 여기서 자고 싶어요.',
+    feedback: '촉감을 나타낼 때는 feel을 써요. The pillow feels soft.'
+  },
+  {
+    sentence: 'The cake <span class="blank"></span> amazing. Did you bake it yourself?',
+    answer: 'looks',
+    options: ['looks', 'tastes', 'smells', 'sounds'],
+    krHint: '케이크가 정말 맛있어 보여요. 직접 구웠어요?',
+    feedback: '시각적으로 보이는 것을 나타낼 때는 look을 써요. The cake looks amazing.'
+  },
+  // ── B: 감각동사 + like + 명사 ──
+  {
+    sentence: 'My dad <span class="blank"></span> a movie star. He is very handsome.',
+    answer: 'looks like',
+    options: ['looks like', 'looks', 'sounds like', 'feels like'],
+    krHint: '우리 아빠는 영화배우처럼 생겼어요. 정말 잘생겼거든요.',
+    feedback: '감각동사 + like + 명사: "~처럼 보인다"는 looks like를 써요.'
+  },
+  {
+    sentence: 'This pizza <span class="blank"></span> cardboard. It has no flavor.',
+    answer: 'tastes like',
+    options: ['tastes like', 'looks like', 'sounds like', 'smells like'],
+    krHint: '이 피자는 마치 종이 맛이 나요. 아무 맛이 없어요.',
+    feedback: '맛이 ~와 비슷할 때는 tastes like + 명사를 써요.'
+  },
+  {
+    sentence: 'Something in the kitchen <span class="blank"></span> burned. Did you forget something?',
+    answer: 'smells like',
+    options: ['smells like', 'looks like', 'tastes like', 'feels like'],
+    krHint: '부엌에서 무언가 탄 냄새가 나요. 뭔가 잊어버렸어요?',
+    feedback: '냄새가 ~와 비슷할 때는 smells like + 명사를 써요.'
+  },
+  {
+    sentence: 'That thunderstorm <span class="blank"></span> a giant drum.',
+    answer: 'sounds like',
+    options: ['sounds like', 'looks like', 'smells like', 'feels like'],
+    krHint: '저 천둥소리는 마치 거대한 북 소리 같아요.',
+    feedback: '소리가 ~와 비슷할 때는 sounds like + 명사를 써요.'
+  },
+  // ── C: seem ──
+  {
+    sentence: 'You <span class="blank"></span> tired. Did you sleep well last night?',
+    answer: 'seem',
+    options: ['seem', 'look like', 'sound like', 'feel'],
+    krHint: '피곤해 보여요. 어젯밤에 잘 잤어요?',
+    feedback: 'seem + 형용사: "~인 것 같다"는 seem을 써요. You seem tired.'
+  },
+  {
+    sentence: 'She <span class="blank"></span> to enjoy the party. She\'s smiling a lot.',
+    answer: 'seems',
+    options: ['seems', 'looks', 'sounds', 'feels'],
+    krHint: '그녀는 파티를 즐기는 것 같아요. 많이 웃고 있거든요.',
+    feedback: 'seem + to부정사: "~하는 것 같다". 3인칭 단수이므로 seems를 써요.'
+  },
+  {
+    sentence: 'This plan <span class="blank"></span> like a good idea. Let\'s try it.',
+    answer: 'seems',
+    options: ['seems', 'sounds', 'tastes', 'smells'],
+    krHint: '이 계획은 좋은 생각인 것 같아요. 해봐요.',
+    feedback: 'seem + like + 명사: "~처럼 보인다". The plan seems like a good idea.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

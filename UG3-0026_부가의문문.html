@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0026 부가의문문</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-b:#5BAD6F;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .pre-hint{width:100%;max-width:480px;background:#E8F4FD;border:1.5px solid #A8D4F0;border-radius:8px;padding:10px 14px;font-size:14px;color:#1a5276;margin-bottom:10px;font-weight:600;display:none;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-b);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-b);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.6;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 부가의문문</h1>
+<p class="subtitle">UG3 · Lesson 21 · B형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 부가의문문을 고르세요!</div>
+<div class="pre-hint" id="pre-hint"></div>
+<div class="card" id="quiz-card">
+  <div class="badge">B형</div>
+  <div class="card-instruction">빈칸에 알맞은 부가의문문을 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// 부가의문문 규칙:
+// 긍정문 → 부정 tag / 부정문 → 긍정 tag
+// be동사: am/is/are/was/were → isn't/aren't/wasn't/weren't + 대명사
+// 조동사: can/will/should/would → can't/won't/shouldn't/wouldn't + 대명사
+// 일반동사 현재: do/does → don't/doesn't + 대명사
+// 일반동사 과거: did → didn't + 대명사
+// preHint 필수 (앞 절 동사·시제 확인 필요)
+const ALL_QUESTIONS = [
+  // ── be동사 현재 긍정 → 부정 tag ──
+  {
+    sentence: 'The weather is nice today, <span class="blank"></span>?',
+    answer: "isn't it",
+    options: ["isn't it", "is it", "doesn't it", "wasn't it"],
+    krHint: '오늘 날씨가 좋죠?',
+    preHint: '💡 is → isn\'t it (긍정 → 부정 tag)',
+    feedback: 'is → isn\'t. 주어 the weather → it. 긍정문이므로 부정 tag를 써요.'
+  },
+  {
+    sentence: 'Those flowers are beautiful, <span class="blank"></span>?',
+    answer: "aren't they",
+    options: ["aren't they", "are they", "don't they", "isn't it"],
+    krHint: '저 꽃들 아름답죠?',
+    preHint: '💡 are → aren\'t they (긍정 → 부정 tag)',
+    feedback: 'are → aren\'t. 복수 주어 those flowers → they. 긍정문이므로 부정 tag예요.'
+  },
+  // ── be동사 현재 부정 → 긍정 tag ──
+  {
+    sentence: 'You aren\'t ready yet, <span class="blank"></span>?',
+    answer: 'are you',
+    options: ['are you', "aren't you", 'do you', "don't you"],
+    krHint: '아직 준비가 안 됐죠?',
+    preHint: '💡 aren\'t → are you (부정 → 긍정 tag)',
+    feedback: 'aren\'t → are. 부정문이므로 긍정 tag를 써요. are you?'
+  },
+  // ── be동사 과거 ──
+  {
+    sentence: 'The movie was exciting, <span class="blank"></span>?',
+    answer: "wasn't it",
+    options: ["wasn't it", "was it", "didn't it", "isn't it"],
+    krHint: '그 영화 흥미진진했죠?',
+    preHint: '💡 was → wasn\'t it (긍정 과거 → 부정 tag)',
+    feedback: 'was → wasn\'t. 과거 긍정이므로 wasn\'t it?예요.'
+  },
+  {
+    sentence: 'They weren\'t at home last night, <span class="blank"></span>?',
+    answer: 'were they',
+    options: ['were they', "weren't they", 'did they', 'are they'],
+    krHint: '그들은 어젯밤 집에 없었죠?',
+    preHint: '💡 weren\'t → were they (부정 과거 → 긍정 tag)',
+    feedback: 'weren\'t → were. 과거 부정이므로 긍정 tag were they?예요.'
+  },
+  // ── 일반동사 현재 ──
+  {
+    sentence: 'Your sister plays the violin, <span class="blank"></span>?',
+    answer: "doesn't she",
+    options: ["doesn't she", "does she", "isn't she", "don't she"],
+    krHint: '네 여동생은 바이올린을 켜죠?',
+    preHint: '💡 plays(3인칭 단수 현재) → doesn\'t she',
+    feedback: '3인칭 단수 현재 → doesn\'t. 주어 your sister → she. 긍정이므로 부정 tag예요.'
+  },
+  {
+    sentence: 'You don\'t eat meat, <span class="blank"></span>?',
+    answer: 'do you',
+    options: ['do you', "don't you", "are you", "did you"],
+    krHint: '당신은 고기를 먹지 않죠?',
+    preHint: '💡 don\'t → do you (부정 현재 → 긍정 tag)',
+    feedback: 'don\'t → do. 부정문이므로 긍정 tag do you?예요.'
+  },
+  // ── 일반동사 과거 ──
+  {
+    sentence: 'You visited the museum last weekend, <span class="blank"></span>?',
+    answer: "didn't you",
+    options: ["didn't you", "did you", "weren't you", "haven't you"],
+    krHint: '지난 주말에 박물관을 방문했죠?',
+    preHint: '💡 visited(일반동사 과거) → didn\'t you',
+    feedback: '일반동사 과거 긍정 → didn\'t. 주어 you → you. didn\'t you?예요.'
+  },
+  {
+    sentence: 'She didn\'t call you yesterday, <span class="blank"></span>?',
+    answer: 'did she',
+    options: ['did she', "didn't she", 'was she', "does she"],
+    krHint: '그녀가 어제 전화하지 않았죠?',
+    preHint: '💡 didn\'t → did she (부정 과거 → 긍정 tag)',
+    feedback: 'didn\'t → did. 부정문이므로 긍정 tag did she?예요.'
+  },
+  // ── 조동사 ──
+  {
+    sentence: 'You can swim, <span class="blank"></span>?',
+    answer: "can't you",
+    options: ["can't you", "can you", "couldn't you", "don't you"],
+    krHint: '수영할 수 있죠?',
+    preHint: '💡 can → can\'t you (긍정 → 부정 tag)',
+    feedback: 'can → can\'t. 긍정문이므로 부정 tag can\'t you?예요.'
+  },
+  {
+    sentence: 'We should leave now, <span class="blank"></span>?',
+    answer: "shouldn't we",
+    options: ["shouldn't we", "should we", "don't we", "weren't we"],
+    krHint: '지금 출발해야 하죠?',
+    preHint: '💡 should → shouldn\'t we (긍정 → 부정 tag)',
+    feedback: 'should → shouldn\'t. 긍정문이므로 부정 tag shouldn\'t we?예요.'
+  },
+  {
+    sentence: 'They won\'t be late, <span class="blank"></span>?',
+    answer: 'will they',
+    options: ['will they', "won't they", 'are they', 'do they'],
+    krHint: '그들이 늦지 않을 거죠?',
+    preHint: '💡 won\'t → will they (부정 → 긍정 tag)',
+    feedback: 'won\'t → will. 부정문이므로 긍정 tag will they?예요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){
+  queue=qs;current=0;score=0;wrongList=[];answered=false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display='';
+  document.getElementById('pre-hint').style.display='none';
+  showQ();
+}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const ph=document.getElementById('pre-hint');
+  if(q.preHint){ph.textContent=q.preHint;ph.style.display='';}
+  else ph.style.display='none';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;
+    btn.addEventListener('click',()=>selectAnswer(opt,q));
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  document.getElementById('pre-hint').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(q=>{
+      const d=document.createElement('div');d.className='wrong-item';
+      d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;
+      wl.appendChild(d);
+    });
+  }
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}
+  else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

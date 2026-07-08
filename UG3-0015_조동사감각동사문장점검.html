@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0015 조동사·감각동사 문장 점검</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-c:#9B6DD1;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-c);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-c);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.6;}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 14px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;text-align:left;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 조동사·감각동사 문장 점검</h1>
+<p class="subtitle">UG3 · L10~12 · C형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 아래 문장에서 틀린 단어를 찾아 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">C형</div>
+  <div class="card-instruction">아래 문장에서 틀린 단어를 찾아 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// C형 설계 원칙
+// - 주어·고유명사 선택지 절대 금지
+// - 문장당 오류 단어 정확히 1개
+// - 선택지 수정 시 다른 단어가 오류가 되면 안 됨 (이중정답 방지)
+// - textContent 사용 (innerHTML 금지)
+const ALL_QUESTIONS = [
+  // ── L10: may / might / 정중한 요청 ──
+  {
+    sentence: 'It is cloudy today. It mights rain this afternoon.',
+    answer: 'mights',
+    correction: 'might',
+    options: ['mights', 'cloudy', 'rain'],
+    krHint: '오늘 흐려요. 오늘 오후에 비가 올지도 몰라요.',
+    feedback: '조동사 might 뒤에는 -s를 붙이지 않아요. might가 맞아요.'
+  },
+  {
+    sentence: 'May I to use your dictionary, please?',
+    answer: 'to use',
+    correction: 'use',
+    options: ['May', 'to use', 'dictionary'],
+    krHint: '사전을 써도 될까요?',
+    feedback: '조동사 May I 뒤에는 동사원형을 써요. May I use ~? (to use → use)'
+  },
+  {
+    sentence: 'Could you closes the window? It is very cold.',
+    answer: 'closes',
+    correction: 'close',
+    options: ['Could', 'closes', 'cold'],
+    krHint: '창문을 닫아줄 수 있어요? 너무 추워요.',
+    feedback: '조동사 Could you 뒤에는 동사원형을 써요. Could you close ~? (closes → close)'
+  },
+  // ── L11: must / have to / should / can / could ──
+  {
+    sentence: 'You don\'t have to smoke in this building. It\'s the rule.',
+    answer: 'don\'t have to',
+    correction: 'mustn\'t',
+    options: ['don\'t have to', 'smoke', 'building'],
+    krHint: '이 건물에서 담배를 피우면 안 돼요. 규칙이에요.',
+    feedback: 'don\'t have to(~할 필요 없다)와 mustn\'t(절대 금지)는 의미가 달라요. 규칙으로 금지된 것은 mustn\'t를 써요.'
+  },
+  {
+    sentence: 'She musts finish her project before the deadline.',
+    answer: 'musts',
+    correction: 'must',
+    options: ['musts', 'finish', 'before'],
+    krHint: '그녀는 마감 전에 프로젝트를 끝내야 해요.',
+    feedback: '조동사 must에는 -s를 붙이지 않아요. must가 맞아요.'
+  },
+  {
+    sentence: 'You should to see a doctor. You have a high fever.',
+    answer: 'to see',
+    correction: 'see',
+    options: ['should', 'to see', 'fever'],
+    krHint: '병원에 가는 게 좋아요. 열이 많이 나요.',
+    feedback: '조동사 should 뒤에는 동사원형을 써요. should see (to see → see)'
+  },
+  {
+    sentence: 'I couldn\'t ride a bike when I am young, but now I can.',
+    answer: 'am',
+    correction: 'was',
+    options: ['couldn\'t', 'am', 'young'],
+    krHint: '나는 어렸을 때 자전거를 탈 수 없었지만, 지금은 탈 수 있어요.',
+    feedback: 'couldn\'t(과거)와 짝을 이루는 시제는 과거예요. when I was young이 맞아요.'
+  },
+  // ── L12: 감각동사 ──
+  {
+    sentence: 'This cake tastes wonderfully. I want another piece.',
+    answer: 'wonderfully',
+    correction: 'wonderful',
+    options: ['tastes', 'wonderfully', 'piece'],
+    krHint: '이 케이크는 정말 맛있어요. 한 조각 더 먹고 싶어요.',
+    feedback: '감각동사(taste) 뒤에는 부사가 아닌 형용사를 써요. tastes wonderful이 맞아요.'
+  },
+  {
+    sentence: 'The old library smells like damp and cold.',
+    answer: 'like',
+    correction: 'Ø (like 불필요)',
+    options: ['smells', 'like', 'cold'],
+    krHint: '오래된 도서관은 습하고 차가운 냄새가 나요.',
+    feedback: '감각동사 + 형용사: smells damp and cold이에요. like 뒤에는 명사가 와야 해요. smells like a damp place처럼 쓰거나 like를 빼야 해요.'
+  },
+  {
+    sentence: 'He seems happily today. He got good news.',
+    answer: 'happily',
+    correction: 'happy',
+    options: ['seems', 'happily', 'today'],
+    krHint: '그는 오늘 행복해 보여요. 좋은 소식을 들었거든요.',
+    feedback: 'seem 뒤에는 부사가 아닌 형용사를 써요. seems happy이 맞아요.'
+  },
+  {
+    sentence: 'That thunder sounds like very scary.',
+    answer: 'like',
+    correction: 'Ø (like 불필요)',
+    options: ['sounds', 'like', 'scary'],
+    krHint: '저 천둥소리는 정말 무섭게 들려요.',
+    feedback: '감각동사 + 형용사: sounds very scary이에요. like 뒤에는 명사가 와야 해요. sounds like a monster처럼 쓰거나 like를 빼야 해요.'
+  },
+  {
+    sentence: 'This sweater is feeling very soft. I\'ll buy it.',
+    answer: 'is feeling',
+    correction: 'feels',
+    options: ['is feeling', 'very', 'soft'],
+    krHint: '이 스웨터는 매우 부드러워요. 살게요.',
+    feedback: '감각동사 feel은 상태를 나타낼 때 진행형을 쓸 수 없어요. feels가 맞아요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').textContent=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',()=>selectAnswer(opt,q));
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback
+    +(correct?'':` 틀린 단어: "${q.answer}" → 올바른 표현: "${q.correction}"`);
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(q=>{
+      const d=document.createElement('div');d.className='wrong-item';
+      d.textContent=q.sentence;
+      const info=document.createElement('div');info.style.marginTop='4px';
+      info.innerHTML=`<b>틀린 단어:</b> ${q.answer} → <b>정답:</b> ${q.correction}`;
+      d.appendChild(info);wl.appendChild(d);
+    });
+  }
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

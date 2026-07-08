@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0016b 비교급·최상급 암기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-mem:#E07B39;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff3e8;border-left:4px solid var(--badge-mem);border-radius:8px;padding:10px 14px;font-size:14px;color:#7a3800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-mem);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .direction-badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;margin-left:4px;}
+  .dir-comp{background:#dbeafe;color:#1e40af;}
+  .dir-super{background:#fce7f3;color:#9d174d;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-mem);margin-bottom:12px;text-align:center;}
+  .chain{font-size:12px;color:#aaa;text-align:center;margin-bottom:6px;letter-spacing:1px;}
+  .verb-display{text-align:center;margin-bottom:8px;}
+  .verb-base{font-size:30px;font-weight:800;color:var(--accent-dark);}
+  .verb-known{font-size:22px;font-weight:700;color:#888;}
+  .verb-arrow{font-size:16px;color:#bbb;margin:0 6px;}
+  .verb-question{font-size:26px;font-weight:800;color:var(--badge-mem);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.8;}
+</style>
+</head>
+<body>
+<h1>📖 비교급·최상급 암기</h1>
+<p class="subtitle">UG3 · Lesson 13 · 암기형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 파란색은 비교급, 분홍색은 최상급을 묻는 문제예요!</div>
+
+<div class="card" id="quiz-card">
+  <div class="badge">암기형</div>
+  <div class="direction-badge" id="dir-badge"></div>
+  <div class="card-instruction" id="card-instr"></div>
+  <div class="chain" id="chain-txt"></div>
+  <div class="verb-display" id="verb-display"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+
+<script>
+// 교재 L13 B섹션(형용사) + D섹션(부사) 기준
+// direction: 'comp' → 비교급 묻기 / 'super' → 최상급 묻기
+// 각 단어당 2문제씩 → 총 32문제 (16어 × 2방향)
+var WORDS = [
+  // ── 형용사: 1음절 (-er/-est) ──
+  { base:'long',     comp:'longer',          super:'longest',
+    compOpts:['longer','more long','longest','longing'],
+    superOpts:['longest','longer','most long','longiest'],
+    krHint:'긴', category:'형용사' },
+  { base:'big',      comp:'bigger',          super:'biggest',
+    compOpts:['bigger','more big','biggest','biger'],
+    superOpts:['biggest','bigger','most big','bigest'],
+    krHint:'큰', category:'형용사' },
+  { base:'hot',      comp:'hotter',          super:'hottest',
+    compOpts:['hotter','more hot','hottest','hoter'],
+    superOpts:['hottest','hotter','most hot','hotest'],
+    krHint:'뜨거운', category:'형용사' },
+  { base:'sad',      comp:'sadder',          super:'saddest',
+    compOpts:['sadder','more sad','saddest','sader'],
+    superOpts:['saddest','sadder','most sad','sadest'],
+    krHint:'슬픈', category:'형용사' },
+  // ── 형용사: 2음절 이상 (more/most) ──
+  { base:'famous',   comp:'more famous',     super:'most famous',
+    compOpts:['more famous','famouser','most famous','famousier'],
+    superOpts:['most famous','more famous','famousest','famousiest'],
+    krHint:'유명한', category:'형용사' },
+  { base:'busy',     comp:'busier',          super:'busiest',
+    compOpts:['busier','more busy','busiest','busyer'],
+    superOpts:['busiest','busier','most busy','busyest'],
+    krHint:'바쁜', category:'형용사' },
+  { base:'dirty',    comp:'dirtier',         super:'dirtiest',
+    compOpts:['dirtier','more dirty','dirtiest','dirtyer'],
+    superOpts:['dirtiest','dirtier','most dirty','dirtyest'],
+    krHint:'더러운', category:'형용사' },
+  // ── 형용사: 불규칙 ──
+  { base:'good',     comp:'better',          super:'best',
+    compOpts:['better','gooder','best','more good'],
+    superOpts:['best','better','goodest','most good'],
+    krHint:'좋은', category:'형용사' },
+  { base:'bad',      comp:'worse',           super:'worst',
+    compOpts:['worse','badder','worst','more bad'],
+    superOpts:['worst','worse','baddest','most bad'],
+    krHint:'나쁜', category:'형용사' },
+  // ── 부사: -ly형 (more/most) ──
+  { base:'loudly',   comp:'more loudly',     super:'most loudly',
+    compOpts:['more loudly','loudlier','most loudly','loudlyer'],
+    superOpts:['most loudly','more loudly','loudliest','loudlyest'],
+    krHint:'크게, 시끄럽게', category:'부사' },
+  { base:'carefully',comp:'more carefully',  super:'most carefully',
+    compOpts:['more carefully','carefullier','most carefully','carefuller'],
+    superOpts:['most carefully','more carefully','carefulliest','carefullyest'],
+    krHint:'조심스럽게', category:'부사' },
+  { base:'early',    comp:'earlier',         super:'earliest',
+    compOpts:['earlier','more early','earliest','earlyer'],
+    superOpts:['earliest','earlier','most early','earlyest'],
+    krHint:'일찍', category:'부사' },
+  // ── 부사: 1음절 (-er/-est) ──
+  { base:'fast',     comp:'faster',          super:'fastest',
+    compOpts:['faster','more fast','fastest','fater'],
+    superOpts:['fastest','faster','most fast','fasteest'],
+    krHint:'빠르게', category:'부사' },
+  { base:'hard',     comp:'harder',          super:'hardest',
+    compOpts:['harder','more hard','hardest','harded'],
+    superOpts:['hardest','harder','most hard','hardestly'],
+    krHint:'열심히, 세게', category:'부사' },
+  // ── 부사: 불규칙 ──
+  { base:'well',     comp:'better',          super:'best',
+    compOpts:['better','weller','best','more well'],
+    superOpts:['best','better','wellest','most well'],
+    krHint:'잘 (부사)', category:'부사' },
+  { base:'badly',    comp:'worse',           super:'worst',
+    compOpts:['worse','more badly','worst','badlier'],
+    superOpts:['worst','worse','most badly','badliest'],
+    krHint:'나쁘게, 형편없이', category:'부사' }
+];
+
+var ALL_QUESTIONS = [];
+WORDS.forEach(function(w){
+  ALL_QUESTIONS.push({
+    base:w.base, comp:w.comp, super:w.super, krHint:w.krHint, category:w.category,
+    direction:'comp', answer:w.comp, options:w.compOpts
+  });
+  ALL_QUESTIONS.push({
+    base:w.base, comp:w.comp, super:w.super, krHint:w.krHint, category:w.category,
+    direction:'super', answer:w.super, options:w.superOpts
+  });
+});
+
+var queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){var a=[...arr];for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function shuffleNoFirstAnswer(arr,answer){var result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+
+function showQ(){
+  answered=false;
+  var q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+
+  var isComp = q.direction==='comp';
+  var badge = document.getElementById('dir-badge');
+  badge.className='direction-badge '+(isComp?'dir-comp':'dir-super');
+  badge.textContent = isComp?'비교급 문제':'최상급 문제';
+  document.getElementById('card-instr').textContent = isComp?'알맞은 비교급을 고르세요!':'알맞은 최상급을 고르세요!';
+
+  if(isComp){
+    document.getElementById('chain-txt').textContent = q.category+' 원급 → 비교급';
+    document.getElementById('verb-display').innerHTML =
+      '<span class="verb-base">'+q.base+'</span>'
+      +'<span class="verb-arrow">→</span>'
+      +'<span class="verb-question">?</span>';
+  } else {
+    document.getElementById('chain-txt').textContent = q.category+' 원급 → 비교급 → 최상급';
+    document.getElementById('verb-display').innerHTML =
+      '<span class="verb-base">'+q.base+'</span>'
+      +'<span class="verb-arrow">→</span>'
+      +'<span class="verb-known">'+q.comp+'</span>'
+      +'<span class="verb-arrow">→</span>'
+      +'<span class="verb-question">?</span>';
+  }
+
+  document.getElementById('kr-hint').textContent = '뜻: '+q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+
+  var opts=shuffleNoFirstAnswer(q.options,q.answer);
+  var box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){selectAnswer(opt,q);});
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  var correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(function(btn){
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  var fb=document.getElementById('feedback');
+  var msg = correct?'✅ 정답! ':'❌ 오답. ';
+  msg += q.base+' → '+q.comp+' → '+q.super;
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=msg;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+document.getElementById('next-btn').addEventListener('click',function(){
+  current++;
+  if(current<queue.length)showQ();else showResult();
+});
+
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  var rc=document.getElementById('result-card');rc.classList.add('show');
+  var pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=score+' / '+queue.length+' 정답';
+  var wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    var h=document.createElement('p');
+    h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(function(q){
+      var d=document.createElement('div');d.className='wrong-item';
+      var label=q.direction==='comp'?'비교급':'최상급';
+      d.innerHTML='<b>'+q.base+'</b> ['+label+'] → <b style="color:var(--correct)">'+q.answer+'</b><br>'
+        +'<span style="color:#888">'+q.base+' → '+q.comp+' → '+q.super+'</span>';
+      wl.appendChild(d);
+    });
+  }
+  var rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=function(){startQuiz(shuffle(wrongList));};}
+  else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',function(){startQuiz(shuffle([...ALL_QUESTIONS]));});
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

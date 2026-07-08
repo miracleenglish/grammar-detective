@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-TEST2 실전테스트 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-t:#E8604C;--card-bg:#fff;--text:#2d2d2d;
+    --badge-a:#4A90D9;--badge-b:#5BAD6F;--badge-c:#9B6DD1;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--badge-t);border-radius:8px;transition:width .4s;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .badge-a{background:var(--badge-a);}
+  .badge-b{background:var(--badge-b);}
+  .badge-c{background:var(--badge-c);}
+  .card-instruction{font-size:17px;font-weight:700;margin-bottom:14px;text-align:center;}
+  .instr-a{color:var(--badge-a);}
+  .instr-b{color:var(--badge-b);}
+  .instr-c{color:var(--badge-c);}
+  .question-text{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.6;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options-ab{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .options-c{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn.c-opt{text-align:left;padding:12px 14px;}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--badge-t);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .grade{font-size:16px;font-weight:700;margin:4px 0 12px;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🏁 실전테스트 2</h1>
+<p class="subtitle">UG3 · L12~22 · 15문제</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+
+<div class="card" id="quiz-card">
+  <div class="badge" id="type-badge"></div>
+  <div class="card-instruction" id="card-instr"></div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div id="options-wrap"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="grade" id="grade-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 다시 풀기</button>
+</div>
+
+<script>
+var ALL_QUESTIONS = [
+  // ── A형 (5문제) ──
+  { type:'A', lesson:'L13',
+    sentence: 'This novel is <span class="blank"></span> interesting than I expected.',
+    answer: 'more',
+    options: ['more','most','much more','the most'],
+    krHint: '이 소설은 내가 예상했던 것보다 더 흥미로워요.',
+    feedback: '두 가지를 비교할 때 비교급: more + 긴 형용사. more interesting than'
+  },
+  { type:'A', lesson:'L15',
+    sentence: 'This song <span class="blank"></span> by millions of people around the world.',
+    answer: 'is loved',
+    options: ['is loved','loves','is loving','was loved'],
+    krHint: '이 노래는 전 세계 수백만 명의 사람들에게 사랑받아요.',
+    feedback: '현재 수동태: am/is/are + 과거분사. is loved by ~'
+  },
+  { type:'A', lesson:'L17',
+    sentence: 'She decided <span class="blank"></span> a new language this year.',
+    answer: 'to learn',
+    options: ['to learn','learning','learn','learned'],
+    krHint: '그녀는 올해 새 언어를 배우기로 결정했어요.',
+    feedback: 'decide는 to부정사만 목적어로 취해요. decided to learn'
+  },
+  { type:'A', lesson:'L20',
+    sentence: 'The scientist <span class="blank"></span> discovered the vaccine won a prize.',
+    answer: 'who',
+    options: ['who','which','whose','what'],
+    krHint: '백신을 발견한 그 과학자는 상을 받았어요.',
+    feedback: '사람(the scientist)을 수식하는 관계대명사는 who예요.'
+  },
+  { type:'A', lesson:'L22',
+    sentence: 'She said that she <span class="blank"></span> a headache.',
+    answer: 'had',
+    options: ['had','has','have','will have'],
+    krHint: '그녀는 두통이 있다고 말했어요.',
+    feedback: '간접화법에서 현재(have) → 과거(had)로 바뀌어요.'
+  },
+  // ── B형 (5문제) ──
+  { type:'B', lesson:'L12',
+    sentence: 'This coffee tastes <span class="blank"></span>. I need some sugar.',
+    answer: 'bitter',
+    options: ['bitter','bitterly','like bitter','a bitter'],
+    krHint: '이 커피는 써요. 설탕이 좀 필요해요.',
+    feedback: '감각동사(taste) 뒤에는 형용사를 써요. tastes bitter (부사 bitterly ❌)'
+  },
+  { type:'B', lesson:'L14',
+    sentence: 'I was tired, <span class="blank"></span> I finished all my homework.',
+    answer: 'but',
+    options: ['but','so','because','or'],
+    krHint: '나는 피곤했지만 숙제를 전부 끝냈어요.',
+    feedback: '피곤한데도 숙제를 끝낸 것은 대조 관계예요. but'
+  },
+  { type:'B', lesson:'L16',
+    sentence: 'My dad gave up <span class="blank"></span> after the doctor\'s advice.',
+    answer: 'smoking',
+    options: ['smoking','to smoke','smoke','smoked'],
+    krHint: '아빠는 의사의 조언 후 담배를 끊으셨어요.',
+    feedback: 'give up은 동명사만 취해요. give up + -ing'
+  },
+  { type:'B', lesson:'L19',
+    sentence: 'The coach made the players <span class="blank"></span> extra laps.',
+    answer: 'run',
+    options: ['run','to run','running','ran'],
+    krHint: '코치는 선수들이 추가로 바퀴를 더 돌게 했어요.',
+    feedback: 'make + 목적어 + 동사원형: made the players run'
+  },
+  { type:'B', lesson:'L21',
+    sentence: 'You haven\'t met her before, <span class="blank"></span>?',
+    answer: 'have you',
+    options: ['have you',"haven't you",'did you','do you'],
+    krHint: '당신은 전에 그녀를 만난 적이 없죠?',
+    feedback: '부정문(haven\'t) → 긍정 tag. have you?'
+  },
+  // ── C형 (5문제) ──
+  { type:'C', lesson:'L13',
+    sentence: 'This is the most cheapest restaurant in our neighborhood.',
+    answer: 'most cheapest',
+    correction: 'cheapest',
+    options: ['most cheapest','restaurant','neighborhood'],
+    krHint: '이것이 우리 동네에서 가장 저렴한 식당이에요.',
+    feedback: '짧은 형용사(cheap)의 최상급은 -est만 써요. most cheapest → cheapest'
+  },
+  { type:'C', lesson:'L15',
+    sentence: 'The window was broke by the strong wind last night.',
+    answer: 'broke',
+    correction: 'broken',
+    options: ['broke','strong','last'],
+    krHint: '창문이 어젯밤 강풍에 의해 깨졌어요.',
+    feedback: '수동태: be동사 + 과거분사. broke(과거형) → broken(과거분사)'
+  },
+  { type:'C', lesson:'L18',
+    sentence: 'The bag is too heavy enough to carry up the stairs.',
+    answer: 'enough',
+    correction: 'Ø (enough 불필요)',
+    options: ['too','enough','carry'],
+    krHint: '그 가방은 계단을 올라가며 들기에 너무 무거워요.',
+    feedback: 'too + 형용사 + to부정사 구조예요. too와 enough를 함께 쓸 수 없어요. enough 삭제'
+  },
+  { type:'C', lesson:'L20',
+    sentence: 'The movie which I watched it last weekend was amazing.',
+    answer: 'it',
+    correction: 'Ø (it 불필요)',
+    options: ['watched','it','amazing'],
+    krHint: '내가 지난 주말에 본 영화는 놀라웠어요.',
+    feedback: '관계절에서 which가 목적어 역할을 하므로 it을 따로 쓰면 안 돼요. it 삭제'
+  },
+  { type:'C', lesson:'L21',
+    sentence: 'They went to the concert yesterday, didn\'t they?',
+    answer: 'correct',
+    options: ['went','yesterday',"didn't they"],
+    krHint: '그들은 어제 콘서트에 갔죠?',
+    feedback: '과거 긍정(went) → 부정 tag(didn\'t they). 올바른 문장이에요.',
+    isCorrect: true
+  },
+];
+
+// isCorrect 문제 제거 후 14개 → 올바른 문장 자리를 다른 C형으로 교체
+var QUESTIONS = ALL_QUESTIONS.filter(function(q){ return !q.isCorrect; });
+// L22 C형 추가
+QUESTIONS.push({
+  type:'C', lesson:'L22',
+  sentence: 'He said that he can finish the report by Friday.',
+  answer: 'can',
+  correction: 'could',
+  options: ['finish','can','Friday'],
+  krHint: '그는 금요일까지 보고서를 끝낼 수 있다고 말했어요.',
+  feedback: '간접화법에서 can → could로 바뀌어요.'
+});
+
+var current=0, score=0, wrongList=[], answered=false;
+
+function shuffle(arr){var a=[...arr];for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function shuffleNoFirst(arr,ans){var r,t=0;do{r=shuffle(arr);t++;}while(r[0].toLowerCase()===ans.toLowerCase()&&t<20);return r;}
+
+function startQuiz(){
+  current=0;score=0;wrongList=[];answered=false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display='';
+  showQ();
+}
+
+function showQ(){
+  answered=false;
+  var q=QUESTIONS[current];
+  document.getElementById('prog').style.width=(current/QUESTIONS.length*100)+'%';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  document.getElementById('next-btn').textContent=current===QUESTIONS.length-1?'결과 보기 🏁':'다음 문제 →';
+
+  var badge=document.getElementById('type-badge');
+  var instr=document.getElementById('card-instr');
+  if(q.type==='A'){
+    badge.className='badge badge-a';badge.textContent='A형';
+    instr.className='card-instruction instr-a';
+    instr.textContent='빈칸에 알맞은 단어를 고르세요!';
+  }else if(q.type==='B'){
+    badge.className='badge badge-b';badge.textContent='B형';
+    instr.className='card-instruction instr-b';
+    instr.textContent='빈칸에 알맞은 표현을 고르세요!';
+  }else{
+    badge.className='badge badge-c';badge.textContent='C형';
+    instr.className='card-instruction instr-c';
+    instr.textContent='아래 문장에서 틀린 단어를 찾아 고르세요!';
+  }
+
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+
+  var wrap=document.getElementById('options-wrap');wrap.innerHTML='';
+  var isC=q.type==='C';
+  var div=document.createElement('div');
+  div.className=isC?'options-c':'options-ab';
+  var opts=shuffleNoFirst(q.options,q.answer);
+  opts.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='opt-btn'+(isC?' c-opt':'');
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){selectAnswer(opt,q);});
+    div.appendChild(btn);
+  });
+  wrap.appendChild(div);
+}
+
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  var correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(function(btn){
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  var fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  var msg=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  if(!correct&&q.correction)msg+=' ('+q.answer+' → '+q.correction+')';
+  fb.textContent=msg;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+document.getElementById('next-btn').addEventListener('click',function(){
+  current++;
+  if(current<QUESTIONS.length)showQ();else showResult();
+});
+
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  var rc=document.getElementById('result-card');rc.classList.add('show');
+  var pct=score/QUESTIONS.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=score+' / '+QUESTIONS.length+' 정답';
+  var grade=pct>=.9?'🏆 매우 잘했어요!':pct>=.7?'👍 잘했어요!':pct>=.5?'💪 조금 더 노력해요!':'📚 복습이 필요해요!';
+  document.getElementById('grade-txt').textContent=grade;
+  var wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    var h=document.createElement('p');
+    h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent='틀린 문제 복습:';wl.appendChild(h);
+    wrongList.forEach(function(q){
+      var d=document.createElement('div');d.className='wrong-item';
+      var corr=q.correction?(' → '+q.correction):'';
+      d.innerHTML='<b>['+q.lesson+' '+q.type+'형]</b> 정답: <b>'+q.answer+'</b>'+corr+'<br>'
+        +'<span style="color:#888">'+q.krHint+'</span>';
+      wl.appendChild(d);
+    });
+  }
+}
+
+document.getElementById('retry-all-btn').addEventListener('click',startQuiz);
+startQuiz();
+</script>
+</body>
+</html>

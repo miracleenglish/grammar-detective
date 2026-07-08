@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0013 조동사: 의무·충고·능력</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-a:#4A90D9;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .pre-hint{width:100%;max-width:480px;background:#E8F4FD;border:1.5px solid #A8D4F0;border-radius:8px;padding:10px 14px;font-size:14px;color:#1a5276;margin-bottom:10px;font-weight:600;display:none;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-a);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-a);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 조동사: 의무·충고·능력</h1>
+<p class="subtitle">UG3 · Lesson 11 · A형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 단어를 고르세요!</div>
+<div class="pre-hint" id="pre-hint"></div>
+<div class="card" id="quiz-card">
+  <div class="badge">A형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+
+<script>
+// ※ 이중정답 방지 원칙
+// - must와 have to는 의미 동일 → 절대 동시 선택지 금지
+// - should와 ought to 의미 동일 → 절대 동시 선택지 금지
+// - mustn't(금지) vs don't have to(불필요) 의미 완전히 다름 → 함께 출제 가능 (의미 구분 학습 목적)
+// - can과 could는 현재/과거 능력 → 문맥으로 구분
+// - 모든 문제 preHint 필수
+const ALL_QUESTIONS = [
+  // ── must: 강한 의무·필요 ──
+  {
+    sentence: 'All passengers <span class="blank"></span> wear seat belts.',
+    answer: 'must',
+    options: ['must', 'should', 'can', 'shall'],
+    krHint: '모든 승객은 안전벨트를 매야 해요.',
+    preHint: '💡 규칙이나 강한 의무를 나타내요.',
+    feedback: 'must는 강한 의무·규칙을 나타내요. "반드시 ~해야 한다"'
+  },
+  {
+    sentence: 'Students <span class="blank"></span> show their ID cards to enter the building.',
+    answer: 'must',
+    options: ['must', 'should', 'can', 'could'],
+    krHint: '학생들은 건물에 들어가려면 반드시 학생증을 보여줘야 해요.',
+    preHint: '💡 규칙으로 정해진 강한 의무를 나타내요.',
+    feedback: 'must는 규칙이나 강한 의무를 나타내요. 규칙으로 정해진 것은 must를 써요.'
+  },
+  // ── have to: 외부적 의무 ──
+  {
+    sentence: 'I <span class="blank"></span> wear a uniform at my school.',
+    answer: 'have to',
+    options: ['have to', 'has to', 'must to', 'should to'],
+    krHint: '나는 학교에서 교복을 입어야 해요.',
+    preHint: '💡 규칙이나 외부 상황으로 인한 의무예요.',
+    feedback: 'have to는 외부 규칙·상황으로 인한 의무예요. 주어가 I/you/we/they이면 have to를 써요.'
+  },
+  {
+    sentence: 'She <span class="blank"></span> finish the report by Friday.',
+    answer: 'has to',
+    options: ['has to', 'have to', 'must to', 'should to'],
+    krHint: '그녀는 금요일까지 보고서를 끝내야 해요.',
+    preHint: '💡 규칙이나 외부 상황으로 인한 의무예요.',
+    feedback: '3인칭 단수 주어(She)이면 has to를 써요.'
+  },
+  // ── mustn't: 금지 ──
+  {
+    sentence: 'You <span class="blank"></span> run in the hallway. It\'s dangerous.',
+    answer: 'mustn\'t',
+    options: ['mustn\'t', 'don\'t have to', 'shouldn\'t', 'can\'t'],
+    krHint: '복도에서 뛰면 안 돼요. 위험해요.',
+    preHint: '💡 절대 해서는 안 되는 금지를 나타내요.',
+    feedback: 'mustn\'t는 "절대 ~하면 안 된다"는 강한 금지예요. don\'t have to(~할 필요 없다)와 혼동 주의!'
+  },
+  // ── don't have to: 불필요 ──
+  {
+    sentence: 'Tomorrow is a holiday. You <span class="blank"></span> go to school.',
+    answer: 'don\'t have to',
+    options: ['don\'t have to', 'mustn\'t', 'shouldn\'t', 'can\'t'],
+    krHint: '내일은 공휴일이에요. 학교에 안 가도 돼요.',
+    preHint: '💡 ~할 필요가 없다는 뜻이에요. (금지가 아님!)',
+    feedback: 'don\'t have to는 "~할 필요 없다"예요. mustn\'t(절대 금지)와 완전히 달라요!'
+  },
+  // ── should: 충고·권고 ──
+  {
+    sentence: 'You <span class="blank"></span> eat more vegetables. They\'re good for you.',
+    answer: 'should',
+    options: ['should', 'must', 'can', 'shall'],
+    krHint: '채소를 더 많이 먹어야 해요. 몸에 좋거든요.',
+    preHint: '💡 충고나 권고를 나타내요.',
+    feedback: 'should는 "~하는 것이 좋다"는 충고·권고예요. must보다 약한 표현이에요.'
+  },
+  {
+    sentence: 'You <span class="blank"></span> skip breakfast. It\'s bad for your health.',
+    answer: 'shouldn\'t',
+    options: ['shouldn\'t', 'must', 'have to', 'can'],
+    krHint: '아침 식사를 거르지 않는 게 좋아요. 건강에 나빠요.',
+    preHint: '💡 하지 않는 것을 권고하는 표현이에요.',
+    feedback: 'shouldn\'t는 "~하지 않는 것이 좋다"는 충고예요. "bad for your health"처럼 건강·생활 습관 조언에 자주 써요.'
+  },
+  // ── can: 현재 능력 ──
+  {
+    sentence: 'My little sister <span class="blank"></span> already read and write.',
+    answer: 'can',
+    options: ['can', 'could', 'must', 'should'],
+    krHint: '내 여동생은 벌써 읽고 쓸 수 있어요.',
+    preHint: '💡 현재의 능력을 나타내요.',
+    feedback: 'can은 현재의 능력 "~할 수 있다"를 나타내요.'
+  },
+  // ── could: 과거 능력 ──
+  {
+    sentence: 'When I was five, I <span class="blank"></span> swim across the pool.',
+    answer: 'could',
+    options: ['could', 'can', 'must', 'should'],
+    krHint: '내가 다섯 살 때, 수영장을 헤엄쳐 건널 수 있었어요.',
+    preHint: '💡 과거의 능력을 나타내요.',
+    feedback: 'could는 과거의 능력 "~할 수 있었다"를 나타내요. "when I was five"가 과거 신호예요.'
+  },
+  // ── shall: 제안 ──
+  {
+    sentence: '<span class="blank"></span> we go for a walk? It\'s nice outside.',
+    answer: 'Shall',
+    options: ['Shall', 'Must', 'Should', 'Can'],
+    krHint: '산책하러 갈까요? 밖이 날씨가 좋아요.',
+    preHint: '💡 함께 무언가를 하자고 제안하는 표현이에요.',
+    feedback: 'Shall we ~?는 "우리 ~할까요?"라는 제안 표현이에요.'
+  },
+  // ── 종합: mustn't vs don't have to 구분 ──
+  {
+    sentence: 'The library is free. You <span class="blank"></span> pay to enter.',
+    answer: 'don\'t have to',
+    options: ['don\'t have to', 'mustn\'t', 'shouldn\'t', 'can\'t'],
+    krHint: '도서관은 무료예요. 입장료를 낼 필요가 없어요.',
+    preHint: '💡 ~할 필요가 없다는 뜻이에요. (금지가 아님!)',
+    feedback: 'don\'t have to = 할 필요 없다 (선택 가능). mustn\'t = 절대 하면 안 된다 (금지). 의미가 달라요!'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(qs){
+  queue=qs;current=0;score=0;wrongList=[];answered=false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display='';
+  document.getElementById('pre-hint').style.display='none';
+  showQ();
+}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const ph=document.getElementById('pre-hint');
+  if(q.preHint){ph.textContent=q.preHint;ph.style.display='';}
+  else ph.style.display='none';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',()=>selectAnswer(opt,q));
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{
+  current++;
+  if(current<queue.length)showQ();else showResult();
+});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  document.getElementById('pre-hint').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    const h=document.createElement('p');
+    h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(q=>{
+      const d=document.createElement('div');d.className='wrong-item';
+      d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;
+      wl.appendChild(d);
+    });
+  }
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}
+  else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

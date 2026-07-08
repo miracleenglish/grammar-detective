@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0027b 동명사·to부정사 동사 암기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-mem:#E07B39;--card-bg:#fff;--text:#2d2d2d;--ger:#3B82F6;--inf:#EC4899;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:10px;text-align:center;}
+  .legend{width:100%;max-width:480px;display:flex;gap:10px;margin-bottom:12px;}
+  .leg{flex:1;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;color:#fff;text-align:center;}
+  .leg.ger{background:var(--ger);}
+  .leg.inf{background:var(--inf);}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff3e8;border-left:4px solid var(--badge-mem);border-radius:8px;padding:10px 14px;font-size:14px;color:#7a3800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-mem);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:10px;}
+  .qtype-badge{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:10px;margin-left:6px;}
+  .qtype-class{background:#e0f7ef;color:var(--accent-dark);}
+  .qtype-sent{background:#fce7f3;color:#9d174d;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-mem);margin-bottom:14px;text-align:center;}
+  .verb-box{text-align:center;margin-bottom:16px;}
+  .verb-main{font-size:30px;font-weight:800;color:var(--accent-dark);}
+  .verb-kr{font-size:14px;color:#888;margin-top:4px;}
+  .sent-box{font-size:18px;font-weight:700;color:var(--text);text-align:center;line-height:1.6;margin-bottom:6px;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options-class{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+  .opt-ger{background:var(--ger);color:#fff;border:none;border-radius:12px;padding:16px 8px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-inf{background:var(--inf);color:#fff;border:none;border-radius:12px;padding:16px 8px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-ger:disabled,.opt-inf:disabled{cursor:default;}
+  .opt-ger.correct-ans,.opt-inf.correct-ans{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--correct);transform:scale(1.04);}
+  .opt-ger.wrong-ans,.opt-inf.wrong-ans{opacity:.4;}
+  .options-sent{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-sent{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-sent:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-sent.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-sent.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-sent:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.8;}
+  .wrong-item.ger{background:#eff6ff;border-left:3px solid var(--ger);}
+  .wrong-item.inf{background:#fdf2f8;border-left:3px solid var(--inf);}
+</style>
+</head>
+<body>
+<h1>📖 동명사 vs to부정사 동사 암기</h1>
+<p class="subtitle">UG3 · L16~17 · 암기형</p>
+<div class="legend">
+  <div class="leg ger">🔵 동명사만 (-ing)</div>
+  <div class="leg inf">🩷 to부정사만 (to V)</div>
+</div>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box" id="instr-box">📌 이 동사 뒤에 오는 형태를 고르세요!</div>
+
+<div class="card" id="quiz-card">
+  <div class="badge">암기형</div>
+  <span class="qtype-badge" id="qtype-badge"></span>
+  <div class="card-instruction" id="card-instr"></div>
+  <div id="q-body"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+
+<script>
+// 교재 L16 동명사만 / L17 to부정사만
+// type: 'class' = 분류 문제 (동사 제시 → 동명사/to부정사 선택)
+//       'sent'  = 예문 빈칸 (문장에서 올바른 형태 선택)
+
+var VERBS = [
+  // ── 동명사만 (L16) ──
+  { verb:'enjoy',     kr:'즐기다',              cat:'ger',
+    sentQ:'Do you enjoy <span class="blank"></span> to music?',
+    sentA:'listening', sentOpts:['listening','to listen','listen','listened'],
+    sentKr:'음악 듣는 것을 즐기나요?',
+    feedback:'enjoy는 동명사(-ing)만 목적어로 취해요. enjoy + -ing' },
+  { verb:'keep',      kr:'계속 ~하다',           cat:'ger',
+    sentQ:'Please keep <span class="blank"></span> in line.',
+    sentA:'waiting', sentOpts:['waiting','to wait','wait','waited'],
+    sentKr:'줄 서서 계속 기다려 주세요.',
+    feedback:'keep은 동명사(-ing)만 목적어로 취해요. keep + -ing' },
+  { verb:'stop',      kr:'그만두다 (동명사 목적어)',cat:'ger',
+    sentQ:'He stopped <span class="blank"></span> video games.',
+    sentA:'playing', sentOpts:['playing','to play','play','played'],
+    sentKr:'그는 비디오 게임을 그만뒀어요.',
+    feedback:'stop + -ing = ~하는 것을 그만두다. (교재 L16 범위)' },
+  { verb:'discuss',   kr:'논의하다',             cat:'ger',
+    sentQ:'They discussed <span class="blank"></span> a new project.',
+    sentA:'starting', sentOpts:['starting','to start','start','started'],
+    sentKr:'그들은 새 프로젝트를 시작하는 것에 대해 논의했어요.',
+    feedback:'discuss는 동명사(-ing)만 목적어로 취해요. discuss + -ing' },
+  { verb:'finish',    kr:'끝내다',               cat:'ger',
+    sentQ:'She finished <span class="blank"></span> her homework.',
+    sentA:'doing', sentOpts:['doing','to do','do','done'],
+    sentKr:'그녀는 숙제하는 것을 끝냈어요.',
+    feedback:'finish는 동명사(-ing)만 목적어로 취해요. finish + -ing' },
+  { verb:'mind',      kr:'꺼리다',               cat:'ger',
+    sentQ:'Do you mind <span class="blank"></span> the window?',
+    sentA:'closing', sentOpts:['closing','to close','close','closed'],
+    sentKr:'창문을 닫아도 될까요?',
+    feedback:'mind는 동명사(-ing)만 목적어로 취해요. mind + -ing' },
+  { verb:'miss',      kr:'그리워하다',            cat:'ger',
+    sentQ:'I miss <span class="blank"></span> my old friends.',
+    sentA:'seeing', sentOpts:['seeing','to see','see','saw'],
+    sentKr:'나는 옛 친구들을 보지 못해 그리워요.',
+    feedback:'miss는 동명사(-ing)만 목적어로 취해요. miss + -ing' },
+  { verb:'postpone',  kr:'미루다',               cat:'ger',
+    sentQ:'We postponed <span class="blank"></span> the trip.',
+    sentA:'planning', sentOpts:['planning','to plan','plan','planned'],
+    sentKr:'우리는 여행 계획을 미뤘어요.',
+    feedback:'postpone는 동명사(-ing)만 목적어로 취해요. postpone + -ing' },
+  { verb:'give up',   kr:'포기하다',             cat:'ger',
+    sentQ:'Don\'t give up <span class="blank"></span>!',
+    sentA:'trying', sentOpts:['trying','to try','try','tried'],
+    sentKr:'포기하지 말고 계속 도전해요!',
+    feedback:'give up은 동명사(-ing)만 목적어로 취해요. give up + -ing' },
+  // ── to부정사만 (L17) ──
+  { verb:'want',      kr:'원하다',               cat:'inf',
+    sentQ:'I want <span class="blank"></span> a new bike.',
+    sentA:'to get', sentOpts:['to get','getting','get','got'],
+    sentKr:'나는 새 자전거를 갖고 싶어요.',
+    feedback:'want는 to부정사만 목적어로 취해요. want + to V' },
+  { verb:'plan',      kr:'계획하다',             cat:'inf',
+    sentQ:'We plan <span class="blank"></span> to Paris next summer.',
+    sentA:'to go', sentOpts:['to go','going','go','went'],
+    sentKr:'우리는 내년 여름 파리에 갈 계획이에요.',
+    feedback:'plan은 to부정사만 목적어로 취해요. plan + to V' },
+  { verb:'need',      kr:'필요하다',             cat:'inf',
+    sentQ:'You need <span class="blank"></span> more water.',
+    sentA:'to drink', sentOpts:['to drink','drinking','drink','drank'],
+    sentKr:'더 많은 물을 마실 필요가 있어요.',
+    feedback:'need는 to부정사만 목적어로 취해요. need + to V' },
+  { verb:'agree',     kr:'동의하다',             cat:'inf',
+    sentQ:'They agreed <span class="blank"></span> earlier.',
+    sentA:'to meet', sentOpts:['to meet','meeting','meet','met'],
+    sentKr:'그들은 더 일찍 만나기로 동의했어요.',
+    feedback:'agree는 to부정사만 목적어로 취해요. agree + to V' },
+  { verb:'decide',    kr:'결정하다',             cat:'inf',
+    sentQ:'She decided <span class="blank"></span> medicine.',
+    sentA:'to study', sentOpts:['to study','studying','study','studied'],
+    sentKr:'그녀는 의학을 공부하기로 결정했어요.',
+    feedback:'decide는 to부정사만 목적어로 취해요. decide + to V' },
+  { verb:'hope',      kr:'바라다',               cat:'inf',
+    sentQ:'He hopes <span class="blank"></span> the team someday.',
+    sentA:'to join', sentOpts:['to join','joining','join','joined'],
+    sentKr:'그는 언젠가 팀에 합류하길 바라요.',
+    feedback:'hope는 to부정사만 목적어로 취해요. hope + to V' },
+  { verb:'learn',     kr:'배우다',               cat:'inf',
+    sentQ:'I am learning <span class="blank"></span> the guitar.',
+    sentA:'to play', sentOpts:['to play','playing','play','played'],
+    sentKr:'나는 기타 치는 것을 배우고 있어요.',
+    feedback:'learn은 to부정사만 목적어로 취해요. learn + to V' },
+  { verb:'promise',   kr:'약속하다',             cat:'inf',
+    sentQ:'She promised <span class="blank"></span> on time.',
+    sentA:'to arrive', sentOpts:['to arrive','arriving','arrive','arrived'],
+    sentKr:'그녀는 제시간에 도착하겠다고 약속했어요.',
+    feedback:'promise는 to부정사만 목적어로 취해요. promise + to V' },
+  { verb:'refuse',    kr:'거부하다',             cat:'inf',
+    sentQ:'He refused <span class="blank"></span> questions.',
+    sentA:'to answer', sentOpts:['to answer','answering','answer','answered'],
+    sentKr:'그는 질문에 답하기를 거부했어요.',
+    feedback:'refuse는 to부정사만 목적어로 취해요. refuse + to V' },
+];
+
+// 각 동사당 2문제 생성 (분류 + 예문) = 총 36문제
+var ALL_QUESTIONS = [];
+VERBS.forEach(function(v){
+  // 분류 문제
+  ALL_QUESTIONS.push({ type:'class', verb:v.verb, kr:v.kr, cat:v.cat, feedback:v.feedback });
+  // 예문 빈칸 문제
+  ALL_QUESTIONS.push({ type:'sent', verb:v.verb, kr:v.kr, cat:v.cat,
+    sentQ:v.sentQ, sentA:v.sentA, sentOpts:v.sentOpts, sentKr:v.sentKr, feedback:v.feedback });
+});
+
+var queue=[], wrongList=[], current=0, score=0, answered=false;
+
+function shuffle(arr){
+  var a=[...arr];
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function shuffleNoFirst(arr, firstExclude){
+  var result, tries=0;
+  do{ result=shuffle(arr); tries++; }
+  while(result[0]===firstExclude && tries<20);
+  return result;
+}
+
+function startQuiz(qs){
+  queue=qs; current=0; score=0; wrongList=[]; answered=false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display='';
+  showQ();
+}
+
+function showQ(){
+  answered=false;
+  var q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+
+  if(q.type==='class'){
+    document.getElementById('qtype-badge').className='qtype-badge qtype-class';
+    document.getElementById('qtype-badge').textContent='분류 문제';
+    document.getElementById('card-instr').textContent='이 동사는 뒤에 어떤 형태가 오나요?';
+    document.getElementById('instr-box').textContent='📌 동사를 보고 알맞은 형태를 고르세요!';
+    document.getElementById('q-body').innerHTML=
+      '<div class="verb-box"><div class="verb-main">'+q.verb+'</div><div class="verb-kr">'+q.kr+'</div></div>'+
+      '<div class="options-class" id="class-opts">'+
+        '<button class="opt-ger" onclick="selectClass(\'ger\',this)">🔵 동명사만<br>( -ing )</button>'+
+        '<button class="opt-inf" onclick="selectClass(\'inf\',this)">🩷 to부정사만<br>( to V )</button>'+
+      '</div>';
+  } else {
+    document.getElementById('qtype-badge').className='qtype-badge qtype-sent';
+    document.getElementById('qtype-badge').textContent='예문 문제';
+    document.getElementById('card-instr').textContent='빈칸에 알맞은 형태를 고르세요!';
+    document.getElementById('instr-box').textContent='📌 문장을 읽고 빈칸에 알맞은 형태를 고르세요!';
+    var opts = shuffleNoFirst(q.sentOpts, q.sentA);
+    var btns = opts.map(function(o){
+      return '<button class="opt-sent" onclick="selectSent(\''+o+'\',this)">' + o + '</button>';
+    }).join('');
+    document.getElementById('q-body').innerHTML=
+      '<div class="sent-box">'+q.sentQ+'</div>'+
+      '<div class="kr-hint">'+q.sentKr+'</div>'+
+      '<div class="options-sent">'+btns+'</div>';
+  }
+}
+
+function selectClass(selected, btn){
+  if(answered)return; answered=true;
+  var q=queue[current];
+  var correct = selected===q.cat;
+  if(correct) score++; else wrongList.push(q);
+  document.querySelectorAll('.opt-ger,.opt-inf').forEach(function(b){
+    b.disabled=true;
+    var bCat = b.classList.contains('opt-ger')?'ger':'inf';
+    if(bCat===q.cat) b.classList.add('correct-ans');
+    else if(b===btn && !correct) b.classList.add('wrong-ans');
+  });
+  var fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  var catLabel = q.cat==='ger'?'🔵 동명사(-ing)만':'🩷 to부정사(to V)만';
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+catLabel+' 취해요. '+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+function selectSent(selected, btn){
+  if(answered)return; answered=true;
+  var q=queue[current];
+  var correct = selected===q.sentA;
+  if(correct) score++; else wrongList.push(q);
+  document.querySelectorAll('.opt-sent').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent===q.sentA) b.classList.add('correct');
+    else if(b===btn && !correct) b.classList.add('wrong');
+  });
+  var fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+document.getElementById('next-btn').addEventListener('click',function(){
+  current++;
+  if(current<queue.length) showQ(); else showResult();
+});
+
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  var rc=document.getElementById('result-card'); rc.classList.add('show');
+  var pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=score+' / '+queue.length+' 정답';
+  var wl=document.getElementById('wrong-list'); wl.innerHTML='';
+  if(wrongList.length){
+    var h=document.createElement('p');
+    h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent='틀린 문제:'; wl.appendChild(h);
+    wrongList.forEach(function(q){
+      var d=document.createElement('div');
+      d.className='wrong-item '+q.cat;
+      var catLabel=q.cat==='ger'?'🔵 동명사(-ing)':'🩷 to부정사(to V)';
+      d.innerHTML='<b>'+q.verb+'</b> ('+q.kr+') → <b>'+catLabel+'</b><br>'+
+        '<span style="color:#888;font-size:12px">'+q.feedback+'</span>';
+      wl.appendChild(d);
+    });
+  }
+  var rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){ rwb.style.display=''; rwb.onclick=function(){startQuiz(shuffle(wrongList));} }
+  else rwb.style.display='none';
+}
+
+document.getElementById('retry-all-btn').addEventListener('click',function(){
+  startQuiz(shuffle([...ALL_QUESTIONS]));
+});
+
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

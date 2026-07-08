@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0007b 불규칙 과거형 암기</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-mem:#E07B39;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff3e8;border-left:4px solid var(--badge-mem);border-radius:8px;padding:10px 14px;font-size:14px;color:#7a3800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-mem);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-mem);margin-bottom:12px;text-align:center;}
+  .chain{font-size:12px;color:#aaa;text-align:center;margin-bottom:6px;letter-spacing:1px;}
+  .verb-display{text-align:center;margin-bottom:8px;}
+  .verb-base{font-size:32px;font-weight:800;color:var(--accent-dark);}
+  .verb-arrow{font-size:18px;color:#bbb;margin:0 8px;}
+  .verb-question{font-size:28px;font-weight:800;color:var(--badge-mem);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.8;}
+</style>
+</head>
+<body>
+<h1>📖 불규칙 과거형 암기</h1>
+<p class="subtitle">UG3 · Lesson 6 · 암기형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 동사원형을 보고 알맞은 과거형을 고르세요!</div>
+
+<div class="card" id="quiz-card">
+  <div class="badge">암기형</div>
+  <div class="card-instruction">알맞은 과거형을 고르세요!</div>
+  <div class="chain">원형 → 과거형</div>
+  <div class="verb-display">
+    <span class="verb-base" id="verb-base"></span>
+    <span class="verb-arrow">→</span>
+    <span class="verb-question">?</span>
+  </div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+
+<script>
+// 교재 L6 (p.25) Common Irregular Verbs 표 기준 28개
+// options: [정답(과거형), 오답1, 오답2, 오답3]
+// 오답 설계 원칙: ① 규칙형 오류(-ed) ② 다른 불규칙 과거형 혼동 ③ 원형 그대로
+const ALL_QUESTIONS = [
+  { base:'begin',  past:'began',   options:['began','begin','begined','begun'],    krHint:'시작하다',        feedback:'begin → began. 과거분사는 begun이에요.' },
+  { base:'break',  past:'broke',   options:['broke','breaked','broken','break'],   krHint:'부수다',          feedback:'break → broke. 과거분사는 broken이에요.' },
+  { base:'build',  past:'built',   options:['built','builded','builds','build'],   krHint:'짓다, 만들다',    feedback:'build → built. 과거형=과거분사예요.' },
+  { base:'buy',    past:'bought',  options:['bought','buyed','bring','buy'],       krHint:'사다',            feedback:'buy → bought. 과거형=과거분사예요.' },
+  { base:'catch',  past:'caught',  options:['caught','catched','teach','catch'],   krHint:'잡다',            feedback:'catch → caught. 과거형=과거분사예요.' },
+  { base:'do',     past:'did',     options:['did','doed','done','do'],             krHint:'하다',            feedback:'do → did. 과거분사는 done이에요.' },
+  { base:'draw',   past:'drew',    options:['drew','drawed','draw','drawn'],       krHint:'그리다',          feedback:'draw → drew. 과거분사는 drawn이에요.' },
+  { base:'drink',  past:'drank',   options:['drank','drinked','drunk','drink'],    krHint:'마시다',          feedback:'drink → drank. 과거분사는 drunk예요.' },
+  { base:'fall',   past:'fell',    options:['fell','falled','felt','fall'],        krHint:'떨어지다',        feedback:'fall → fell. 과거분사는 fallen이에요.' },
+  { base:'feel',   past:'felt',    options:['felt','feeled','fell','feel'],        krHint:'느끼다',          feedback:'feel → felt. 과거형=과거분사예요.' },
+  { base:'hear',   past:'heard',   options:['heard','heared','hear','heart'],      krHint:'듣다',            feedback:'hear → heard. 과거형=과거분사예요.' },
+  { base:'know',   past:'knew',    options:['knew','knowed','know','known'],       krHint:'알다',            feedback:'know → knew. 과거분사는 known이에요.' },
+  { base:'leave',  past:'left',    options:['left','leaved','lift','leave'],       krHint:'떠나다',          feedback:'leave → left. 과거형=과거분사예요.' },
+  { base:'meet',   past:'met',     options:['met','meeted','meet','meted'],        krHint:'만나다',          feedback:'meet → met. 과거형=과거분사예요.' },
+  { base:'pay',    past:'paid',    options:['paid','payed','pay','said'],          krHint:'지불하다',        feedback:'pay → paid. 과거형=과거분사예요.' },
+  { base:'read',   past:'read',    options:['read','readed','red','reads'],        krHint:'읽다',            feedback:'read → read. 형태는 같지만 발음이 달라요. [riːd] → [red]' },
+  { base:'say',    past:'said',    options:['said','sayed','told','say'],          krHint:'말하다',          feedback:'say → said. 과거형=과거분사예요.' },
+  { base:'see',    past:'saw',     options:['saw','seed','seen','see'],            krHint:'보다',            feedback:'see → saw. 과거분사는 seen이에요.' },
+  { base:'send',   past:'sent',    options:['sent','sended','spend','send'],       krHint:'보내다',          feedback:'send → sent. 과거형=과거분사예요.' },
+  { base:'stand',  past:'stood',   options:['stood','standed','stand','stands'],   krHint:'서다',            feedback:'stand → stood. 과거형=과거분사예요.' },
+  { base:'take',   past:'took',    options:['took','taked','take','token'],        krHint:'가져가다, 타다',  feedback:'take → took. 과거분사는 taken이에요.' },
+  { base:'teach',  past:'taught',  options:['taught','teached','thought','teach'], krHint:'가르치다',        feedback:'teach → taught. 과거형=과거분사예요.' },
+  { base:'tell',   past:'told',    options:['told','telled','said','tell'],        krHint:'말하다, 알리다',  feedback:'tell → told. 과거형=과거분사예요.' },
+  { base:'think',  past:'thought', options:['thought','thinked','taught','think'], krHint:'생각하다',        feedback:'think → thought. 과거형=과거분사예요.' },
+  { base:'wake',   past:'woke',    options:['woke','waked','wore','wake'],         krHint:'일어나다, 깨우다',feedback:'wake → woke. 과거분사는 woken이에요.' },
+  { base:'wear',   past:'wore',    options:['wore','weared','woke','wear'],        krHint:'입다',            feedback:'wear → wore. 과거분사는 worn이에요.' },
+  { base:'win',    past:'won',     options:['won','winned','run','win'],           krHint:'이기다',          feedback:'win → won. 과거형=과거분사예요. (won [wʌn] ≠ one [wʌn] 동음이의어!)' },
+  { base:'write',  past:'wrote',   options:['wrote','writed','write','written'],   krHint:'쓰다',            feedback:'write → wrote. 과거분사는 written이에요.' }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function shuffleNoFirstAnswer(arr,answer){
+  let result,tries=0;
+  do{result=shuffle(arr);tries++;}
+  while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);
+  return result;
+}
+function startQuiz(qs){
+  queue=qs;current=0;score=0;wrongList=[];answered=false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display='';
+  showQ();
+}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('verb-base').textContent=q.base;
+  document.getElementById('kr-hint').textContent='뜻: '+q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.past);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){selectAnswer(opt,q);});
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.past.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(function(btn){
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.past.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',function(){
+  current++;
+  if(current<queue.length)showQ();else showResult();
+});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=score+' / '+queue.length+' 정답';
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    const h=document.createElement('p');
+    h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(function(q){
+      const d=document.createElement('div');d.className='wrong-item';
+      d.innerHTML='<b>'+q.base+'</b> → <b style="color:var(--correct)">'+q.past+'</b><br><span style="color:#888">'+q.krHint+'</span>';
+      wl.appendChild(d);
+    });
+  }
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=function(){startQuiz(shuffle(wrongList));};}
+  else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',function(){startQuiz(shuffle([...ALL_QUESTIONS]));});
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

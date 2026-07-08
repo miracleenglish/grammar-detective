@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0023 사역동사</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-a:#4A90D9;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .pre-hint{width:100%;max-width:480px;background:#E8F4FD;border:1.5px solid #A8D4F0;border-radius:8px;padding:10px 14px;font-size:14px;color:#1a5276;margin-bottom:10px;font-weight:600;display:none;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-a);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-a);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 사역동사</h1>
+<p class="subtitle">UG3 · Lesson 19 · A형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 단어를 고르세요!</div>
+<div class="pre-hint" id="pre-hint"></div>
+<div class="card" id="quiz-card">
+  <div class="badge">A형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// 이중정답 방지 원칙
+// - let/make/have + 동사원형 vs get + to부정사: 구조로 명확히 구분
+// - let(허락) vs make(강제) vs have(시키다): 의미로 구분 → 문맥 명확히
+// - let과 make를 같은 선택지에 넣을 때: 허락(let) vs 강제(make) 문맥 명확히
+// - help + (to)부정사: 동사원형과 to부정사 둘 다 가능 → help 문제는 사역동사 선택으로만 출제
+const ALL_QUESTIONS = [
+  // ── let + 목적어 + 동사원형 (허락) ──
+  {
+    sentence: 'My mom lets me <span class="blank"></span> up late on weekends.',
+    answer: 'stay',
+    options: ['stay', 'to stay', 'staying', 'stayed'],
+    krHint: '엄마는 내가 주말에 늦게까지 깨어 있도록 허락해 줘요.',
+    preHint: '💡 let + 목적어 + 동사원형',
+    feedback: 'let + 목적어 + 동사원형: let me stay. to stay나 staying은 쓸 수 없어요.'
+  },
+  {
+    sentence: 'The teacher let the students <span class="blank"></span> out early.',
+    answer: 'go',
+    options: ['go', 'to go', 'going', 'went'],
+    krHint: '선생님은 학생들이 일찍 나가도록 허락해 주셨어요.',
+    preHint: '💡 let + 목적어 + 동사원형',
+    feedback: 'let + 목적어 + 동사원형: let the students go. to go나 going은 쓸 수 없어요.'
+  },
+  // ── make + 목적어 + 동사원형 (강제) ──
+  {
+    sentence: 'My dad makes me <span class="blank"></span> my room every Saturday.',
+    answer: 'clean',
+    options: ['clean', 'to clean', 'cleaning', 'cleaned'],
+    krHint: '아빠는 내가 매주 토요일 방을 청소하게 해요.',
+    preHint: '💡 make + 목적어 + 동사원형',
+    feedback: 'make + 목적어 + 동사원형: make me clean. to clean이나 cleaning은 쓸 수 없어요.'
+  },
+  {
+    sentence: 'The coach made the players <span class="blank"></span> extra hard.',
+    answer: 'practice',
+    options: ['practice', 'to practice', 'practicing', 'practiced'],
+    krHint: '코치는 선수들을 특별히 열심히 연습시켰어요.',
+    preHint: '💡 make + 목적어 + 동사원형',
+    feedback: 'make + 목적어 + 동사원형: made the players practice. 강제의 의미예요.'
+  },
+  // ── have + 목적어 + 동사원형 (시키다) ──
+  {
+    sentence: 'My mom had me <span class="blank"></span> the groceries.',
+    answer: 'carry',
+    options: ['carry', 'to carry', 'carrying', 'carried'],
+    krHint: '엄마는 내가 식료품을 나르게 하셨어요.',
+    preHint: '💡 have + 목적어 + 동사원형',
+    feedback: 'have + 목적어 + 동사원형: had me carry. to carry나 carrying은 쓸 수 없어요.'
+  },
+  {
+    sentence: 'The manager had the staff <span class="blank"></span> the report again.',
+    answer: 'check',
+    options: ['check', 'to check', 'checking', 'checked'],
+    krHint: '매니저는 직원들이 보고서를 다시 확인하게 했어요.',
+    preHint: '💡 have + 목적어 + 동사원형',
+    feedback: 'have + 목적어 + 동사원형: had the staff check. 일을 맡기다는 의미예요.'
+  },
+  // ── get + 목적어 + to부정사 ──
+  {
+    sentence: 'My dad got me <span class="blank"></span> his shoes.',
+    answer: 'to polish',
+    options: ['to polish', 'polish', 'polishing', 'polished'],
+    krHint: '아빠는 내가 구두를 닦게 하셨어요.',
+    preHint: '💡 get + 목적어 + to부정사',
+    feedback: 'get + 목적어 + to부정사: got me to polish. get은 to부정사를 써요 (동사원형 ❌)'
+  },
+  {
+    sentence: 'She got her brother <span class="blank"></span> her move.',
+    answer: 'to help',
+    options: ['to help', 'help', 'helping', 'helped'],
+    krHint: '그녀는 오빠가 이사를 도와주게 했어요.',
+    preHint: '💡 get + 목적어 + to부정사',
+    feedback: 'get + 목적어 + to부정사: got her brother to help. get은 to부정사를 써요.'
+  },
+  // ── let/make/have/get 사역동사 선택 ──
+  {
+    sentence: 'I helped my sister <span class="blank"></span> her project.',
+    answer: 'finish',
+    options: ['finish', 'finishing', 'finished', 'finishes'],
+    krHint: '나는 여동생이 프로젝트를 끝내도록 도와줬어요.',
+    preHint: '💡 help + 목적어 + 동사원형',
+    feedback: 'help + 목적어 + 동사원형/(to)부정사: helped my sister finish. 동사원형과 to부정사 둘 다 가능하지만 진행형·과거형은 쓸 수 없어요.'
+  },
+  {
+    sentence: 'My parents won\'t let me <span class="blank"></span> video games on weekdays.',
+    answer: 'play',
+    options: ['play', 'to play', 'playing', 'played'],
+    krHint: '부모님은 평일에 내가 비디오 게임을 하도록 허락해 주지 않으세요.',
+    preHint: '💡 let + 목적어 + 동사원형',
+    feedback: 'let + 목적어 + 동사원형: let me play. to play나 playing은 쓸 수 없어요.'
+  },
+  {
+    sentence: 'My mom had me <span class="blank"></span> the dishes after dinner.',
+    answer: 'wash',
+    options: ['wash', 'to wash', 'washing', 'washed'],
+    krHint: '엄마는 저녁 식사 후 내가 설거지를 하게 하셨어요.',
+    preHint: '💡 have + 목적어 + 동사원형',
+    feedback: 'have + 목적어 + 동사원형: had me wash. to wash나 washing은 쓸 수 없어요.'
+  },
+  {
+    sentence: 'My dad got me <span class="blank"></span> his car every Sunday.',
+    answer: 'to wash',
+    options: ['to wash', 'wash', 'washing', 'washed'],
+    krHint: '아빠는 내가 매주 일요일 차를 닦게 하셨어요.',
+    preHint: '💡 get + 목적어 + to부정사',
+    feedback: 'get + 목적어 + to부정사: got me to wash. get은 to부정사를 써요. 동사원형(wash)은 쓸 수 없어요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){
+  queue=qs;current=0;score=0;wrongList=[];answered=false;
+  document.getElementById('result-card').classList.remove('show');
+  document.getElementById('quiz-card').style.display='';
+  document.getElementById('pre-hint').style.display='none';
+  showQ();
+}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const ph=document.getElementById('pre-hint');
+  if(q.preHint){ph.textContent=q.preHint;ph.style.display='';}
+  else ph.style.display='none';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';btn.textContent=opt;
+    btn.addEventListener('click',()=>selectAnswer(opt,q));
+    box.appendChild(btn);
+  });
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');
+    else if(btn.textContent===selected)btn.classList.add('wrong');
+  });
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  document.getElementById('pre-hint').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){
+    const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';
+    h.textContent='틀린 문제:';wl.appendChild(h);
+    wrongList.forEach(q=>{
+      const d=document.createElement('div');d.className='wrong-item';
+      d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;
+      wl.appendChild(d);
+    });
+  }
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}
+  else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

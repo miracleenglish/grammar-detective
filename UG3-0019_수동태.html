@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0019 수동태</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-a:#4A90D9;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-a);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-a);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .hl{color:var(--accent-dark);text-decoration:underline;}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 수동태</h1>
+<p class="subtitle">UG3 · Lesson 15 · A형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 단어를 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">A형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// 이중정답 방지 원칙
+// - 수동태 be동사 선택 문제: 주어 수(단/복수)와 시제(현재/과거)로 명확히 구분
+// - 과거분사 선택 문제: 능동형·진행형 등 오답으로 혼동 방지
+// - 능동↔수동 판단 문제: 문맥으로 확실히 구분
+const ALL_QUESTIONS = [
+  // ── 수동태 현재: is/are + p.p. ──
+  {
+    sentence: 'English <span class="blank"></span> spoken in many countries.',
+    answer: 'is',
+    options: ['is', 'are', 'was', 'were'],
+    krHint: '영어는 많은 나라에서 사용돼요.',
+    feedback: '단수 주어 English → 현재 수동태: is + p.p. → is spoken'
+  },
+  {
+    sentence: 'These cars <span class="blank"></span> made in Germany.',
+    answer: 'are',
+    options: ['are', 'is', 'were', 'was'],
+    krHint: '이 자동차들은 독일에서 만들어져요.',
+    feedback: '복수 주어 These cars → 현재 수동태: are + p.p. → are made'
+  },
+  {
+    sentence: 'Millions of books <span class="blank"></span> sold online every day.',
+    answer: 'are',
+    options: ['are', 'is', 'was', 'been'],
+    krHint: '수백만 권의 책이 매일 온라인에서 팔려요.',
+    feedback: '복수 주어 Millions of books → 현재 수동태: are + p.p. → are sold'
+  },
+  // ── 수동태 과거: was/were + p.p. ──
+  {
+    sentence: 'The Eiffel Tower <span class="blank"></span> built in 1889.',
+    answer: 'was',
+    options: ['was', 'were', 'is', 'are'],
+    krHint: '에펠탑은 1889년에 지어졌어요.',
+    feedback: '단수 주어 The Eiffel Tower → 과거 수동태: was + p.p. → was built'
+  },
+  {
+    sentence: 'The windows <span class="blank"></span> broken during the storm.',
+    answer: 'were',
+    options: ['were', 'was', 'are', 'be'],
+    krHint: '창문들이 폭풍 동안 깨졌어요.',
+    feedback: '복수 주어 The windows → 과거 수동태: were + p.p. → were broken'
+  },
+  // ── 과거분사 선택 ──
+  {
+    sentence: 'The letter was <span class="blank"></span> by my grandmother.',
+    answer: 'written',
+    options: ['written', 'wrote', 'writing', 'writes'],
+    krHint: '그 편지는 할머니에 의해 쓰였어요.',
+    feedback: '수동태는 be동사 + 과거분사예요. write의 과거분사는 written이에요.'
+  },
+  {
+    sentence: 'The cake was <span class="blank"></span> by my mom for my birthday.',
+    answer: 'made',
+    options: ['made', 'make', 'making', 'makes'],
+    krHint: '그 케이크는 생일을 위해 엄마가 만드신 거예요.',
+    feedback: '수동태는 be동사 + 과거분사예요. make의 과거분사는 made예요.'
+  },
+  {
+    sentence: 'The old building was <span class="blank"></span> last year.',
+    answer: 'destroyed',
+    options: ['destroyed', 'destroy', 'destroying', 'destroys'],
+    krHint: '그 오래된 건물은 작년에 파괴됐어요.',
+    feedback: '수동태는 be동사 + 과거분사예요. destroy의 과거분사는 destroyed예요.'
+  },
+  // ── by-phrase ──
+  {
+    sentence: 'This song is loved <span class="blank"></span> people all over the world.',
+    answer: 'by',
+    options: ['by', 'with', 'from', 'of'],
+    krHint: '이 노래는 전 세계 사람들에게 사랑받아요.',
+    feedback: '수동태에서 행위자를 나타낼 때는 by를 써요. is loved by ~'
+  },
+  // ── 능동↔수동 판단 ──
+  {
+    sentence: 'The police caught the thief. → The thief <span class="blank"></span> by the police.',
+    answer: 'was caught',
+    options: ['was caught', 'is caught', 'caught', 'were caught'],
+    krHint: '경찰이 도둑을 잡았어요. → 도둑이 경찰에게 잡혔어요.',
+    feedback: '과거 능동(caught) → 과거 수동(was caught). 단수 주어 The thief → was caught'
+  },
+  {
+    sentence: 'A chef cooks the meals. → The meals <span class="blank"></span> by a chef.',
+    answer: 'are cooked',
+    options: ['are cooked', 'is cooked', 'were cooked', 'cooked'],
+    krHint: '요리사가 식사를 만들어요. → 식사는 요리사에 의해 만들어져요.',
+    feedback: '현재 능동(cooks) → 현재 수동(are cooked). 복수 주어 The meals → are cooked'
+  },
+  {
+    sentence: 'Many people visit the museum. → The museum <span class="blank"></span> by many people.',
+    answer: 'is visited',
+    options: ['is visited', 'are visited', 'was visited', 'visited'],
+    krHint: '많은 사람들이 그 박물관을 방문해요. → 그 박물관은 많은 사람들에 의해 방문돼요.',
+    feedback: '현재 능동(visit) → 현재 수동(is visited). 단수 주어 The museum → is visited'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

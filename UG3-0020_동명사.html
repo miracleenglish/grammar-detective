@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0020 동명사</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-a:#4A90D9;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-a);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-a);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:19px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.5;}
+  .blank{display:inline-block;min-width:90px;border-bottom:2.5px solid var(--accent-dark);}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 동명사</h1>
+<p class="subtitle">UG3 · Lesson 16 · A형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 빈칸에 알맞은 단어를 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">A형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// 이중정답 방지 원칙 (Rule 39)
+// - 동명사/to부정사 둘 다 가능 동사(like/love/hate/start/begin)는 선택지에 동시 포함 금지
+// - 동명사만 취하는 동사(enjoy/keep/mind/finish/miss/discuss/postpone)로 한정
+// - Go+동명사: 활동 표현으로 동명사 고정 (to부정사 선택지 제외)
+// - 형용사+전치사+동명사: 전치사 뒤 동명사 고정
+const ALL_QUESTIONS = [
+  // ── A: 동명사 주어 ──
+  {
+    sentence: 'My cat enjoys <span class="blank"></span> in the sun all day.',
+    answer: 'lying',
+    options: ['lying', 'lie', 'to lie', 'lied'],
+    krHint: '우리 고양이는 하루 종일 햇볕 아래 누워 있는 것을 즐겨요.',
+    feedback: 'enjoy는 동명사만 목적어로 취해요. enjoy + -ing. lie의 -ing형은 lying이에요.'
+  },
+  {
+    sentence: 'We discussed <span class="blank"></span> a new café downtown.',
+    answer: 'opening',
+    options: ['opening', 'open', 'to open', 'opened'],
+    krHint: '우리는 시내에 새 카페를 여는 것에 대해 논의했어요.',
+    feedback: 'discuss는 동명사만 목적어로 취해요. discuss + -ing'
+  },
+  // ── A: 동명사 목적어 (동명사만 가능한 동사) ──
+  {
+    sentence: 'I enjoy <span class="blank"></span> to music when I study.',
+    answer: 'listening',
+    options: ['listening', 'listen', 'to listen', 'listened'],
+    krHint: '나는 공부할 때 음악 듣는 것을 즐겨요.',
+    feedback: 'enjoy는 동명사만 목적어로 취해요. enjoy + -ing'
+  },
+  {
+    sentence: 'Please stop <span class="blank"></span> in class. It\'s distracting.',
+    answer: 'talking',
+    options: ['talking', 'talk', 'to talk', 'talked'],
+    krHint: '수업 시간에 말하는 것을 멈춰줘요. 방해가 돼요.',
+    feedback: 'stop + -ing = "~하는 것을 그만두다". stop + to부정사는 "멈추고 ~하다"로 의미가 달라요.'
+  },
+  {
+    sentence: 'She finished <span class="blank"></span> her report late at night.',
+    answer: 'writing',
+    options: ['writing', 'write', 'to write', 'wrote'],
+    krHint: '그녀는 늦은 밤에 보고서 쓰는 것을 끝냈어요.',
+    feedback: 'finish는 동명사만 목적어로 취해요. finish + -ing'
+  },
+  {
+    sentence: 'Do you mind <span class="blank"></span> the window? It\'s hot.',
+    answer: 'opening',
+    options: ['opening', 'open', 'to open', 'opened'],
+    krHint: '창문 열어도 될까요? 더워요.',
+    feedback: 'mind는 동명사만 목적어로 취해요. mind + -ing. "Do you mind ~ing?" = "~해도 될까요?"'
+  },
+  {
+    sentence: 'I miss <span class="blank"></span> my friends from elementary school.',
+    answer: 'seeing',
+    options: ['seeing', 'see', 'to see', 'saw'],
+    krHint: '나는 초등학교 친구들을 보지 못해 그리워요.',
+    feedback: 'miss는 동명사만 목적어로 취해요. miss + -ing'
+  },
+  // ── B: Go + 동명사 ──
+  {
+    sentence: 'We went <span class="blank"></span> and caught a lot of fish.',
+    answer: 'fishing',
+    options: ['fishing', 'to fish', 'fish', 'fished'],
+    krHint: '우리는 낚시하러 가서 물고기를 많이 잡았어요.',
+    feedback: 'go + -ing: 활동을 나타내요. went fishing = 낚시하러 갔다'
+  },
+  {
+    sentence: 'Let\'s go <span class="blank"></span> this weekend. There\'s fresh snow.',
+    answer: 'skiing',
+    options: ['skiing', 'to ski', 'ski', 'skied'],
+    krHint: '이번 주말에 스키 타러 가요. 신선한 눈이 왔어요.',
+    feedback: 'go + -ing: 레저 활동 표현이에요. go skiing = 스키 타러 가다'
+  },
+  // ── C: 형용사 + 전치사 + 동명사 ──
+  {
+    sentence: 'He is good <span class="blank"></span> the piano.',
+    answer: 'at playing',
+    options: ['at playing', 'to play', 'for playing', 'of playing'],
+    krHint: '그는 피아노를 잘 쳐요.',
+    feedback: 'good at + -ing: "~을 잘한다". 전치사 at 뒤에는 동명사를 써요.'
+  },
+  {
+    sentence: 'She is excited <span class="blank"></span> to the concert tonight.',
+    answer: 'about going',
+    options: ['about going', 'to go', 'for going', 'in going'],
+    krHint: '그녀는 오늘 밤 콘서트에 가는 것에 신나 있어요.',
+    feedback: 'excited about + -ing: "~에 신나 있다". 전치사 about 뒤에는 동명사를 써요.'
+  },
+  {
+    sentence: 'I am tired <span class="blank"></span> the same thing every day.',
+    answer: 'of doing',
+    options: ['of doing', 'to do', 'at doing', 'for doing'],
+    krHint: '나는 매일 같은 일을 하는 것이 지겨워요.',
+    feedback: 'tired of + -ing: "~하는 것이 지겹다". 전치사 of 뒤에는 동명사를 써요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>

@@ -230,10 +230,6 @@
   .ug-test-color{background:linear-gradient(135deg,#2D7A57,#1A5C3A);}
   .badge-UG{background:#E8F5EC;color:#2D7A57;}
   .tab-btn.t-ug1{border-color:var(--ug-dark);}
-  .tab-btn.t-ug2{border-color:var(--ug);}
-  .tab-btn.t-ug2:hover,.tab-btn.t-ug2.active{background:var(--ug);border-color:var(--ug);}
-  .tab-btn.t-ug2.active .tb-name,.tab-btn.t-ug2.active .tb-range,
-  .tab-btn.t-ug2:hover .tb-name,.tab-btn.t-ug2:hover .tb-range{color:white;}
   .tab-btn.t-ug1:hover,.tab-btn.t-ug1.active{background:var(--ug-dark);border-color:var(--ug-dark);}
   .tab-btn.t-ug1.active .tb-name,.tab-btn.t-ug1.active .tb-range,
   .tab-btn.t-ug1:hover .tb-name,.tab-btn.t-ug1:hover .tb-range{color:white;}
@@ -250,7 +246,7 @@
   <div class="tagline">단계별로 차근차근 · 탭하고 선택하고 완성!</div>
   <div class="stats-row">
     <div class="stat"><div class="n">4</div><div class="l">영역</div></div>
-    <div class="stat"><div class="n">156</div><div class="l">앱</div></div>
+    <div class="stat"><div class="n">161</div><div class="l">앱</div></div>
     <div class="stat"><div class="n">15</div><div class="l">테스트</div></div>
   </div>
 </header>
@@ -278,7 +274,7 @@
     <button class="series-btn s-ug" onclick="showSeries('ug', this)">
       <div class="sb-icon">📘</div>
       <span class="sb-name">업 영문법</span>
-      <span class="sb-sub">UG1·UG2 완성</span>
+      <span class="sb-sub">UG1·UG2·UG3 완성</span>
     </button>
     <button class="series-btn s-coming" disabled title="준비중">
       <div class="sb-icon">📙</div>
@@ -1376,15 +1372,15 @@
       <span class="tb-name">업 영문법 1권</span>
       <span class="tb-range">UG1-01~26</span>
     </button>
-    <button class="tab-btn t-ug2" onclick="showUgTab('ug2', this)">
-      <div class="tb-icon">📘</div>
+    <button class="tab-btn t-ug1" onclick="showUgTab('ug2', this)">
+      <div class="tb-icon">📗</div>
       <span class="tb-name">업 영문법 2권</span>
       <span class="tb-range">UG2-01~26</span>
     </button>
-    <button class="tab-btn" style="border-color:#aaa;opacity:.5;cursor:not-allowed;">
-      <div class="tb-icon">📘</div>
+    <button class="tab-btn t-ug1" onclick="showUgTab('ug3', this)">
+      <div class="tb-icon">📙</div>
       <span class="tb-name">업 영문법 3권</span>
-      <span class="tb-range">준비중</span>
+      <span class="tb-range">UG3-01~28</span>
     </button>
   </div>
 </div>
@@ -1635,226 +1631,65 @@
 <div class="section" style="margin-top:24px;">
   <div class="section-header">
     <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
-    <div>
-      <div class="section-title">Chapter 1 — Nouns &amp; Pronouns (L1~L3)</div>
-      <div class="section-sub">가산·불가산·관사 · 수량형용사 · 대명사·소유격</div>
-    </div>
+    <div><div class="section-title">Chapter 1 — Nouns &amp; Pronouns (L1~L3)</div>
+    <div class="section-sub">가산/불가산명사·관사 · 수량형용사 · 대명사·소유격</div></div>
   </div>
   <div class="card-grid">
-    <a class="app-card ug-card ug-border" href="UG2-0001_가산불가산명사관사.html">
-      <div class="app-num">UG2-01</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">가산·불가산 명사·관사</div><div class="app-desc">a/an/the/∅ · 가산·불가산 구별</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0002_수량형용사.html">
-      <div class="app-num">UG2-02</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">수량 형용사</div><div class="app-desc">many/much · few/little · some/any</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0003_대명사소유격.html">
-      <div class="app-num">UG2-03</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">대명사·소유격</div><div class="app-desc">주격·목적격·소유격·소유대명사 변환</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0004_명사대명사문장점검.html">
-      <div class="app-num">UG2-04</div><div class="app-icon ug-c-color">C</div>
-      <div class="app-info"><div class="app-name">명사·대명사 문장 점검</div><div class="app-desc">L1~3 오류 찾기</div></div>
-      <span class="app-badge badge-UG">C형</span>
-    </a>
+    <a class="app-card ug-card ug-border" href="UG2-0001_가산불가산명사관사.html"><div class="app-num">UG2-01</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">가산/불가산명사와 관사</div><div class="app-desc">L1 · a/an/the · count/noncount</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0002_수량형용사.html"><div class="app-num">UG2-02</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">수량형용사</div><div class="app-desc">L2 · many/much/a lot of/some/any</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0003_대명사소유격.html"><div class="app-num">UG2-03</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">대명사와 소유격</div><div class="app-desc">L3 · 주격/목적격/소유격 대명사</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0004_명사대명사문장점검.html"><div class="app-num">UG2-04</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">명사·대명사 문장 점검</div><div class="app-desc">L1~3 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
   </div>
 </div>
 
 <!-- Ch.2 Verbs & Modal Verbs -->
 <div class="section" style="margin-top:20px;">
   <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
-    <div>
-      <div class="section-title">Chapter 2 — Verbs &amp; Modal Verbs (L4~L10)</div>
-      <div class="section-sub">be동사 · 현재단순·진행 · 과거·미래 · 조동사</div>
-    </div>
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">⚡</div>
+    <div><div class="section-title">Chapter 2 — Verbs &amp; Modal Verbs (L4~L10)</div>
+    <div class="section-sub">be동사·일반동사·시제·미래·조동사</div></div>
   </div>
   <div class="card-grid">
-    <a class="app-card ug-card ug-border" href="UG2-0005_be동사현재과거.html">
-      <div class="app-num">UG2-05</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">be동사 현재·과거</div><div class="app-desc">am/is/are · was/were · There is/are</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0006_현재단순형.html">
-      <div class="app-num">UG2-06</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">현재단순형</div><div class="app-desc">3인칭 -s/-es · don't/doesn't · Do/Does?</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0007_현재진행형단순과진행.html">
-      <div class="app-num">UG2-07</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">현재진행형 · 단순과 진행</div><div class="app-desc">am/is/are +-ing · 지금 vs 습관 구별</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0008_규칙과거동사.html">
-      <div class="app-num">UG2-08</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">규칙 과거 동사</div><div class="app-desc">+ed/+d/y→ied/자음중복+ed · didn't/Did?</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0009_불규칙과거동사.html">
-      <div class="app-num">UG2-09</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">불규칙 과거 동사</div><div class="app-desc">go→went · eat→ate · come→came…</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0009b_불규칙과거형암기.html">
-      <div class="app-num">UG2-09b</div><div class="app-icon ug-mem-color">암기</div>
-      <div class="app-info"><div class="app-name">불규칙 과거형 암기</div><div class="app-desc">build/buy/catch/drink… 16개 동사</div></div>
-      <span class="app-badge badge-UG">암기형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0010_미래형will과BeGoingTo.html">
-      <div class="app-num">UG2-10</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">미래형 will과 Be Going To</div><div class="app-desc">will + V · am/is/are going to + V</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0011_조동사.html">
-      <div class="app-num">UG2-11</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">조동사</div><div class="app-desc">can/could/may/should · must/have to/mustn't</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0012_동사시제문장점검.html">
-      <div class="app-num">UG2-12</div><div class="app-icon ug-c-color">C</div>
-      <div class="app-info"><div class="app-name">동사·시제 문장 점검</div><div class="app-desc">L4~10 오류 찾기</div></div>
-      <span class="app-badge badge-UG">C형</span>
-    </a>
+    <a class="app-card ug-card ug-border" href="UG2-0005_be동사현재과거.html"><div class="app-num">UG2-05</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">be동사 현재·과거</div><div class="app-desc">L4 · am/is/are/was/were</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0006_현재단순형.html"><div class="app-num">UG2-06</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">현재단순형</div><div class="app-desc">L5 · 3인칭 단수·부정·의문</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0007_현재진행형단순과진행.html"><div class="app-num">UG2-07</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">현재진행형과 단순·진행 비교</div><div class="app-desc">L6 · am/is/are + -ing</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0008_규칙과거동사.html"><div class="app-num">UG2-08</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">규칙 과거동사</div><div class="app-desc">L7 · -ed 규칙 변화</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0009_불규칙과거동사.html"><div class="app-num">UG2-09</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">불규칙 과거동사</div><div class="app-desc">L8 · go/come/see… 불규칙 변화</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0009b_불규칙과거형암기.html"><div class="app-num">UG2-09b</div><div class="app-icon ug-mem-color">암기</div><div class="app-info"><div class="app-name">불규칙 과거형 암기</div><div class="app-desc">L8 · 16개 동사 4지선다</div></div><span class="app-badge badge-UG">암기형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0010_미래형will과BeGoingTo.html"><div class="app-num">UG2-10</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">미래형 will과 be going to</div><div class="app-desc">L9 · 즉흥결심 vs 계획</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0011_조동사.html"><div class="app-num">UG2-11</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">조동사</div><div class="app-desc">L10 · can/should/must/may</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0012_동사시제문장점검.html"><div class="app-num">UG2-12</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">동사·시제 문장 점검</div><div class="app-desc">L4~10 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
   </div>
 </div>
 
-<!-- Ch.3 Adjectives & Adverbs -->
+<!-- Ch.3~6 -->
 <div class="section" style="margin-top:20px;">
   <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
-    <div>
-      <div class="section-title">Chapter 3 — Adjectives &amp; Adverbs (L11~L12)</div>
-      <div class="section-sub">형용사 · 부사 변환·good→well</div>
-    </div>
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">🔤</div>
+    <div><div class="section-title">Chapter 3~6 — 형용사·부사·비교·전치사·문장구조 (L11~L22)</div>
+    <div class="section-sub">형용사·부사 · 비교급·최상급 · 접속사 · 전치사 · to부정사·동명사 · 관계절 등</div></div>
   </div>
   <div class="card-grid">
-    <a class="app-card ug-card ug-border" href="UG2-0013_형용사.html">
-      <div class="app-num">UG2-13</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">형용사</div><div class="app-desc">형용사+명사 · be/get+형용사 · 반의어</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0014_부사.html">
-      <div class="app-num">UG2-14</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">부사</div><div class="app-desc">+ly/y→ily/-le→y · hard/fast/late · good→well</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
+    <a class="app-card ug-card ug-border" href="UG2-0013_형용사.html"><div class="app-num">UG2-13</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">형용사</div><div class="app-desc">L11 · 서술적/한정적 용법</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0014_부사.html"><div class="app-num">UG2-14</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">부사</div><div class="app-desc">L12 · -ly형·불규칙 부사</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0015_비교급최상급.html"><div class="app-num">UG2-15</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">비교급·최상급</div><div class="app-desc">L13 · -er/-est · more/most</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0015b_비교급최상급암기.html"><div class="app-num">UG2-15b</div><div class="app-icon ug-mem-color">암기</div><div class="app-info"><div class="app-name">비교급·최상급 암기</div><div class="app-desc">L13 · good/bad 불규칙 포함</div></div><span class="app-badge badge-UG">암기형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0016_접속사.html"><div class="app-num">UG2-16</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">접속사</div><div class="app-desc">L14 · and/but/or/so/because/if</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0017_형용사부사비교접속점검.html"><div class="app-num">UG2-17</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">형용사·부사·비교·접속사 점검</div><div class="app-desc">L11~14 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0018_시간전치사.html"><div class="app-num">UG2-18</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">시간 전치사</div><div class="app-desc">L15 · at/on/in/before/after</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0019_장소이동전치사.html"><div class="app-num">UG2-19</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">장소·이동 전치사</div><div class="app-desc">L16 · in/on/at/to/into</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0020_to부정사과동명사.html"><div class="app-num">UG2-20</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">to부정사와 동명사</div><div class="app-desc">L17 · want to/enjoy -ing</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0021_직접간접목적어.html"><div class="app-num">UG2-21</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">직접·간접 목적어</div><div class="app-desc">L18 · give/send/show + 목적어</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0021b_4형식문장3형식변환연습.html"><div class="app-num">UG2-21b</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">4형식→3형식 변환 연습</div><div class="app-desc">L18 · give me → give to me</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0022_관계절whoWhich.html"><div class="app-num">UG2-22</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">관계절 who/which</div><div class="app-desc">L19 · 사람=who·사물=which</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0023_조건문If.html"><div class="app-num">UG2-23</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">조건문 If</div><div class="app-desc">L20 · If + 현재, will + 동사원형</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0024_의문사의문문.html"><div class="app-num">UG2-24</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">의문사 의문문</div><div class="app-desc">L21 · what/where/when/who/how</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0025_문장의종류.html"><div class="app-num">UG2-25</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">문장의 종류</div><div class="app-desc">L22 · 명령문·감탄문·부가의문문</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG2-0026_전체문장점검.html"><div class="app-num">UG2-26</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">전체 문장 점검</div><div class="app-desc">L1~22 · C형 종합</div></div><span class="app-badge badge-UG">C형</span></a>
   </div>
 </div>
 
-<!-- Ch.4 Comparisons & Conjunctions -->
-<div class="section" style="margin-top:20px;">
-  <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
-    <div>
-      <div class="section-title">Chapter 4 — Comparisons &amp; Conjunctions (L13~L14)</div>
-      <div class="section-sub">비교급·최상급 · 접속사 and/but/or/so/because/when</div>
-    </div>
-  </div>
-  <div class="card-grid">
-    <a class="app-card ug-card ug-border" href="UG2-0015_비교급최상급.html">
-      <div class="app-num">UG2-15</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">비교급·최상급</div><div class="app-desc">-er/-est · more/most · good→better/best</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0015b_비교급최상급암기.html">
-      <div class="app-num">UG2-15b</div><div class="app-icon ug-mem-color">암기</div>
-      <div class="app-info"><div class="app-name">비교급·최상급 암기</div><div class="app-desc">비교급 8개 + 최상급 8개 · 16문제</div></div>
-      <span class="app-badge badge-UG">암기형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0016_접속사.html">
-      <div class="app-num">UG2-16</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">접속사</div><div class="app-desc">and/but/or/so · because/when</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0017_형용사부사비교접속점검.html">
-      <div class="app-num">UG2-17</div><div class="app-icon ug-c-color">C</div>
-      <div class="app-info"><div class="app-name">형용사·부사·비교·접속 점검</div><div class="app-desc">L11~14 오류 찾기</div></div>
-      <span class="app-badge badge-UG">C형</span>
-    </a>
-  </div>
-</div>
-
-<!-- Ch.5 Prepositions -->
-<div class="section" style="margin-top:20px;">
-  <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
-    <div>
-      <div class="section-title">Chapter 5 — Prepositions (L15~L16)</div>
-      <div class="section-sub">시간 전치사 in/on/at/before/after/during/for · 장소·이동 전치사</div>
-    </div>
-  </div>
-  <div class="card-grid">
-    <a class="app-card ug-card ug-border" href="UG2-0018_시간전치사.html">
-      <div class="app-num">UG2-18</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">시간 전치사</div><div class="app-desc">in/on/at · before/after/during/for</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0019_장소이동전치사.html">
-      <div class="app-num">UG2-19</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">장소·이동 전치사</div><div class="app-desc">next to/between/behind · into/over/around</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-  </div>
-</div>
-
-<!-- Ch.6 Sentence Structures -->
-<div class="section" style="margin-top:20px;">
-  <div class="section-header">
-    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
-    <div>
-      <div class="section-title">Chapter 6 — Sentence Structures (L17~L22)</div>
-      <div class="section-sub">to부정사·동명사 · 직간접목적어 · 관계절 · 조건문 · 의문사 · 문장종류</div>
-    </div>
-  </div>
-  <div class="card-grid">
-    <a class="app-card ug-card ug-border" href="UG2-0020_to부정사과동명사.html">
-      <div class="app-num">UG2-20</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">to부정사 · 동명사</div><div class="app-desc">want to / enjoy ~ing · 동사별 목적어 형태</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0021_직접간접목적어.html">
-      <div class="app-num">UG2-21</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">직접·간접 목적어</div><div class="app-desc">give to / buy for · to동사 vs for동사</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0021b_4형식문장3형식변환연습.html">
-      <div class="app-num">UG2-21b</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">4형식↔3형식 변환 연습</div><div class="app-desc">She gave him a gift ↔ gave a gift to him</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0022_관계절whoWhich.html">
-      <div class="app-num">UG2-22</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">관계절 who · which</div><div class="app-desc">사람→who · 동물·사물→which</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0023_조건문If.html">
-      <div class="app-num">UG2-23</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">조건문 If</div><div class="app-desc">Zero(사실) · First(미래 가능성) 조건문</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0024_의문사의문문.html">
-      <div class="app-num">UG2-24</div><div class="app-icon ug-a-color">A</div>
-      <div class="app-info"><div class="app-name">의문사 의문문</div><div class="app-desc">What/Who/Where/When/Why/How · How often/far/long</div></div>
-      <span class="app-badge badge-UG">A형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0025_문장의종류.html">
-      <div class="app-num">UG2-25</div><div class="app-icon ug-b-color">B</div>
-      <div class="app-info"><div class="app-name">문장의 종류</div><div class="app-desc">감탄문 What/How · 명령문 / Don't</div></div>
-      <span class="app-badge badge-UG">B형</span>
-    </a>
-    <a class="app-card ug-card ug-border" href="UG2-0026_전체문장점검.html">
-      <div class="app-num">UG2-26</div><div class="app-icon ug-c-color">C</div>
-      <div class="app-info"><div class="app-name">전체 문장 점검 (L1~22)</div><div class="app-desc">전 단원 오류 찾기</div></div>
-      <span class="app-badge badge-UG">C형</span>
-    </a>
-  </div>
-</div>
-
-<!-- 실전 테스트 -->
+<!-- UG2 실전 테스트 -->
 <div class="section" style="margin-top:20px;padding-bottom:16px;">
   <div class="subgroup">
     <div class="subgroup-title">📝 실전 테스트 (힌트 없이 풀기)</div>
@@ -1872,6 +1707,126 @@
 </div>
 
 </div><!-- /ugtab-ug2 -->
+
+<!-- UG3 콘텐츠 -->
+<div id="ugtab-ug3" style="display:none;">
+
+<!-- Ch.1 Nouns & Pronouns -->
+<div class="section" style="margin-top:24px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📝</div>
+    <div><div class="section-title">Chapter 1 — Nouns &amp; Pronouns (L1~L3)</div>
+    <div class="section-sub">명사·관사 · 소유격·소유대명사 · 부정대명사</div></div>
+  </div>
+  <div class="card-grid">
+    <a class="app-card ug-card ug-border" href="UG3-0001_명사관사.html"><div class="app-num">UG3-01</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">명사와 관사</div><div class="app-desc">L1 · 가산/불가산·복수형·a/an/the</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0002_대명사소유격소유대명사.html"><div class="app-num">UG3-02</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">대명사·소유격·소유대명사</div><div class="app-desc">L2 · 재귀대명사 포함</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0003_부정대명사.html"><div class="app-num">UG3-03</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">부정대명사</div><div class="app-desc">L3 · somebody/anything/nowhere</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0004_명사대명사문장점검.html"><div class="app-num">UG3-04</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">명사·대명사 문장 점검</div><div class="app-desc">L1~3 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
+  </div>
+</div>
+
+<!-- Ch.2 Verbs -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">⚡</div>
+    <div><div class="section-title">Chapter 2 — Verbs (L4~L9)</div>
+    <div class="section-sub">현재단순·진행 · 과거단순·진행 · 미래 · 현재완료</div></div>
+  </div>
+  <div class="card-grid">
+    <a class="app-card ug-card ug-border" href="UG3-0005_현재단순형.html"><div class="app-num">UG3-05</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">현재단순형</div><div class="app-desc">L4 · 3인칭 단수·상태동사</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0006_현재진행형과단순비교.html"><div class="app-num">UG3-06</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">현재진행형과 단순 비교</div><div class="app-desc">L5 · 습관 vs 지금 진행</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0007_과거단순형.html"><div class="app-num">UG3-07</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">과거단순형</div><div class="app-desc">L6 · 규칙·불규칙 과거</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0007b_불규칙과거형암기.html"><div class="app-num">UG3-07b</div><div class="app-icon ug-mem-color">암기</div><div class="app-info"><div class="app-name">불규칙 과거형 암기</div><div class="app-desc">L6 · 28개 동사 4지선다</div></div><span class="app-badge badge-UG">암기형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0008_과거진행형.html"><div class="app-num">UG3-08</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">과거진행형</div><div class="app-desc">L7 · was/were -ing · when/while</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0009_미래시제.html"><div class="app-num">UG3-09</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">미래시제</div><div class="app-desc">L8 · will/be going to</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0010_현재완료.html"><div class="app-num">UG3-10</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">현재완료</div><div class="app-desc">L9 · have/has + p.p. · for/since</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0010b_과거분사형암기.html"><div class="app-num">UG3-10b</div><div class="app-icon ug-mem-color">암기</div><div class="app-info"><div class="app-name">과거형·과거분사형 암기</div><div class="app-desc">L9 · 12동사×2방향 24문제</div></div><span class="app-badge badge-UG">암기형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0011_동사시제문장점검.html"><div class="app-num">UG3-11</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">동사·시제 문장 점검</div><div class="app-desc">L4~9 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
+  </div>
+</div>
+
+<!-- Ch.3 Modal & Sense Verbs -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">🎯</div>
+    <div><div class="section-title">Chapter 3 — Modal &amp; Sense Verbs (L10~L12)</div>
+    <div class="section-sub">조동사 추측·허가 · 조동사 의무·충고·능력 · 감각동사</div></div>
+  </div>
+  <div class="card-grid">
+    <a class="app-card ug-card ug-border" href="UG3-0012_조동사추측허가요청.html"><div class="app-num">UG3-12</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">조동사: 추측·허가·요청</div><div class="app-desc">L10 · may/might/could/would</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0013_조동사의무충고능력.html"><div class="app-num">UG3-13</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">조동사: 의무·충고·능력</div><div class="app-desc">L11 · must/should/can/have to</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0014_감각동사.html"><div class="app-num">UG3-14</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">감각동사</div><div class="app-desc">L12 · look/smell/taste/feel/sound</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0015_조동사감각동사문장점검.html"><div class="app-num">UG3-15</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">조동사·감각동사 문장 점검</div><div class="app-desc">L10~12 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
+  </div>
+</div>
+
+<!-- Ch.4 Comparisons & Conjunctions -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">📊</div>
+    <div><div class="section-title">Chapter 4 — Comparisons &amp; Conjunctions (L13~L14)</div>
+    <div class="section-sub">비교급·최상급 · 접속사</div></div>
+  </div>
+  <div class="card-grid">
+    <a class="app-card ug-card ug-border" href="UG3-0016_비교급최상급.html"><div class="app-num">UG3-16</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">비교급·최상급</div><div class="app-desc">L13 · -er/more · -est/most · as~as</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0016b_비교급최상급암기.html"><div class="app-num">UG3-16b</div><div class="app-icon ug-mem-color">암기</div><div class="app-info"><div class="app-name">비교급·최상급 암기</div><div class="app-desc">L13 · 형용사9+부사7 32문제</div></div><span class="app-badge badge-UG">암기형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0017_접속사.html"><div class="app-num">UG3-17</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">접속사</div><div class="app-desc">L14 · and/but/or/so/because/if</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0018_비교접속사문장점검.html"><div class="app-num">UG3-18</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">비교·접속사 문장 점검</div><div class="app-desc">L13~14 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
+  </div>
+</div>
+
+<!-- Ch.5 Sentence Structures Part 1 -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">🏗️</div>
+    <div><div class="section-title">Chapter 5 Part 1 — Sentence Structures (L15~L19)</div>
+    <div class="section-sub">수동태 · 동명사 · to부정사 · 사역동사</div></div>
+  </div>
+  <div class="card-grid">
+    <a class="app-card ug-card ug-border" href="UG3-0019_수동태.html"><div class="app-num">UG3-19</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">수동태</div><div class="app-desc">L15 · be + p.p. · by-phrase</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0020_동명사.html"><div class="app-num">UG3-20</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">동명사</div><div class="app-desc">L16 · enjoy/finish/mind/-ing</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0021_to부정사.html"><div class="app-num">UG3-21</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">to부정사</div><div class="app-desc">L17 · want/decide/hope to V</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0022_too와enough와목적부정사.html"><div class="app-num">UG3-22</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">too·enough·목적 to부정사</div><div class="app-desc">L18 · too~to / ~enough to</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0023_사역동사.html"><div class="app-num">UG3-23</div><div class="app-icon ug-a-color">A</div><div class="app-info"><div class="app-name">사역동사</div><div class="app-desc">L19 · let/make/have+원형 · get+to V</div></div><span class="app-badge badge-UG">A형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0024_수동태동명사부정사문장점검.html"><div class="app-num">UG3-24</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">수동태·동명사·부정사·사역 점검</div><div class="app-desc">L15~19 · C형 오류 찾기</div></div><span class="app-badge badge-UG">C형</span></a>
+  </div>
+</div>
+
+<!-- Ch.5 Sentence Structures Part 2 -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-header">
+    <div class="section-icon" style="background:linear-gradient(135deg,#3A9D6E,#2D7A57);">🔗</div>
+    <div><div class="section-title">Chapter 5 Part 2 — Sentence Structures (L20~L22)</div>
+    <div class="section-sub">관계절 · 부가의문문 · 직간접화법</div></div>
+  </div>
+  <div class="card-grid">
+    <a class="app-card ug-card ug-border" href="UG3-0025_관계절.html"><div class="app-num">UG3-25</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">관계절</div><div class="app-desc">L20 · who/which/that/whose</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0026_부가의문문.html"><div class="app-num">UG3-26</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">부가의문문</div><div class="app-desc">L21 · isn't it / didn't they</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0027_직간접화법.html"><div class="app-num">UG3-27</div><div class="app-icon ug-b-color">B</div><div class="app-info"><div class="app-name">직접·간접화법</div><div class="app-desc">L22 · said that · 시제·대명사 변환</div></div><span class="app-badge badge-UG">B형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0027b_동명사to부정사동사분류암기.html"><div class="app-num">UG3-27b</div><div class="app-icon ug-mem-color">암기</div><div class="app-info"><div class="app-name">동명사·to부정사 동사 분류 암기</div><div class="app-desc">L16~17 · 18동사×2유형 36문제</div></div><span class="app-badge badge-UG">암기형</span></a>
+    <a class="app-card ug-card ug-border" href="UG3-0028_전체문장점검.html"><div class="app-num">UG3-28</div><div class="app-icon ug-c-color">C</div><div class="app-info"><div class="app-name">전체 문장 점검</div><div class="app-desc">L1~22 · C형 종합</div></div><span class="app-badge badge-UG">C형</span></a>
+  </div>
+</div>
+
+<!-- UG3 실전 테스트 -->
+<div class="section" style="margin-top:20px;padding-bottom:16px;">
+  <div class="subgroup">
+    <div class="subgroup-title">📝 실전 테스트 (힌트 없이 풀기)</div>
+    <a class="app-card ug-card ug-border" href="UG3-TEST1_실전테스트1.html" style="border-color:#c8e6d4;">
+      <div class="app-num">TEST1</div><div class="app-icon ug-test-color" style="font-size:12px;">T1</div>
+      <div class="app-info"><div class="app-name">실전 테스트 1</div><div class="app-desc">L1~L11 범위 · 15문제</div></div>
+      <span class="app-badge badge-T">TEST</span>
+    </a>
+    <a class="app-card ug-card ug-border" href="UG3-TEST2_실전테스트2.html" style="border-color:#c8e6d4;">
+      <div class="app-num">TEST2</div><div class="app-icon ug-test-color" style="font-size:12px;">T2</div>
+      <div class="app-info"><div class="app-name">실전 테스트 2</div><div class="app-desc">L12~L22 범위 · 15문제</div></div>
+      <span class="app-badge badge-T">TEST</span>
+    </a>
+  </div>
+</div>
+
+</div><!-- /ugtab-ug3 -->
 
 </div><!-- /series-ug -->
 
@@ -1906,12 +1861,10 @@ function showSeries(series, btn) {
 function showUgTab(tab, btn) {
   document.querySelectorAll('#series-ug .tab-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  ['ugtab-ug1','ugtab-ug2'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = 'none';
+  ['ug1','ug2','ug3'].forEach(t => {
+    const el = document.getElementById('ugtab-'+t);
+    if(el) el.style.display = tab === t ? 'block' : 'none';
   });
-  const target = document.getElementById('ugtab-' + tab);
-  if(target) target.style.display = 'block';
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 

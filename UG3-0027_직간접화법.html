@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UG3-0027 직접·간접화법</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E8F5EC;--accent:#3A9D6E;--accent-dark:#2D7A57;--correct:#4CAF93;--wrong:#E8604C;--badge-b:#5BAD6F;--card-bg:#ffffff;--text:#2d2d2d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);font-family:'Nunito','Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;}
+  h1{font-size:20px;font-weight:800;color:var(--accent-dark);margin:12px 0 4px;text-align:center;}
+  .subtitle{font-size:13px;color:#666;margin-bottom:12px;text-align:center;}
+  .progress-wrap{width:100%;max-width:480px;background:#d0ebd8;border-radius:8px;height:10px;margin-bottom:14px;}
+  .progress-bar{height:10px;background:var(--accent);border-radius:8px;transition:width .4s;}
+  .instruction-box{width:100%;max-width:480px;background:#fff8e1;border-left:4px solid #f5a623;border-radius:8px;padding:10px 14px;font-size:14px;color:#7a5800;margin-bottom:14px;font-weight:600;}
+  .card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:22px 20px 18px;width:100%;max-width:480px;}
+  .badge{display:inline-block;background:var(--badge-b);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card-instruction{font-size:17px;font-weight:700;color:var(--badge-b);margin-bottom:14px;text-align:center;}
+  .question-text{font-size:17px;font-weight:700;color:var(--text);text-align:center;margin-bottom:6px;line-height:1.7;}
+  .blank{display:inline-block;min-width:80px;border-bottom:2.5px solid var(--accent-dark);}
+  .arrow{font-size:18px;color:var(--accent);margin:6px 0;display:block;text-align:center;}
+  .kr-hint{font-size:14px;color:#888;text-align:center;margin-bottom:16px;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .opt-btn{background:#f0f9f4;border:2px solid #b2dfc5;border-radius:12px;padding:12px 8px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .18s;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .opt-btn:hover{background:#d8f0e4;border-color:var(--accent);}
+  .opt-btn.correct{background:#e0f7ef;border-color:var(--correct);color:var(--correct);}
+  .opt-btn.wrong{background:#fdecea;border-color:var(--wrong);color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:#e0f7ef;color:#1a6645;border:1.5px solid var(--correct);}
+  .feedback.wrong{background:#fdecea;color:#8b1a0e;border:1.5px solid var(--wrong);}
+  .next-btn{margin-top:16px;width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .next-btn.show{display:block;}
+  .result-card{background:var(--card-bg);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:28px 20px;width:100%;max-width:480px;text-align:center;display:none;}
+  .result-card.show{display:block;}
+  .stars{font-size:36px;margin:8px 0;}
+  .score-txt{font-size:22px;font-weight:800;color:var(--accent-dark);margin:8px 0;}
+  .result-btn{margin-top:10px;width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Nunito','Noto Sans KR',sans-serif;}
+  .retry-wrong{background:#fff0ed;color:var(--wrong);border:2px solid var(--wrong);}
+  .retry-all{background:var(--bg);color:var(--accent-dark);border:2px solid var(--accent);margin-top:8px;}
+  .wrong-list{text-align:left;margin-top:16px;}
+  .wrong-item{background:#fff4f4;border-left:3px solid var(--wrong);border-radius:6px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.6;}
+</style>
+</head>
+<body>
+<h1>🔍 직접·간접화법</h1>
+<p class="subtitle">UG3 · Lesson 22 · B형</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+<div class="instruction-box">📌 직접화법을 간접화법으로 바꿀 때 빈칸에 알맞은 말을 고르세요!</div>
+<div class="card" id="quiz-card">
+  <div class="badge">B형</div>
+  <div class="card-instruction">빈칸에 알맞은 단어를 고르세요!</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="kr-hint" id="kr-hint"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn">다음 문제 →</button>
+</div>
+<div class="result-card" id="result-card">
+  <div class="stars" id="stars"></div>
+  <div class="score-txt" id="score-txt"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="result-btn retry-wrong" id="retry-wrong-btn" style="display:none">❌ 틀린 문제 다시 풀기</button>
+  <button class="result-btn retry-all" id="retry-all-btn">🔄 전체 다시 풀기</button>
+</div>
+<script>
+// 이중정답 방지 원칙
+// - 시제 변환: 현재→과거, 과거진행→과거완료 등 명확히
+// - 대명사 변환: I→he/she 등 문맥으로 명확히
+// - 직접화법 문장 부호: 쉼표 위치, 따옴표 위치 명확히
+const ALL_QUESTIONS = [
+  // ── A: 직접화법 문장 부호 ──
+  {
+    sentence: 'Amy said, "I want to go to the park."<span class="arrow">↓</span>Amy said that <span class="blank"></span> wanted to go to the park.',
+    answer: 'she',
+    options: ['she', 'he', 'I', 'her'],
+    krHint: '에이미가 말했어요: "나는 공원에 가고 싶어요."',
+    feedback: '직접화법의 I(에이미)는 간접화법에서 she로 바뀌어요. Amy said that she wanted ~'
+  },
+  {
+    sentence: 'Tom said, "I am tired."<span class="arrow">↓</span>Tom said that <span class="blank"></span> was tired.',
+    answer: 'he',
+    options: ['he', 'she', 'I', 'his'],
+    krHint: '톰이 말했어요: "나는 피곤해요."',
+    feedback: '직접화법의 I(톰)는 간접화법에서 he로 바뀌어요. Tom said that he was tired.'
+  },
+  // ── B: 간접화법 시제 변환 (현재 → 과거) ──
+  {
+    sentence: 'She said, "I walk to school."<span class="arrow">↓</span>She said that she <span class="blank"></span> to school.',
+    answer: 'walked',
+    options: ['walked', 'walks', 'walking', 'will walk'],
+    krHint: '그녀가 말했어요: "나는 학교에 걸어가요."',
+    feedback: '간접화법에서 현재(walk)는 과거(walked)로 바뀌어요.'
+  },
+  {
+    sentence: 'He said, "I am studying now."<span class="arrow">↓</span>He said that he <span class="blank"></span> then.',
+    answer: 'was studying',
+    options: ['was studying', 'is studying', 'studied', 'were studying'],
+    krHint: '그가 말했어요: "나는 지금 공부하고 있어요."',
+    feedback: '현재진행(am studying) → 과거진행(was studying)으로 바뀌어요.'
+  },
+  {
+    sentence: 'Mom said, "I will cook dinner."<span class="arrow">↓</span>Mom said that she <span class="blank"></span> dinner.',
+    answer: 'would cook',
+    options: ['would cook', 'will cook', 'cooked', 'cooks'],
+    krHint: '엄마가 말했어요: "내가 저녁을 요리할게."',
+    feedback: '간접화법에서 will → would로 바뀌어요. will cook → would cook'
+  },
+  // ── B: 간접화법 시제 유지 (과거→과거 그대로) ──
+  {
+    sentence: 'She said, "I don\'t know the answer."<span class="arrow">↓</span>She said that she <span class="blank"></span> the answer.',
+    answer: "didn't know",
+    options: ["didn't know", "doesn't know", "don't know", "knew"],
+    krHint: '그녀가 말했어요: "나는 답을 몰라요."',
+    feedback: '간접화법에서 현재(don\'t know)는 과거(didn\'t know)로 바뀌어요.'
+  },
+  // ── 대명사 변환 ──
+  {
+    sentence: 'Jack said, "My sister is a teacher."<span class="arrow">↓</span>Jack said that <span class="blank"></span> sister was a teacher.',
+    answer: 'his',
+    options: ['his', 'my', 'her', 'their'],
+    krHint: '잭이 말했어요: "내 여동생은 선생님이에요."',
+    feedback: '직접화법의 my(잭의)는 간접화법에서 his로 바뀌어요.'
+  },
+  {
+    sentence: 'Linda said, "I love my new phone."<span class="arrow">↓</span>Linda said that she loved <span class="blank"></span> new phone.',
+    answer: 'her',
+    options: ['her', 'my', 'his', 'its'],
+    krHint: '린다가 말했어요: "나는 내 새 핸드폰이 너무 좋아요."',
+    feedback: '직접화법의 my(린다의)는 간접화법에서 her로 바뀌어요.'
+  },
+  // ── 직접화법 → 간접화법 전환 판단 ──
+  {
+    sentence: 'She said, "I need help."<span class="arrow">↓</span>She said that she <span class="blank"></span> help.',
+    answer: 'needed',
+    options: ['needed', 'needs', 'need', 'would need'],
+    krHint: '그녀가 말했어요: "나는 도움이 필요해요."',
+    feedback: '현재(need) → 과거(needed). 간접화법 시제 변환이에요.'
+  },
+  {
+    sentence: 'He said, "I can swim very well."<span class="arrow">↓</span>He said that he <span class="blank"></span> swim very well.',
+    answer: 'could',
+    options: ['could', 'can', 'would', 'should'],
+    krHint: '그가 말했어요: "나는 수영을 매우 잘할 수 있어요."',
+    feedback: '간접화법에서 can → could로 바뀌어요.'
+  },
+  // ── say vs tell 구분 ──
+  {
+    sentence: 'She said, "I have a headache."<span class="arrow">↓</span>She said that she <span class="blank"></span> a headache.',
+    answer: 'had',
+    options: ['had', 'has', 'have', 'will have'],
+    krHint: '그녀가 말했어요: "나는 두통이 있어요."',
+    feedback: '간접화법에서 현재(have)는 과거(had)로 바뀌어요. have → had'
+  },
+  {
+    sentence: 'Dad said, "I am going to the store."<span class="arrow">↓</span>Dad said that he <span class="blank"></span> to the store.',
+    answer: 'was going',
+    options: ['was going', 'is going', 'goes', 'will go'],
+    krHint: '아빠가 말했어요: "나는 가게에 가고 있어요."',
+    feedback: '현재진행(am going)은 간접화법에서 과거진행(was going)으로 바뀌어요.'
+  }
+];
+
+let queue=[], wrongList=[], current=0, score=0, answered=false;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffleNoFirstAnswer(arr,answer){let result,tries=0;do{result=shuffle(arr);tries++;}while(result[0].toLowerCase()===answer.toLowerCase()&&tries<20);return result;}
+function startQuiz(qs){queue=qs;current=0;score=0;wrongList=[];answered=false;document.getElementById('result-card').classList.remove('show');document.getElementById('quiz-card').style.display='';showQ();}
+function showQ(){
+  answered=false;
+  const q=queue[current];
+  document.getElementById('prog').style.width=(current/queue.length*100)+'%';
+  document.getElementById('q-text').innerHTML=q.sentence;
+  document.getElementById('kr-hint').textContent=q.krHint;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const opts=shuffleNoFirstAnswer(q.options,q.answer);
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.addEventListener('click',()=>selectAnswer(opt,q));box.appendChild(btn);});
+  document.getElementById('next-btn').textContent=current===queue.length-1?'결과 보기 🏁':'다음 문제 →';
+}
+function selectAnswer(selected,q){
+  if(answered)return;answered=true;
+  const correct=selected.toLowerCase()===q.answer.toLowerCase();
+  if(correct)score++;else wrongList.push(q);
+  document.querySelectorAll('.opt-btn').forEach(btn=>{btn.disabled=true;if(btn.textContent.toLowerCase()===q.answer.toLowerCase())btn.classList.add('correct');else if(btn.textContent===selected)btn.classList.add('wrong');});
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct':'wrong');
+  fb.textContent=(correct?'✅ 정답! ':'❌ 오답. ')+q.feedback;
+  document.getElementById('next-btn').classList.add('show');
+}
+document.getElementById('next-btn').addEventListener('click',()=>{current++;if(current<queue.length)showQ();else showResult();});
+function showResult(){
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('quiz-card').style.display='none';
+  const rc=document.getElementById('result-card');rc.classList.add('show');
+  const pct=score/queue.length;
+  document.getElementById('stars').textContent=pct>=.9?'⭐⭐⭐':pct>=.6?'⭐⭐':'⭐';
+  document.getElementById('score-txt').textContent=`${score} / ${queue.length} 정답`;
+  const wl=document.getElementById('wrong-list');wl.innerHTML='';
+  if(wrongList.length){const h=document.createElement('p');h.style.cssText='font-weight:700;color:#c0392b;margin-bottom:8px;font-size:14px';h.textContent='틀린 문제:';wl.appendChild(h);wrongList.forEach(q=>{const d=document.createElement('div');d.className='wrong-item';d.innerHTML=`<b>정답:</b> ${q.answer}<br><b>힌트:</b> ${q.krHint}`;wl.appendChild(d);});}
+  const rwb=document.getElementById('retry-wrong-btn');
+  if(wrongList.length){rwb.style.display='';rwb.onclick=()=>startQuiz(shuffle(wrongList));}else rwb.style.display='none';
+}
+document.getElementById('retry-all-btn').addEventListener('click',()=>startQuiz(shuffle([...ALL_QUESTIONS])));
+startQuiz(shuffle([...ALL_QUESTIONS]));
+</script>
+</body>
+</html>
