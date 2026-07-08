@@ -410,6 +410,12 @@ function shuffle(arr){
   }
   return a;
 }
+function shuffleNoFirstAnswer(arr, answer){
+  let result; let tries=0;
+  do { result=shuffle(arr); tries++; }
+  while(result[0].toLowerCase()===answer.toLowerCase() && tries<20);
+  return result;
+}
 
 function startQuiz(list){
   quizQuestions = list;

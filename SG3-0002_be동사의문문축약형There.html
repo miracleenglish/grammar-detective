@@ -292,6 +292,12 @@ function shuffle(arr){
   for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
+function shuffleNoFirstAnswer(arr, answer){
+  let result; let tries=0;
+  do { result=shuffle(arr); tries++; }
+  while(result[0].toLowerCase()===answer.toLowerCase() && tries<20);
+  return result;
+}
 
 function startQuiz(list){
   quizQuestions = list;
