@@ -1868,7 +1868,6 @@ function showSeries(series, btn) {
     ugEl.style.display = 'block';
     showUgTab('ug1', document.querySelector('.tab-btn.t-ug1'));
   }
-  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // UG 하위탭
@@ -1879,7 +1878,6 @@ function showUgTab(tab, btn) {
     const el = document.getElementById('ugtab-'+t);
     if(el) el.style.display = tab === t ? 'block' : 'none';
   });
-  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // SG 하위탭
@@ -1889,7 +1887,6 @@ function showSgTab(tab, btn) {
   document.getElementById('sgtab-sg1').style.display = tab === 'sg1' ? 'block' : 'none';
   document.getElementById('sgtab-sg2').style.display = tab === 'sg2' ? 'block' : 'none';
   document.getElementById('sgtab-sg3').style.display = tab === 'sg3' ? 'block' : 'none';
-  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // 하위탭: 영역 선택
@@ -1908,7 +1905,6 @@ function showTab(tab, btn) {
     const el = document.getElementById(id);
     if(el) el.classList.add('show');
   });
-  window.scrollTo({top:0, behavior:'smooth'});
 }
 </script>
 </body>
