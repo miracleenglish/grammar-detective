@@ -190,6 +190,8 @@
     font-family:'Noto Sans KR',sans-serif;
   }
   .tab-bar{display:flex;gap:10px;flex-wrap:wrap;}
+  .tab-bar.cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .tab-bar.cols-3 .tab-btn{min-width:0;justify-content:center;}
   .tab-btn{
     background:white;border:2px solid var(--border);border-radius:99px;
     padding:12px 20px;cursor:pointer;
@@ -245,7 +247,9 @@
   .tab-btn.t-ug1:hover .tb-name,.tab-btn.t-ug1:hover .tb-range{color:white;}
 
   /* ── 푸터 ── */
-  footer{text-align:center;padding:28px 16px 40px;font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;line-height:1.8;}
+  footer{text-align:center;padding:28px 16px 40px;font-size:12px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;line-height:1.8;}  @media(max-width:480px){
+    .tab-bar.cols-3{grid-template-columns:1fr;}
+  }
 </style>
 </head>
 <body>
@@ -641,7 +645,7 @@
 <div class="tab-wrap" style="margin-top:12px;">
   <div class="tab-bar-wrap">
     <div class="tab-bar-label">📂 스타트 영문법 · 권 선택</div>
-    <div class="tab-bar">
+    <div class="tab-bar cols-3">
     <button class="tab-btn t-sg1 active" onclick="showSgTab('sg1', this)">
       <div class="tb-icon">📗</div>
       <span class="tb-name">스타트 1권</span>
@@ -1375,7 +1379,7 @@
 <div class="tab-wrap" style="margin-top:12px;">
   <div class="tab-bar-wrap">
     <div class="tab-bar-label">📂 업 영문법 · 권 선택</div>
-    <div class="tab-bar">
+    <div class="tab-bar cols-3">
     <button class="tab-btn t-ug1 active" onclick="showUgTab('ug1', this)">
       <div class="tb-icon">📘</div>
       <span class="tb-name">업 영문법 1권</span>
